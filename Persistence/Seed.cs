@@ -29,9 +29,7 @@ namespace Persistence
                     reporter_id = "",
                     team_id = "",
                     project_id = "",
-                    sprint_id = "",
-                    owner_id = "",
-                    assignee_id = ""
+                    sprint_id = ""
                 },
                 new Issue
                 {
@@ -48,9 +46,7 @@ namespace Persistence
                     reporter_id = "",
                     team_id = "",
                     project_id = "",
-                    sprint_id = "",
-                    owner_id = "",
-                    assignee_id = ""
+                    sprint_id = ""
                 },
                 new Issue
                 {
@@ -67,9 +63,7 @@ namespace Persistence
                     reporter_id = "",
                     team_id = "",
                     project_id = "",
-                    sprint_id = "",
-                    owner_id = "",
-                    assignee_id = ""
+                    sprint_id = ""
                 },
                 new Issue
                 {
@@ -86,9 +80,7 @@ namespace Persistence
                     reporter_id = "",
                     team_id = "",
                     project_id = "",
-                    sprint_id = "",
-                    owner_id = "",
-                    assignee_id = ""
+                    sprint_id = ""
                 },
                 new Issue
                 {
@@ -105,9 +97,7 @@ namespace Persistence
                     reporter_id = "",
                     team_id = "",
                     project_id = "",
-                    sprint_id = "",
-                    owner_id = "",
-                    assignee_id = ""
+                    sprint_id = ""
                 },
                 new Issue
                 {
@@ -124,9 +114,7 @@ namespace Persistence
                     reporter_id = "",
                     team_id = "",
                     project_id = "",
-                    sprint_id = "",
-                    owner_id = "",
-                    assignee_id = ""
+                    sprint_id = ""
                 },
                 new Issue
                 {
@@ -143,9 +131,7 @@ namespace Persistence
                     reporter_id = "",
                     team_id = "",
                     project_id = "",
-                    sprint_id = "",
-                    owner_id = "",
-                    assignee_id = ""
+                    sprint_id = ""
                 },
                 new Issue
                 {
@@ -162,9 +148,8 @@ namespace Persistence
                     reporter_id = "",
                     team_id = "",
                     project_id = "",
-                    sprint_id = "",
-                    owner_id = "",
-                    assignee_id = ""
+                    sprint_id = ""
+                    
                 }
                 
                 
@@ -174,8 +159,6 @@ namespace Persistence
             {
                  new Project
                 {
-                    
-
                     team_id = "",
 
                     name = "Shmira",
@@ -188,15 +171,11 @@ namespace Persistence
 
                     owner_id = "",
 
-                    assignee_id = "",
-
                     status = "",
 
                     created_at = DateTime.Now.AddHours(-2),
 
-                    updated_at = DateTime.Now.AddHours(-2),
-
-                    reporter_id = ""
+                    updated_at = DateTime.Now.AddHours(-2)
                 },
                 new Project
                 {
@@ -212,15 +191,11 @@ namespace Persistence
 
                     owner_id = "",
 
-                    assignee_id = "",
-
                     status = "",
 
                     created_at = DateTime.Now.AddHours(-2),
 
-                    updated_at = DateTime.Now.AddHours(-2),
-
-                    reporter_id = ""
+                    updated_at = DateTime.Now.AddHours(-2)
                 },
                 new Project
                 {
@@ -236,15 +211,11 @@ namespace Persistence
 
                     owner_id = "",
 
-                    assignee_id = "",
-
                     status = "",
 
                     created_at = DateTime.Now.AddHours(-2),
 
-                    updated_at = DateTime.Now.AddHours(-2),
-
-                    reporter_id = ""
+                    updated_at = DateTime.Now.AddHours(-2)
                 }
             };
 
@@ -277,24 +248,10 @@ namespace Persistence
                     
             };
 
-            var teams = new List<Team>
+            var assignees = new List<Assignee>
             {
-                new Team
+                new Assignee
                 {
-                    name = "Team Edward",
-
-                    created_at = DateTime.Now,
-
-                    updated_at = DateTime.Now
-                }
-            };
-
-            var team_members = new List<TeamMember>
-            {
-                new TeamMember
-                {
-                    team_id = "",
-
                     first_name = "Davide",
 
                     second_name = "Lorino",
@@ -312,8 +269,7 @@ namespace Persistence
             await context.Issues.AddRangeAsync(issues);
             await context.Projects.AddRangeAsync(projects);
             await context.Sprints.AddRangeAsync(sprints);
-            await context.Teams.AddRangeAsync(teams);
-            await context.TeamMembers.AddRangeAsync(team_members);
+            await context.Assignees.AddRangeAsync(assignees);
             await context.SaveChangesAsync();
         }
     }

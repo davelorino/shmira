@@ -21,15 +21,15 @@ namespace Domain
 
         public string owner_id {get; set; }
 
-        public string assignee_id { get; set; }
-
         public string status { get; set; }
 
         public DateTime created_at { get; set; }
 
         public DateTime updated_at { get; set; }
 
-        public string reporter_id { get; set; }
+        public ICollection<Sprint> sprints { get; set; }
+
+        public ICollection<Assignee> assignees { get; set; }
 
     }
 }

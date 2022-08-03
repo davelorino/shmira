@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    public class TeamMember
+    public class Assignee
     {
         public Guid Id { get; set; }
-
-        public string team_id { get; set; }
 
         public string first_name { get; set; }
 
@@ -22,6 +20,10 @@ namespace Domain
         public DateTime updated_at { get; set; }
 
         public string id_of_direct_report { get; set; }
+
+        public ICollection<Project> projects { get; set; }
+
+        public ICollection<Issue> issues {get; set; }
 
     }
 }

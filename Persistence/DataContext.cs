@@ -17,8 +17,8 @@ namespace Persistence
         public DbSet<Project> Projects { get; set; }
         public DbSet<Issue> Issues { get; set; }
         public DbSet<Sprint> Sprints { get; set; }
-        public DbSet<TeamMember> TeamMembers { get; set; }
+        public DbSet<Assignee> Assignees { get; set; }
 
-        public DbSet<Team> Teams { get; set; }    
     }
+
 }

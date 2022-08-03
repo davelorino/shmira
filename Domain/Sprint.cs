@@ -31,5 +31,7 @@ namespace Domain
 
         public string closing_summary { get; set; }
 
+        public ICollection<Issue> issues { get; set; } = new List<Issue>();
+
     }
 }

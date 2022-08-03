@@ -17,13 +17,72 @@ namespace Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
 
+            modelBuilder.Entity("AssigneeIssue", b =>
+                {
+                    b.Property<Guid>("assigneesId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("issuesId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("assigneesId", "issuesId");
+
+                    b.HasIndex("issuesId");
+
+                    b.ToTable("AssigneeIssue");
+                });
+
+            modelBuilder.Entity("AssigneeProject", b =>
+                {
+                    b.Property<Guid>("assigneesId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("projectsId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("assigneesId", "projectsId");
+
+                    b.HasIndex("projectsId");
+
+                    b.ToTable("AssigneeProject");
+                });
+
+            modelBuilder.Entity("Domain.Assignee", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("created_at")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("employment_contract_type")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("first_name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("id_of_direct_report")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("second_name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("updated_at")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Assignees");
+                });
+
             modelBuilder.Entity("Domain.Issue", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("assignee_id")
+                    b.Property<Guid?>("SprintId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("created_at")
@@ -44,9 +103,6 @@ namespace Persistence.Migrations
                     b.Property<TimeSpan>("original_estimated_duration")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("owner_id")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("priority")
                         .HasColumnType("TEXT");
 
@@ -54,6 +110,9 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("reporter_id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("reviewer_id")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("sprint_id")
@@ -73,6 +132,8 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SprintId");
+
                     b.ToTable("Issues");
                 });
 
@@ -80,9 +141,6 @@ namespace Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("assignee_id")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("created_at")
@@ -103,9 +161,6 @@ namespace Persistence.Migrations
                     b.Property<string>("priority")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("reporter_id")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("status")
                         .HasColumnType("TEXT");
 
@@ -124,6 +179,9 @@ namespace Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("ProjectId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("closing_summary")
@@ -161,59 +219,63 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProjectId");
+
                     b.ToTable("Sprints");
                 });
 
-            modelBuilder.Entity("Domain.Team", b =>
+            modelBuilder.Entity("AssigneeIssue", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                    b.HasOne("Domain.Assignee", null)
+                        .WithMany()
+                        .HasForeignKey("assigneesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("updated_at")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Teams");
+                    b.HasOne("Domain.Issue", null)
+                        .WithMany()
+                        .HasForeignKey("issuesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.TeamMember", b =>
+            modelBuilder.Entity("AssigneeProject", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                    b.HasOne("Domain.Assignee", null)
+                        .WithMany()
+                        .HasForeignKey("assigneesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("TEXT");
+                    b.HasOne("Domain.Project", null)
+                        .WithMany()
+                        .HasForeignKey("projectsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<string>("employment_contract_type")
-                        .HasColumnType("TEXT");
+            modelBuilder.Entity("Domain.Issue", b =>
+                {
+                    b.HasOne("Domain.Sprint", null)
+                        .WithMany("issues")
+                        .HasForeignKey("SprintId");
+                });
 
-                    b.Property<string>("first_name")
-                        .HasColumnType("TEXT");
+            modelBuilder.Entity("Domain.Sprint", b =>
+                {
+                    b.HasOne("Domain.Project", null)
+                        .WithMany("sprints")
+                        .HasForeignKey("ProjectId");
+                });
 
-                    b.Property<string>("id_of_direct_report")
-                        .HasColumnType("TEXT");
+            modelBuilder.Entity("Domain.Project", b =>
+                {
+                    b.Navigation("sprints");
+                });
 
-                    b.Property<string>("second_name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("team_id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("updated_at")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TeamMembers");
+            modelBuilder.Entity("Domain.Sprint", b =>
+                {
+                    b.Navigation("issues");
                 });
 #pragma warning restore 612, 618
         }

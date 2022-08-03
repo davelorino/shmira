@@ -35,10 +35,11 @@ namespace Domain
 
         public string project_id { get; set; }
 
+        public string reviewer_id { get; set; }
+
         public string sprint_id { get; set; }
 
-        public string owner_id {get; set; }
+        public ICollection<Assignee> assignees { get; set; }
 
-        public string assignee_id { get; set; }
     }
 }
