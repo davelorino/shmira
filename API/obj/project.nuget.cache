@@ -1,10 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "nk4n/4XdZqoG5Ncxeie0817E3gtpBxKTMiOt+uIwC8Op7Tu4pHm8xw9Oh0JOzEgS4ndv3RIOCbdHZmFf9ro+ow==",
+  "dgSpecHash": "rFAXSEzxwZAxhEPqvfJmqjSPCyLEkQQcH9Aw9nKXABxrPt9aoYGW0He9jaodTpPxCILU9mw6DrvjbmrB95KAPA==",
   "success": true,
   "projectFilePath": "/Users/Davide/Desktop/demo/Shmira2/API/API.csproj",
   "expectedPackageFiles": [
+    "/Users/Davide/.nuget/packages/automapper/11.0.0/automapper.11.0.0.nupkg.sha512",
+    "/Users/Davide/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/11.0.0/automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
     "/Users/Davide/.nuget/packages/humanizer.core/2.8.26/humanizer.core.2.8.26.nupkg.sha512",
+    "/Users/Davide/.nuget/packages/mediatr/10.0.1/mediatr.10.0.1.nupkg.sha512",
+    "/Users/Davide/.nuget/packages/mediatr.contracts/1.0.1/mediatr.contracts.1.0.1.nupkg.sha512",
+    "/Users/Davide/.nuget/packages/mediatr.extensions.microsoft.dependencyinjection/10.0.1/mediatr.extensions.microsoft.dependencyinjection.10.0.1.nupkg.sha512",
+    "/Users/Davide/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
     "/Users/Davide/.nuget/packages/microsoft.data.sqlite.core/6.0.7/microsoft.data.sqlite.core.6.0.7.nupkg.sha512",
     "/Users/Davide/.nuget/packages/microsoft.entityframeworkcore/6.0.7/microsoft.entityframeworkcore.6.0.7.nupkg.sha512",
     "/Users/Davide/.nuget/packages/microsoft.entityframeworkcore.abstractions/6.0.7/microsoft.entityframeworkcore.abstractions.6.0.7.nupkg.sha512",

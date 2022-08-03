@@ -6,27 +6,44 @@ using Persistence;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Application.Issues;
 
 namespace API.Controllers
 {
     public class IssuesController : BaseApiController
     {
-        private readonly DataContext _context;
-        public IssuesController(DataContext context)
-        {
-            _context = context;
-        }
+
 
         [HttpGet]
         public async Task<ActionResult<List<Issue>>> GetIssues()
         {
-            return await _context.Issues.ToListAsync();
+            return await Mediator.Send(new List.Query());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Issue>> GetIssue(Guid id)
         {
-            return await _context.Issues.FindAsync(id);
+            return await Mediator.Send(new Details.Query{Id = id});
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateIssue(Issue issue)
+        {
+            return Ok(await Mediator.Send(new Create.Command{Issue = issue}));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditIssue(Guid Id, Issue issue)
+        {
+            issue.Id = Id;
+            return Ok(await Mediator.Send(new Edit.Command{Issue = issue}));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteIssue(Guid Id)
+        {
+            return Ok(await Mediator.Send(new Delete.Command{Id = Id}));
+        }
+
     }
 }
