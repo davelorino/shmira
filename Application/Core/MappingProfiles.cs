@@ -12,6 +12,9 @@ namespace Application.Core
         public MappingProfiles()
         {
             CreateMap<Issue, Issue>();
+            CreateMap<Assignee, Assignee>();
+            CreateMap<Project, Project>();
+            CreateMap<Sprint, Sprint>();
         }
     }
 }
