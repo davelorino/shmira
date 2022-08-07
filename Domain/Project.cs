@@ -27,9 +27,9 @@ namespace Domain
 
         public DateTime updated_at { get; set; }
 
-        public ICollection<Sprint> sprints { get; set; }
+        public ICollection<Sprint> sprints { get; set; } = new List<Sprint>();
 
-        public ICollection<Assignee> assignees { get; set; }
+        public ICollection<Assignee> assignees { get; set; } = new List<Assignee>();
 
     }
 }

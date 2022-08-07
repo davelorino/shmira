@@ -7,6 +7,7 @@ using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Application.Issues;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -38,7 +39,15 @@ namespace API.Controllers
             issue.Id = Id;
             return Ok(await Mediator.Send(new Edit.Command{Issue = issue}));
         }
-
+/*
+        [HttpPut("/add_assignee/{assignee_id}")]
+        public async Task<IActionResult> AddAssignee(Guid Id, Issue issue)
+        {
+            assignee.Id = Id;
+            assignee.Id = assignee.Id;
+            return Ok(await Mediator.Send(new AddAssignee.Command{Issue = issue}));
+        }
+*/
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIssue(Guid Id)
         {

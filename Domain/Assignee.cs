@@ -21,9 +21,9 @@ namespace Domain
 
         public string id_of_direct_report { get; set; }
 
-        public ICollection<Project> projects { get; set; }
+        public ICollection<Project> projects { get; set; } = new List<Project>();
 
-        public ICollection<Issue> issues {get; set; }
+        public ICollection<Issue> issues {get; set; } = new List<Issue>();
 
     }
 }

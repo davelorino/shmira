@@ -39,7 +39,7 @@ namespace Domain
 
         public string sprint_id { get; set; }
 
-        public ICollection<Assignee> assignees { get; set; }
+        public ICollection<Assignee> assignees { get; set; } = new List<Assignee>();
 
     }
 }

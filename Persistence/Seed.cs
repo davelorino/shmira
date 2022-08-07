@@ -3,13 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence
 {
     public class Seed
     {
-        public static async Task SeedData(DataContext context)
+        public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
         {
+
+            if(!userManager.Users.Any())
+            {
+                var users = new List<AppUser>
+                {
+                    new AppUser{DisplayName = "Frig", UserName = "frig", Email = "frig@test.com"},
+                    new AppUser{DisplayName = "Jim", UserName = "jim", Email = "jim@test.com"},
+                    new AppUser{DisplayName = "Sally", UserName = "sally", Email = "sally@test.com"}
+                };
+
+                foreach (var user in users)
+                {
+                    await userManager.CreateAsync(user, "Pa$$w0rd");
+                }
+            }
+
             if(context.Issues.Any()) return;
 
             var issues = new List<Issue>
@@ -45,8 +62,8 @@ namespace Persistence
                     updated_at = DateTime.Now.AddHours(-1),
                     reporter_id = "",
                     team_id = "",
-                    project_id = "",
-                    sprint_id = ""
+                    project_id = "1",
+                    sprint_id = "1"
                 },
                 new Issue
                 {
@@ -255,6 +272,62 @@ namespace Persistence
                     first_name = "Davide",
 
                     second_name = "Lorino",
+
+                    employment_contract_type = "",
+
+                    created_at = DateTime.Now,
+
+                    updated_at = DateTime.Now,
+
+                    id_of_direct_report = ""
+                },
+                new Assignee
+                {
+                    first_name = "Mario",
+
+                    second_name = "Mario",
+
+                    employment_contract_type = "",
+
+                    created_at = DateTime.Now,
+
+                    updated_at = DateTime.Now,
+
+                    id_of_direct_report = ""
+                },
+                new Assignee
+                {
+                    first_name = "Luigi",
+
+                    second_name = "Mario",
+
+                    employment_contract_type = "",
+
+                    created_at = DateTime.Now,
+
+                    updated_at = DateTime.Now,
+
+                    id_of_direct_report = ""
+                },
+                new Assignee
+                {
+                    first_name = "King",
+
+                    second_name = "Bowser",
+
+                    employment_contract_type = "",
+
+                    created_at = DateTime.Now,
+
+                    updated_at = DateTime.Now,
+
+                    id_of_direct_report = ""
+                },
+                new Assignee
+                {
+                    first_name = "Princess",
+
+                    second_name = "Peach",
 
                     employment_contract_type = "",
 
