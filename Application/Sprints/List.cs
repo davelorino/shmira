@@ -6,24 +6,33 @@ using Domain;
 using Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Application.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Application.Sprints
 {
     public class List
     {
-        public class Query : IRequest<List<Sprint>> {}
+        public class Query : IRequest<Result<List<SprintDto>>> {}
 
-        public class Handler : IRequestHandler<Query, List<Sprint>>
+        public class Handler : IRequestHandler<Query, Result<List<SprintDto>>>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+            private readonly IMapper _mapper;
+            public Handler(DataContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
-            public async Task<List<Sprint>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<SprintDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.Sprints.ToListAsync();
+                var sprints = await _context.Sprints
+                    .ProjectTo<SprintDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken); 
+                return Result<List<SprintDto>>.Success(sprints);
             }
         }
     }
 }
+

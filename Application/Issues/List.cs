@@ -6,23 +6,34 @@ using MediatR;
 using Domain;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
+using Application.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Application.Issues
 {
     public class List
     {
-        public class Query : IRequest<List<Issue>> {}
+        public class Query : IRequest<Result<List<IssueDto>>> {}
 
-        public class Handler : IRequestHandler<Query, List<Issue>>
+        public class Handler : IRequestHandler<Query, Result<List<IssueDto>>>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+
+            private readonly IMapper _mapper;
+            public Handler(DataContext context, IMapper mapper)
             {
                 _context = context;
+                _mapper = mapper;
             }
-            public async Task<List<Issue>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<IssueDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.Issues.ToListAsync();
+
+                var issues = await _context.Issues
+                    .ProjectTo<IssueDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+
+                return Result<List<IssueDto>>.Success(issues);
             }
         }
     }

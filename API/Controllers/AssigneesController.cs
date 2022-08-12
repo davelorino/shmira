@@ -7,13 +7,14 @@ using Persistence;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
      public class AssigneesController : BaseApiController
     {
-
 
         [HttpGet]
         public async Task<ActionResult<List<Assignee>>> GetAssignees()

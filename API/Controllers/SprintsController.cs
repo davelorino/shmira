@@ -7,17 +7,19 @@ using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Application.Sprints;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
    public class SprintsController : BaseApiController
     {
 
 
         [HttpGet]
-        public async Task<ActionResult<List<Sprint>>> GetSprints()
+        public async Task<IActionResult> GetSprints()
         {
-            return await Mediator.Send(new List.Query());
+            return HandleResult(await Mediator.Send(new List.Query()));
         }
 
         [HttpGet("{id}")]
@@ -43,6 +45,14 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteSprint(Guid Id)
         {
             return Ok(await Mediator.Send(new Delete.Command{Id = Id}));
+        }
+
+        [HttpPut("{Id}/edit_issues/{issue_id}")]
+        public async Task<IActionResult> AddIssueToSprint(Guid Id, Guid issue_id)
+        {
+
+            return Ok(await Mediator.Send(new AddIssueToSprint.Command{sprint_id = Id, 
+            issue_id = issue_id}));
         }
 
     }

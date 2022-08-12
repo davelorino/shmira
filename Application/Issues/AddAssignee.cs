@@ -6,41 +6,66 @@ using Domain;
 using MediatR;
 using Persistence;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using Application.Core;
 
 namespace Application.Issues
 {
     public class AddAssignee
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
-        public Issue Issue { get; set; }
+        public Guid issue_id { get; set; }
 
-       // public Assignee Assignee { get; set; }
+        public Guid assignee_id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
-            private readonly IMapper _mapper;
-            public Handler(DataContext context, IMapper mapper)
+        
+            public Handler(DataContext context)
             {
                 _context = context;
-                _mapper = mapper;
+                
             }
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                     
-                    //var assignee = await _context.Assignees.FindAsync(request.Assignee.Id);
+                    var issue = await _context.Issues
+                        .Include(a => a.assignees)
+                        .FirstOrDefaultAsync(x => x.Id == request.issue_id);
                     
-                    //request.Issue.assignees.Add(assignee);
-                    
-                    var issue = await _context.Issues.FindAsync(request.Issue.Id);
+                    if (issue == null) return null;
 
-                    _mapper.Map(request.Issue, issue);
+                    var assignee = await _context.Assignees.
+                        FirstOrDefaultAsync(x => x.Id == request.assignee_id);
 
-                    await _context.SaveChangesAsync();
+                    if (assignee == null) return null;
 
-                    return Unit.Value;
+                    var assigned = issue.assignees.
+                        FirstOrDefault(x => x.AssigneeId == assignee.Id);
+
+                    if (assigned != null)
+                        issue.assignees.Remove(assigned);  
+
+                    if(assigned == null)
+                    {
+                        assigned = new IssueAssignee
+                        {
+                            Assignee = assignee,
+                            Issue = issue
+                        };
+
+                        issue.assignees.Add(assigned);
+
+                    }
+
+                    var result = await _context.SaveChangesAsync() > 0;
+
+                    return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem updating assignee.");
+
             }
         }
     }

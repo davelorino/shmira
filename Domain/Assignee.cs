@@ -9,6 +9,8 @@ namespace Domain
     {
         public Guid Id { get; set; }
 
+        public string email { get; set; }
+
         public string first_name { get; set; }
 
         public string second_name { get; set; }
@@ -21,9 +23,11 @@ namespace Domain
 
         public string id_of_direct_report { get; set; }
 
+        public string image { get; set; }
+
         public ICollection<Project> projects { get; set; } = new List<Project>();
 
-        public ICollection<Issue> issues {get; set; } = new List<Issue>();
+        public ICollection<IssueAssignee> issues {get; set; } = new List<IssueAssignee>();
 
     }
 }

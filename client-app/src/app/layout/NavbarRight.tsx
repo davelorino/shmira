@@ -10,10 +10,12 @@ import BaseStyles from './BaseStyles';
 import './fontStyles.css';
 import { NavLink } from 'react-router-dom';
 
+interface Props {
+  openForm: () => void;
+}
 
 
-
-const NavbarRight = () => {
+const NavbarRight = ({openForm}: Props ) => {
     const font = {
         regular: 'font-family: "CircularStdBook"; font-weight: normal;',
         medium: 'font-family: "CircularStdMedium"; font-weight: normal;',
@@ -148,7 +150,7 @@ const NavbarRight = () => {
       <Icon type="search" size={22} top={0} left={3} />
       <ItemText>Search issues</ItemText>
     </Item>
-    <Item >
+    <Item onClick={openForm} >
       <Icon type="plus" size={22} top={0} left={3} />
       <ItemText>Create Issue</ItemText>
     </Item>

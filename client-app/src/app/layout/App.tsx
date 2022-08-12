@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import { Issue }from '../models/issue';
-import { List } from 'semantic-ui-react';
-import {Menu, Segment, Image, Header} from 'semantic-ui-react';
+import {Container} from 'semantic-ui-react';
 import { css } from 'styled-components';
 import Icon from './Icon';
 import NormalizeStyles from './NormalizeStyles';
@@ -14,16 +12,75 @@ import NavbarRight from './NavbarRight';
 import Sidebar from './Sidebar';
 import useApi from '../api';
 import {v4 as uuid} from 'uuid';
+import IssueDashboard from '../features/issues/dashboard/IssuesDashboard';
+import agent from '../api/agent';
+import LoadingComponent from './LoadingComponent';
+import { is } from '../shared/utils/validation';
 
 function App() {
   const [issues,setIssues] = useState<Issue[]>([]);
+  const [selectedIssue, setSelectedIssue] = useState<Issue | undefined>(undefined);
+  const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-//  useEffect(() => {
-//    axios.get<Issue[]>('http://localhost:5000/api/issues').then(response => {
-//    setIssues(response.data);
-//    })
-//  }, [])
+  useEffect(() => {
+    agent.Issues.list().then(response => {
+      let issues: Issue[] = [];
+       response.forEach((issue: Issue) => {
+          issue.created_at = issue.created_at.split('T')[0]
+          issues.push(issue);
+       })
+       setIssues(response);
+       setLoading(false);
+    })
+  }, [])
 
+function handleSelectIssue(id: string){
+  setSelectedIssue(issues.find(x => x.id === id));
+}
+
+function handleCancelSelectIssue(){
+  setSelectedIssue(undefined);
+}
+
+function handleFormOpen(id?: string) {
+  id ? handleSelectIssue(id) : handleCancelSelectIssue();
+  setEditMode(true);
+}
+
+function handleFormClose(id?: string) {
+  setEditMode(false);
+}
+
+function handleCreateOrEditIssue(issue: Issue) {
+  setSubmitting(true);
+  if(issue.id) {
+    agent.Issues.update(issue).then(() => {
+      setIssues([...issues.filter(x => x.id !== issue.id), issue])
+      setSelectedIssue(issue);
+      setEditMode(false);
+      setSubmitting(false);
+    })
+  } else {
+    issue.id = uuid();
+    agent.Issues.create(issue).then(() => {
+      setIssues([...issues, issue]);
+      setSelectedIssue(issue);
+      setEditMode(false);
+      setSubmitting(false);
+    })
+  }
+}
+
+function handleDeleteIssue(id: string) {
+  setSubmitting(true);
+  agent.Issues.delete(id).then(() => {
+    setIssues([...issues.filter(x => x.id !== id)]);
+    setSubmitting(false);
+  })
+  setIssues([...issues.filter(x => x.id !== id)]);
+}
 
   //const [{ data, error, setLocalData }, fetchProject] = useApi.get('/project');
 
@@ -165,22 +222,27 @@ const ItemText = styled.div`
   }
 `;
 
-
+if (loading) return <LoadingComponent content='Loading...'/>
 
   return (
     <div >
 
-    <NavbarRight/>
+    <NavbarRight openForm={handleFormOpen}/>
+    <Container style={{marginTop: '7em'}}>
+        <IssueDashboard 
+        issues={issues}
+        selectedIssue={selectedIssue}
+        selectIssue={handleSelectIssue}
+        cancelSelectIssue={handleCancelSelectIssue}
+        editMode={editMode}
+        openForm={handleFormOpen}
+        closeForm={handleFormClose}
+        createOrEdit={handleCreateOrEditIssue}
+        deleteIssue={handleDeleteIssue}
+        submitting={submitting}
 
-     
-        <List>
-        {issues.map(issue => (
-            <List.Item key={issue.id}>
-                {issue.name}
-            </List.Item>
-                    ))}
-          </List>
-     
+        />
+    </Container>
     </div>
   );
 }

@@ -20,6 +20,34 @@ namespace Persistence
         public DbSet<Sprint> Sprints { get; set; }
         public DbSet<Assignee> Assignees { get; set; }
 
+        public DbSet<IssueAssignee> IssueAssignees { get; set; }
+
+        public DbSet<SprintIssue> SprintIssues { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+
+            base.OnModelCreating(builder);
+
+            builder.Entity<IssueAssignee>(x => x.HasKey(ia => new { ia.AssigneeId, ia.IssueId }));
+
+            builder.Entity<IssueAssignee>()
+                .HasOne(a => a.Assignee)
+                .WithMany(i => i.issues)
+                .HasForeignKey(ia => ia.AssigneeId);
+
+            builder.Entity<IssueAssignee>()
+                .HasOne(i => i.Issue)
+                .WithMany(a => a.assignees)
+                .HasForeignKey(ia => ia.IssueId);
+
+            builder.Entity<SprintIssue>(x => x.HasKey(si => new { si.SprintId, si.IssueId }));
+
+            builder.Entity<ProjectSprint>(x => x.HasKey(ps => new { ps.ProjectId, ps.SprintId }));
+
+
+        }
+
     }
 
 }

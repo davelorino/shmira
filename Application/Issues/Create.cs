@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Persistence;
 using Domain;
+using Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Issues
 {
@@ -18,13 +20,21 @@ namespace Application.Issues
         public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+
+            private readonly IUserAccessor _userAccessor;
+            public Handler(DataContext context, IUserAccessor userAccessor)
             {
                 _context = context;
+                _userAccessor = userAccessor;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
+                //var user = await _context.Assignees.FirstOrDefaultAsync(x => 
+                //x.email == _userAccessor.GetEmail());
+
+                //request.Issue.assignees.Add(user);
+
                 _context.Issues.Add(request.Issue);
 
                 await _context.SaveChangesAsync();

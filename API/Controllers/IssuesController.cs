@@ -11,20 +11,21 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
     public class IssuesController : BaseApiController
     {
 
 
         [HttpGet]
-        public async Task<ActionResult<List<Issue>>> GetIssues()
+        public async Task<IActionResult> GetIssues()
         {
-            return await Mediator.Send(new List.Query());
+            return HandleResult(await Mediator.Send(new List.Query()));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Issue>> GetIssue(Guid id)
+        public async Task<IActionResult> GetIssue(Guid id)
         {
-            return await Mediator.Send(new Details.Query{Id = id});
+            return HandleResult(await Mediator.Send(new Details.Query{Id = id}));
         }
 
         [HttpPost]
@@ -39,15 +40,15 @@ namespace API.Controllers
             issue.Id = Id;
             return Ok(await Mediator.Send(new Edit.Command{Issue = issue}));
         }
-/*
-        [HttpPut("/add_assignee/{assignee_id}")]
-        public async Task<IActionResult> AddAssignee(Guid Id, Issue issue)
+
+        [HttpPut("{Id}/assign/{assignee_id}")]
+        public async Task<IActionResult> AddAssignee(Guid Id, Guid assignee_id)
         {
-            assignee.Id = Id;
-            assignee.Id = assignee.Id;
-            return Ok(await Mediator.Send(new AddAssignee.Command{Issue = issue}));
+
+            return Ok(await Mediator.Send(new AddAssignee.Command{issue_id = Id, 
+            assignee_id = assignee_id}));
         }
-*/
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIssue(Guid Id)
         {

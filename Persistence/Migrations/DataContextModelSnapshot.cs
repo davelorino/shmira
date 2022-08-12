@@ -17,36 +17,6 @@ namespace Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
 
-            modelBuilder.Entity("AssigneeIssue", b =>
-                {
-                    b.Property<Guid>("assigneesId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("issuesId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("assigneesId", "issuesId");
-
-                    b.HasIndex("issuesId");
-
-                    b.ToTable("AssigneeIssue");
-                });
-
-            modelBuilder.Entity("AssigneeProject", b =>
-                {
-                    b.Property<Guid>("assigneesId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("projectsId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("assigneesId", "projectsId");
-
-                    b.HasIndex("projectsId");
-
-                    b.ToTable("AssigneeProject");
-                });
-
             modelBuilder.Entity("Domain.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -126,6 +96,9 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("created_at")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("email")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("employment_contract_type")
                         .HasColumnType("TEXT");
 
@@ -133,6 +106,9 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("id_of_direct_report")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("image")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("second_name")
@@ -150,9 +126,6 @@ namespace Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("SprintId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("created_at")
@@ -202,15 +175,34 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SprintId");
-
                     b.ToTable("Issues");
+                });
+
+            modelBuilder.Entity("Domain.IssueAssignee", b =>
+                {
+                    b.Property<Guid>("AssigneeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("IssueId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("isOwner")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("AssigneeId", "IssueId");
+
+                    b.HasIndex("IssueId");
+
+                    b.ToTable("IssueAssignees");
                 });
 
             modelBuilder.Entity("Domain.Project", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("AssigneeId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("created_at")
@@ -242,16 +234,30 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AssigneeId");
+
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("Domain.ProjectSprint", b =>
+                {
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("SprintId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ProjectId", "SprintId");
+
+                    b.HasIndex("SprintId");
+
+                    b.ToTable("ProjectSprint");
                 });
 
             modelBuilder.Entity("Domain.Sprint", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("ProjectId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("closing_summary")
@@ -289,9 +295,25 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectId");
-
                     b.ToTable("Sprints");
+                });
+
+            modelBuilder.Entity("Domain.SprintIssue", b =>
+                {
+                    b.Property<Guid>("SprintId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("IssueId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("SprintId", "IssueId");
+
+                    b.HasIndex("IssueId");
+
+                    b.ToTable("SprintIssues");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -422,48 +444,68 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AssigneeIssue", b =>
+            modelBuilder.Entity("Domain.IssueAssignee", b =>
                 {
-                    b.HasOne("Domain.Assignee", null)
-                        .WithMany()
-                        .HasForeignKey("assigneesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Issue", null)
-                        .WithMany()
-                        .HasForeignKey("issuesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("AssigneeProject", b =>
-                {
-                    b.HasOne("Domain.Assignee", null)
-                        .WithMany()
-                        .HasForeignKey("assigneesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Project", null)
-                        .WithMany()
-                        .HasForeignKey("projectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Issue", b =>
-                {
-                    b.HasOne("Domain.Sprint", null)
+                    b.HasOne("Domain.Assignee", "Assignee")
                         .WithMany("issues")
-                        .HasForeignKey("SprintId");
+                        .HasForeignKey("AssigneeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Issue", "Issue")
+                        .WithMany("assignees")
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assignee");
+
+                    b.Navigation("Issue");
                 });
 
-            modelBuilder.Entity("Domain.Sprint", b =>
+            modelBuilder.Entity("Domain.Project", b =>
                 {
-                    b.HasOne("Domain.Project", null)
+                    b.HasOne("Domain.Assignee", null)
+                        .WithMany("projects")
+                        .HasForeignKey("AssigneeId");
+                });
+
+            modelBuilder.Entity("Domain.ProjectSprint", b =>
+                {
+                    b.HasOne("Domain.Project", "Project")
                         .WithMany("sprints")
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Sprint", "Sprint")
+                        .WithMany()
+                        .HasForeignKey("SprintId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Sprint");
+                });
+
+            modelBuilder.Entity("Domain.SprintIssue", b =>
+                {
+                    b.HasOne("Domain.Issue", "Issue")
+                        .WithMany()
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Sprint", "Sprint")
+                        .WithMany("issues")
+                        .HasForeignKey("SprintId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Issue");
+
+                    b.Navigation("Sprint");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -515,6 +557,18 @@ namespace Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Assignee", b =>
+                {
+                    b.Navigation("issues");
+
+                    b.Navigation("projects");
+                });
+
+            modelBuilder.Entity("Domain.Issue", b =>
+                {
+                    b.Navigation("assignees");
                 });
 
             modelBuilder.Entity("Domain.Project", b =>
