@@ -28,6 +28,8 @@ namespace Application.Sprints
 
         public string status { get; set; }
 
+        public bool is_active { get; set; }
+
         public string closing_summary { get; set; }
 
         public List<IssueDto> issues { get; set; }

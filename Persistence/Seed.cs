@@ -12,13 +12,14 @@ namespace Persistence
         public static async Task SeedData(DataContext context, UserManager<AppUser> userManager)
         {
 
+            
             if(!userManager.Users.Any())
             {
                 var users = new List<AppUser>
                 {
-                    new AppUser{DisplayName = "Frig", UserName = "frig", Email = "frig@test.com"},
-                    new AppUser{DisplayName = "Jim", UserName = "jim", Email = "jim@test.com"},
-                    new AppUser{DisplayName = "Sally", UserName = "sally", Email = "sally@test.com"}
+                    new AppUser{first_name = "Frig", second_name = "frig", Email = "frig@test.com", UserName = "frig@test.com"},
+                    new AppUser{first_name = "Jim", second_name = "jim", Email = "jim@test.com", UserName = "jim@test.com"},
+                    new AppUser{first_name = "Sally", second_name = "sally", Email = "sally@test.com", UserName = "sally@test.com"}
                 };
 
                 foreach (var user in users)
@@ -26,6 +27,7 @@ namespace Persistence
                     await userManager.CreateAsync(user, "Pa$$w0rd");
                 }
             }
+        
 
             if(context.Issues.Any()) return;
 
@@ -176,7 +178,6 @@ namespace Persistence
             {
                  new Project
                 {
-                    team_id = "",
 
                     name = "Shmira",
 
@@ -186,8 +187,6 @@ namespace Persistence
 
                     priority = "High",
 
-                    owner_id = "",
-
                     status = "",
 
                     created_at = DateTime.Now.AddHours(-2),
@@ -196,7 +195,6 @@ namespace Persistence
                 },
                 new Project
                 {
-                    team_id = "",
 
                     name = "Step Tracker",
 
@@ -206,8 +204,6 @@ namespace Persistence
 
                     priority = "High",
 
-                    owner_id = "",
-
                     status = "",
 
                     created_at = DateTime.Now.AddHours(-2),
@@ -216,7 +212,6 @@ namespace Persistence
                 },
                 new Project
                 {
-                    team_id = "",
 
                     name = "IoT Scales",
 
@@ -225,8 +220,6 @@ namespace Persistence
                     description_text = "Im not sure how easy or hard this will be - i've done some C programming so the software bit wont be the bottleneck but I don't know how easy the hardware part of making scales that can weight a human person will be. Realistically if big companies can productionise them for like $40 then making them myself will probably cost like $100 just in raw material, but I could be way off, maybe its less, we'll see.",
 
                     priority = "Low",
-
-                    owner_id = "",
 
                     status = "",
 

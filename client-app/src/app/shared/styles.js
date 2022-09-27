@@ -35,11 +35,9 @@ export const issueTypeColors = {
 };
 
 export const issuePriorityColors = {
-  [IssuePriority.HIGHEST]: '#CD1317', // red
-  [IssuePriority.HIGH]: '#E9494A', // orange
+  [IssuePriority.HIGH]: '#CD1317', // red
   [IssuePriority.MEDIUM]: '#E97F33', // orange
-  [IssuePriority.LOW]: '#2D8738', // green
-  [IssuePriority.LOWEST]: '#57A55A', // green
+  [IssuePriority.LOW]: '#2D8738' // green
 };
 
 export const issueStatusColors = {

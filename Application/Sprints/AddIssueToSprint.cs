@@ -17,9 +17,12 @@ namespace Application.Sprints
     {
         public class Command : IRequest<Result<Unit>>
         {
-        public Guid sprint_id { get; set; }
+        public string sprint_id { get; set; }
 
-        public Guid issue_id { get; set; }
+        public string issue_name { get; set; }
+
+        public string issue_id { get; set; }
+
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -34,36 +37,34 @@ namespace Application.Sprints
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                    
+
                     var sprint = await _context.Sprints
                         .Include(i => i.issues)
-                        //.ProjectTo<SprintDto>(_mapper.ConfigurationProvider)
-                        .FirstOrDefaultAsync(x => x.Id == request.sprint_id);
-
+                        .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == request.sprint_id);
+                    
                     if (sprint == null) return null;
                     
                     var issue = await _context.Issues
                         .Include(a => a.assignees)
-                        .FirstOrDefaultAsync(x => x.Id == request.issue_id);
+                        .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == request.issue_id);
                     
                     if (issue == null) return null;
-
+                                 
                     var alreadyInTheSprint = sprint.issues
-                        .FirstOrDefault(x => x.IssueId == request.issue_id);
-
-                    if (alreadyInTheSprint != null)
+                        .FirstOrDefault(x => x.IssueId.ToString() == request.issue_id);
+                                      
+                    if (alreadyInTheSprint != null) {
                         sprint.issues.Remove(alreadyInTheSprint);  
-
-                    if(alreadyInTheSprint == null)
-                    {
-                        var issueToAdd = new SprintIssue 
-                        {
-                            Sprint = sprint,
-                            Issue = issue
-                        };
-                        sprint.issues.Add(issueToAdd);
                     }
-
+     
+                    var issueToAdd = new SprintIssue 
+                    {
+                        Sprint = sprint,
+                        Issue = issue
+                    };
+                    
+                    sprint.issues.Add(issueToAdd);
+                    
                     var result = await _context.SaveChangesAsync() > 0;
 
                     return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem adding issue to sprint.");

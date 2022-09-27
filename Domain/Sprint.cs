@@ -25,6 +25,8 @@ namespace Domain
 
         public DateTime date_end { get; set; }
 
+        public bool is_active { get; set; }
+
         public string project_id { get; set; }
 
         public string status { get; set; }

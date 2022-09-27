@@ -17,9 +17,11 @@ namespace Application.Projects
     {
         public class Command : IRequest<Result<Unit>>
         {
-        public Guid project_id { get; set; }
+        public string project_id { get; set; }
 
-        public Guid sprint_id { get; set; }
+        public string sprint_name { get; set; }
+
+        public string sprint_id { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -34,38 +36,53 @@ namespace Application.Projects
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+                    Console.WriteLine("Project Id =");
+                    Console.WriteLine(request.project_id);
+                    Console.WriteLine("Sprint Id =");
+                    Console.WriteLine(request.sprint_id);
                     
                     var project = await _context.Projects
                         .Include(s => s.sprints)
-                        .FirstOrDefaultAsync(x => x.Id == request.project_id);
+                        .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == request.project_id.ToString().ToLower());
 
                     if (project == null) return null;
-                    
-                    var sprint = await _context.Sprints
-                        .Include(i => i.issues)
-                        .FirstOrDefaultAsync(x => x.Id == request.sprint_id);
-                    
-                    if (sprint == null) return null;
 
-                    var alreadyInTheProject = project.sprints
-                        .FirstOrDefault(x => x.SprintId == request.sprint_id);
 
-                    if (alreadyInTheProject != null)
-                        project.sprints.Remove(alreadyInTheProject);  
-
-                    if(alreadyInTheProject == null)
+                    var backlog_sprint = new Sprint
                     {
-                        var sprintToAdd = new ProjectSprint 
-                        {
-                            Project = project,
-                            Sprint = sprint
-                        };
-                        project.sprints.Add(sprintToAdd);
+                        name = "Backlog",
+                        Id = new Guid()
+                    };
+                    
+                    var existing_sprint = await _context.Sprints
+                        .Include(i => i.issues)
+                        .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == request.sprint_id.ToString().ToLower());
+                
+                    
+                    var backlogSprintToAdd = new ProjectSprint
+                    {
+                        Project = project,
+                        Sprint = backlog_sprint
+                    };
+
+                    var existingSprintToAdd = new ProjectSprint 
+                    {
+                        Project = project,
+                        Sprint = existing_sprint
+                    };
+
+                    if(request.sprint_name == "Backlog"){
+                        Console.WriteLine("Backlog sprint adder triggered");
+                        project.sprints.Add(backlogSprintToAdd);
+                    } else {
+                        Console.WriteLine("Existing sprint adder triggered");
+                        project.sprints.Add(existingSprintToAdd);
                     }
+                
 
                     var result = await _context.SaveChangesAsync() > 0;
 
-                    return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem adding issue to sprint.");
+                    return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem adding sprint to project.");
 
             }
         }

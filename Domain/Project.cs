@@ -29,6 +29,8 @@ namespace Domain
 
         public ICollection<ProjectSprint> sprints { get; set; } = new List<ProjectSprint>();
 
+        public ICollection<ProjectAssignee> assignees { get; set; } = new List<ProjectAssignee>();
+
 
     }
 }

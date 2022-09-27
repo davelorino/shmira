@@ -5,17 +5,33 @@ import styled from 'styled-components';
 import {Menu, Segment, Image, Header} from 'semantic-ui-react';
 import { css } from 'styled-components';
 import Icon from './Icon';
+import BetterIcon from './BetterIcon'
 import NormalizeStyles from './NormalizeStyles';
 import BaseStyles from './BaseStyles';
 import './fontStyles.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
+import { useStore } from '../stores/store';
+import IssueForm from '../features/sprints/form/CreateIssueForm';
+import SprintForm from '../features/sprints/form/SprintForm';
+import PeopleForm from '../features/sprints/form/PeopleForm';
+import NewUserForm from '../features/sprints/form/CreatePeopleForm';
+import { observer } from 'mobx-react-lite';
 
-interface Props {
-  openForm: () => void;
-}
 
 
-const NavbarRight = ({openForm}: Props ) => {
+
+export default observer(function NavbarRight() {
+
+  const {issueStore, modalStore} = useStore();
+  const history = useHistory();
+
+  var [openPeopleAccordion, setPeopleAccordion] = useState(false);
+
+  const handlePeopleClick = function(e: any, openPeopleAccordion: boolean){
+    e.preventDefault();
+    setPeopleAccordion(!openPeopleAccordion);
+  }
+
     const font = {
         regular: 'font-family: "CircularStdBook"; font-weight: normal;',
         medium: 'font-family: "CircularStdMedium"; font-weight: normal;',
@@ -26,7 +42,7 @@ const NavbarRight = ({openForm}: Props ) => {
     
     const Bottom = styled.div`
       position: absolute;
-      bottom: 20px;
+      bottom: 60px;
       left: 0;
       width: 100%;
     `;
@@ -45,7 +61,7 @@ const NavbarRight = ({openForm}: Props ) => {
       textLight: '#8993a4',
       textLink: '#0052cc',
     
-      backgroundDarkPrimary: '#0747A6',
+      backgroundDarkPrimary: '#181A1A',
       backgroundMedium: '#dfe1e6',
       backgroundLight: '#ebecf0',
       backgroundLightest: '#F4F5F7',
@@ -94,6 +110,7 @@ const NavbarRight = ({openForm}: Props ) => {
     top: 0;
     left: 0;
     overflow-x: hidden;
+    margin-top: 39px;
     height: 100vh;
     width: ${sizes.appNavBarLeftWidth}px;
     background: ${color.backgroundDarkPrimary};
@@ -101,7 +118,7 @@ const NavbarRight = ({openForm}: Props ) => {
     ${mixin.hardwareAccelerate}
     &:hover {
       width: 200px;
-      box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.6);
     }
     `
     const Item = styled.div`
@@ -123,7 +140,6 @@ const NavbarRight = ({openForm}: Props ) => {
     `;
     
     const ItemText = styled.div`
-      position: relative;
       right: 12px;
       visibility: hidden;
       opacity: 0;
@@ -141,22 +157,45 @@ const NavbarRight = ({openForm}: Props ) => {
 
   return(
     <NavLeft>
+      {/*}
       <div style={{paddingTop: 12, paddingBottom:24}}>
       <Icon type="duck" size={30} top={10} left={16} />
       <ItemText></ItemText>
       </div>
-    
-    <Item >
-      <Icon type="search" size={22} top={0} left={3} />
-      <ItemText>Search issues</ItemText>
+      */}
+    <div style={{paddingTop: 12}}>
+    </div>
+    <Item onClick={() => history.push(`/`)} style={{lineHeight: '30px', height: '60px'}}>
+      <BetterIcon code="\2728" size={18} top={10} left={3} />
+      <ItemText style={{paddingTop: '10px', marginBottom: '0px', paddingBottom: '0px'}}>{issueStore.selectedProject?.name}</ItemText>
+      <p style={{display: "flex", marginTop: "0", paddingTop: '0', fontSize: "10px"}}>A software project</p>
     </Item>
-    <Item onClick={openForm} >
-      <Icon type="plus" size={22} top={0} left={3} />
-      <ItemText>Create Issue</ItemText>
+    <div style={{paddingTop: 12}}>
+    </div>
+    <hr style={{backgroundColor: "#000000"}}/>
+    <Item onClick={() => history.push(`/`)} >
+      <Icon type="board" size={18} top={0} left={3} />
+      <ItemText>Board</ItemText>
     </Item>
+    <Item onClick={() => 
+    //modalStore.openModal(<SprintForm />)
+    history.push(`/sprints`)
+  }
+     >
+      <Icon type="calendar" size={18} top={0} left={3} />
+      <ItemText>Sprint</ItemText>
+    </Item>
+    <Item onClick={() => modalStore.openModal(<PeopleForm />)} >
+      <Icon type="settings" size={18} top={0} left={3} />
+      <ItemText>Project</ItemText>
+    </Item>
+    <Bottom>
+    <Item onClick={() => history.push(`/about`)} >
+      <Icon type="help" size={18} top={0} left={3} />
+      <ItemText>About</ItemText>
+    </Item>
+    </Bottom>
 
     </NavLeft>
   )
-}
-
-export default NavbarRight;
+});

@@ -47,12 +47,42 @@ namespace API.Controllers
             return Ok(await Mediator.Send(new Delete.Command{Id = Id}));
         }
 
-        [HttpPut("{Id}/edit_issues/{issue_id}")]
-        public async Task<IActionResult> AddIssueToSprint(Guid Id, Guid issue_id)
+        [HttpPut("{id}/add_issue_to_sprint")]
+        public async Task<IActionResult> AddIssueToSprint(FrontEndSprintIssue sprint_issue)
         {
+            return Ok(await Mediator.Send(new AddIssueToSprint.Command{
+                sprint_id = sprint_issue.sprint_id, 
+                issue_name = sprint_issue.issue_name,
+                issue_id = sprint_issue.issue_id
+                }));
+        }
 
-            return Ok(await Mediator.Send(new AddIssueToSprint.Command{sprint_id = Id, 
-            issue_id = issue_id}));
+        [HttpPut("{id}/remove_issue_from_sprint")]
+        public async Task<IActionResult> RemoveIssueFromSprint(FrontEndSprintIssue sprint_issue)
+        {
+            return Ok(await Mediator.Send(new RemoveIssueFromSprint.Command{
+                sprint_id = sprint_issue.sprint_id, 
+                issue_name = sprint_issue.issue_name,
+                issue_id = sprint_issue.issue_id
+                }));
+        }
+
+        [HttpPut("move_issue_to_different_sprint")]
+        public async Task<IActionResult> MoveIssueToDifferentSprint(FrontEndSprintIssueUpdated sprint_issue)
+        {
+            return Ok(await Mediator.Send(new MoveIssueToDifferentSprint.Command{
+                source_sprint_id = sprint_issue.source_sprint_id, 
+                destination_sprint_id = sprint_issue.destination_sprint_id, 
+                issue_name = sprint_issue.issue_name,
+                issue_id = sprint_issue.issue_id,
+                Issue = sprint_issue.issue
+                }));
+        }
+
+        [HttpPost("close_sprint")]
+        public async Task<IActionResult> CloseSprint(FrontEndProjectSprintAndBacklog project_sprint)
+        {
+            return Ok(await Mediator.Send(new CloseSprint.Command{sprint_id = project_sprint.sprint_id, project_id = project_sprint.project_id, backlog_id = project_sprint.backlog_id}));
         }
 
     }

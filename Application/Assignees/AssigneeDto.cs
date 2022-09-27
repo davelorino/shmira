@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain;
 
 namespace Application.Assignees
 {
     public class AssigneeDto
     {
-
+        public Guid Id { get; set; }
         public string email { get; set; }
 
         public string first_name { get; set; }
@@ -22,6 +23,12 @@ namespace Application.Assignees
 
         public string id_of_direct_report { get; set; }
 
+        public string id_app_user { get; set; }
+
         public string image { get; set; }
+
+        public Photo Photo { get; set; }
+
+        public bool isActive { get; set;} = false;
     }
 }

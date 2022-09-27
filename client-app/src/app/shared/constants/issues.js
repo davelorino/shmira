@@ -12,11 +12,9 @@ export const IssueStatus = {
 };
 
 export const IssuePriority = {
-  HIGHEST: '5',
-  HIGH: '4',
-  MEDIUM: '3',
-  LOW: '2',
-  LOWEST: '1',
+  HIGH: 'High',
+  MEDIUM: 'Medium',
+  LOW: 'Low',
 };
 
 export const IssueTypeCopy = {
@@ -33,9 +31,14 @@ export const IssueStatusCopy = {
 };
 
 export const IssuePriorityCopy = {
-  [IssuePriority.HIGHEST]: 'Highest',
   [IssuePriority.HIGH]: 'High',
   [IssuePriority.MEDIUM]: 'Medium',
   [IssuePriority.LOW]: 'Low',
-  [IssuePriority.LOWEST]: 'Lowest',
 };
+
+export const IssueCategorySortOrderPrefix = {
+  TODO: "",
+  INPROGRESS: "20",
+  REVIEW: "300",
+  DONE: "400"
+}

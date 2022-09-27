@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 import { font, sizes, color, mixin, zIndexValues } from '../shared/utils/styles';
 import { Logo } from '../shared/components';
+import {DropdownItem} from 'semantic-ui-react';
 
 export const NavLeft = styled.aside`
   z-index: ${zIndexValues.navLeft};
@@ -20,6 +21,8 @@ export const NavLeft = styled.aside`
     box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.6);
   }
 `;
+
+
 
 export const LogoLink = styled(NavLink)`
   display: block;
@@ -60,6 +63,24 @@ export const Item = styled.div`
     left: 18px;
   }
 `;
+
+export const StyledDropdownItem = styled.div`
+  position: relative;
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  padding-left: 16px;
+  transition: color 0.1s;
+  ${mixin.clickable}
+  &:hover {
+    filter: brightness(1.2) !important;
+  }
+  i {
+    position: absolute;
+    left: 18px;
+  }
+`;
+
 
 export const ItemText = styled.div`
   position: relative;

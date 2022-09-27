@@ -75,6 +75,15 @@ namespace Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("assignee_id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("first_name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("second_name")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -93,6 +102,9 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PhotoId")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("created_at")
                         .HasColumnType("TEXT");
 
@@ -103,6 +115,9 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("first_name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("id_app_user")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("id_of_direct_report")
@@ -119,7 +134,31 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PhotoId");
+
                     b.ToTable("Assignees");
+                });
+
+            modelBuilder.Entity("Domain.Invitation", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("invitation_status")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("invitee_account_email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("inviter_account_id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("project_to_collaborate_on_id")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Invites");
                 });
 
             modelBuilder.Entity("Domain.Issue", b =>
@@ -140,6 +179,9 @@ namespace Persistence.Migrations
                     b.Property<string>("description_text")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("issue_type")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("name")
                         .HasColumnType("TEXT");
 
@@ -158,6 +200,9 @@ namespace Persistence.Migrations
                     b.Property<string>("reviewer_id")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("sort_order")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("sprint_id")
                         .HasColumnType("TEXT");
 
@@ -168,6 +213,9 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<TimeSpan>("time_logged")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeSpan>("time_remaining")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("updated_at")
@@ -194,6 +242,40 @@ namespace Persistence.Migrations
                     b.HasIndex("IssueId");
 
                     b.ToTable("IssueAssignees");
+                });
+
+            modelBuilder.Entity("Domain.IssueReporter", b =>
+                {
+                    b.Property<Guid>("ReporterId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("IssueId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("isOwner")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ReporterId", "IssueId");
+
+                    b.HasIndex("IssueId");
+
+                    b.ToTable("IssueReporter");
+                });
+
+            modelBuilder.Entity("Domain.Photo", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("Domain.Project", b =>
@@ -239,6 +321,21 @@ namespace Persistence.Migrations
                     b.ToTable("Projects");
                 });
 
+            modelBuilder.Entity("Domain.ProjectAssignee", b =>
+                {
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AssigneeId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ProjectId", "AssigneeId");
+
+                    b.HasIndex("AssigneeId");
+
+                    b.ToTable("ProjectAssignees");
+                });
+
             modelBuilder.Entity("Domain.ProjectSprint", b =>
                 {
                     b.Property<Guid>("ProjectId")
@@ -277,6 +374,9 @@ namespace Persistence.Migrations
 
                     b.Property<string>("description_text")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("is_active")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("name")
                         .HasColumnType("TEXT");
@@ -444,6 +544,15 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Assignee", b =>
+                {
+                    b.HasOne("Domain.Photo", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId");
+
+                    b.Navigation("Photo");
+                });
+
             modelBuilder.Entity("Domain.IssueAssignee", b =>
                 {
                     b.HasOne("Domain.Assignee", "Assignee")
@@ -463,11 +572,49 @@ namespace Persistence.Migrations
                     b.Navigation("Issue");
                 });
 
+            modelBuilder.Entity("Domain.IssueReporter", b =>
+                {
+                    b.HasOne("Domain.Issue", "Issue")
+                        .WithMany()
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Assignee", "Reporter")
+                        .WithMany()
+                        .HasForeignKey("ReporterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Issue");
+
+                    b.Navigation("Reporter");
+                });
+
             modelBuilder.Entity("Domain.Project", b =>
                 {
                     b.HasOne("Domain.Assignee", null)
                         .WithMany("projects")
                         .HasForeignKey("AssigneeId");
+                });
+
+            modelBuilder.Entity("Domain.ProjectAssignee", b =>
+                {
+                    b.HasOne("Domain.Assignee", "Assignee")
+                        .WithMany()
+                        .HasForeignKey("AssigneeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Project", "Project")
+                        .WithMany("assignees")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assignee");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Domain.ProjectSprint", b =>
@@ -573,6 +720,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Project", b =>
                 {
+                    b.Navigation("assignees");
+
                     b.Navigation("sprints");
                 });
 

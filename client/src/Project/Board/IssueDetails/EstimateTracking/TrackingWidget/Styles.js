@@ -13,6 +13,15 @@ export const WatchIcon = styled(Icon)`
   color: ${color.textMedium};
 `;
 
+
+export const Values = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding-top: 3px;
+  ${font.size(14.5)};
+`;
+
+
 export const Right = styled.div`
   width: 90%;
 `;
@@ -29,11 +38,4 @@ export const Bar = styled.div`
   background: ${color.primary};
   transition: all 0.1s;
   width: ${props => props.width}%;
-`;
-
-export const Values = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding-top: 3px;
-  ${font.size(14.5)};
 `;

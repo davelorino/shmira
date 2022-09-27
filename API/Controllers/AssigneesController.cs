@@ -16,6 +16,7 @@ namespace API.Controllers
      public class AssigneesController : BaseApiController
     {
 
+
         [HttpGet]
         public async Task<ActionResult<List<Assignee>>> GetAssignees()
         {
@@ -28,8 +29,14 @@ namespace API.Controllers
             return await Mediator.Send(new Details.Query{Id = id});
         }
 
+        [HttpGet("app_user/{app_user_id}")]
+        public async Task<ActionResult<Assignee>> GetAssigneeByAppUserId(string app_user_id)
+        {
+            return await Mediator.Send(new FindByAppUser.Query{id = app_user_id});
+        }
+
         [HttpPost]
-        public async Task<IActionResult> CreateIssue(Assignee assignee)
+        public async Task<IActionResult> CreateAssignee(Assignee assignee)
         {
             return Ok(await Mediator.Send(new Create.Command{Assignee = assignee}));
         }

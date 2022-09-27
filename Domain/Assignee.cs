@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Domain
 {
@@ -24,6 +25,10 @@ namespace Domain
         public string id_of_direct_report { get; set; }
 
         public string image { get; set; }
+
+        public Photo Photo { get; set; }
+
+        public string id_app_user { get; set; }
 
         public ICollection<Project> projects { get; set; } = new List<Project>();
 

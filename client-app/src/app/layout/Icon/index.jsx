@@ -36,20 +36,21 @@ const fontIconCodes = {
   [`calendar`]: '\\e91d',
   [`arrow-left`]: '\\e91e',
   [`arrow-right`]: '\\e91f',
-  [`duck`]: '\\1F986'
+  [`duck`]: '\\1F986',
+  ['cartwheel']: '\\1F938'
 };
 
 const propTypes = {
   className: PropTypes.string,
   type: PropTypes.oneOf(Object.keys(fontIconCodes)).isRequired,
-  size: PropTypes.number,
+  size: PropTypes.string,
   left: PropTypes.number,
-  top: PropTypes.number,
+  top: PropTypes.number
 };
 
 const defaultProps = {
   className: undefined,
-  size: 16,
+  size: 12,
   left: 0,
   top: 0,
 };

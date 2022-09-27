@@ -9,7 +9,6 @@ namespace Application.Issues
     public class IssueDto
     {
         public Guid Id { get; set; }
-
         public string name { get; set; }
 
         public string description { get; set; }
@@ -18,11 +17,15 @@ namespace Application.Issues
 
         public string priority { get; set; }
 
+        public string issue_type { get; set; }
+
         public TimeSpan original_estimated_duration { get; set; }
 
         public TimeSpan currently_estimated_duration { get; set; }
 
         public TimeSpan time_logged { get; set; }
+
+        public TimeSpan time_remaining { get; set; }
 
         public string status { get; set; }
 
@@ -30,11 +33,13 @@ namespace Application.Issues
 
         public DateTime updated_at { get; set; }
 
-        public AssigneeDto reporter { get; set; }
+        public string reporter_id { get; set; }
 
         public AssigneeDto reviewer { get; set; }
 
         public string sprint_id { get; set; }
+
+        public int sort_order { get; set; }
 
         public List<AssigneeDto> assignees { get; set; } = new List<AssigneeDto>();
     }

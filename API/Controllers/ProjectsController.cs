@@ -24,9 +24,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Project>> GetProject(Guid id)
+        public async Task<ActionResult<Project>> GetProject(string id)
         {
-            return await Mediator.Send(new Details.Query{Id = id});
+            return HandleResult(await Mediator.Send(new Details.Query{Id = id}));
         }
 
         [HttpPost]
@@ -48,12 +48,24 @@ namespace API.Controllers
             return Ok(await Mediator.Send(new Delete.Command{Id = Id}));
         }
 
-        [HttpPut("{Id}/edit_sprints/{sprint_id}")]
-        public async Task<IActionResult> AddSprintToProject(Guid Id, Guid sprint_id)
+        [HttpPut("add_sprint_to_project")]
+        public async Task<IActionResult> AddSprintToProject(FrontEndProjectSprint project_sprint)
         {
 
-            return Ok(await Mediator.Send(new AddSprintToProject.Command{project_id = Id, 
-            sprint_id = sprint_id}));
+            return Ok(await Mediator.Send(new AddSprintToProject.Command{
+                project_id = project_sprint.project_id, 
+                sprint_name = project_sprint.sprint_name,
+                sprint_id = project_sprint.sprint_id
+                }));
+        }
+
+        [HttpPut("add_assignees_to_project")]
+        public async Task<IActionResult> AddAssigneesToProject(List<FrontEndProjectAssignee> project_assignees)
+        {
+
+            return Ok(await Mediator.Send(new AddAssigneesToProject.Command{
+                project_assignees = project_assignees
+                }));
         }
 
     }

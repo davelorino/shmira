@@ -1,174 +1,260 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Issue }from '../models/issue';
-import {Container} from 'semantic-ui-react';
+import { Container, Modal } from 'semantic-ui-react';
 import { css } from 'styled-components';
-import Icon from './Icon';
-import NormalizeStyles from './NormalizeStyles';
-import BaseStyles from './BaseStyles';
 import './fontStyles.css';
-import { NavLink } from 'react-router-dom';
-import NavbarRight from './NavbarRight';
-import Sidebar from './Sidebar';
-import useApi from '../api';
-import {v4 as uuid} from 'uuid';
-import IssueDashboard from '../features/issues/dashboard/IssuesDashboard';
-import agent from '../api/agent';
+import IssueDashboard from '../features/sprints/dashboard/IssuesDashboard';
+import SprintPage from '../features/sprints/SprintPage';
 import LoadingComponent from './LoadingComponent';
-import { is } from '../shared/utils/validation';
+import NavBarTop from './NavBarTop';
+import { useStore } from '../stores/store';
+import { observer } from 'mobx-react-lite';
+import ModalContainer from '../shared/modals/ModalContainer';
+import MediumModalContainer from '../shared/modals/MediumModalContainer';
+import SmallModalContainer from '../shared/modals/SmallModalContainer';
+import NavbarRight from './NavbarRight';
+import AboutPage from './About';
+//import AccountActivation from './AccountActivation';
+import { Route } from 'react-router-dom';
+import LoginForm from '../features/sprints/form/login/LoginForm';
+import { DragDropContext } from 'react-beautiful-dnd';
+import backgroundImage from './shmirabackground.jpeg';
+import backgroundImage2 from './shmirabackground2.jpg';
+import backgroundImage3 from './shmirabackground3.jpg';
+import ActivateAccountForm from '../features/sprints/form/login/ActivateAccountForm';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import agent from '../api/agent';
 
 function App() {
-  const [issues,setIssues] = useState<Issue[]>([]);
-  const [selectedIssue, setSelectedIssue] = useState<Issue | undefined>(undefined);
-  const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+const { issueStore, userStore, modalStore, commonStore, accountStore } = useStore();
 
-  useEffect(() => {
-    agent.Issues.list().then(response => {
-      let issues: Issue[] = [];
-       response.forEach((issue: Issue) => {
-          issue.created_at = issue.created_at.split('T')[0]
-          issues.push(issue);
-       })
-       setIssues(response);
-       setLoading(false);
-    })
-  }, [])
 
-function handleSelectIssue(id: string){
-  setSelectedIssue(issues.find(x => x.id === id));
-}
 
-function handleCancelSelectIssue(){
-  setSelectedIssue(undefined);
-}
+  const {selectedIssue, 
+         editMode, 
+         updateIssue, 
+         deleteIssue, 
+         selectedProject, 
+         selectProject,
+         allProjects,
+         allSprints,
+         issuesByDate,
+         updateIssueAndSprint
+      } = issueStore;
 
-function handleFormOpen(id?: string) {
-  id ? handleSelectIssue(id) : handleCancelSelectIssue();
-  setEditMode(true);
-}
+  const { user_logged_in } = userStore;
 
-function handleFormClose(id?: string) {
-  setEditMode(false);
-}
+      useEffect(() => {
+        accountStore.accountsLoading = true;
+        issueStore.loadProjectsInitial();
+        accountStore.loadInvites();
+        accountStore.loadAccounts();
+        issueStore.loadIssues();
+        issueStore.loadSprints();
+        userStore.loadUsers();
+      }, [])
 
-function handleCreateOrEditIssue(issue: Issue) {
-  setSubmitting(true);
-  if(issue.id) {
-    agent.Issues.update(issue).then(() => {
-      setIssues([...issues.filter(x => x.id !== issue.id), issue])
-      setSelectedIssue(issue);
-      setEditMode(false);
-      setSubmitting(false);
-    })
-  } else {
-    issue.id = uuid();
-    agent.Issues.create(issue).then(() => {
-      setIssues([...issues, issue]);
-      setSelectedIssue(issue);
-      setEditMode(false);
-      setSubmitting(false);
-    })
+      /* For reasons I dont care to learn about or explain this approach wasn't working
+      useEffect(() => {
+        accountStore.loadInvites();
+      }, [accountStore])
+
+      useEffect(() => {
+        accountStore.loadAccounts();
+      }, [accountStore])
+
+      useEffect(() => {
+          issueStore.loadIssues();
+        }, [issueStore])
+      
+        useEffect(() => {
+          issueStore.loadSprints();
+        }, [issueStore])
+      
+        useEffect(() => {
+          issueStore.loadProjectsInitial();
+        }, [issueStore])
+      
+        useEffect(() => {
+          userStore.loadUsers();
+        }, [userStore])
+        */
+
+
+
+
+
+if (accountStore.accountsLoading) return <LoadingComponent content='Loading...'/>
+
+if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.loadingInitial) return (
+  <div style={{height: '100vh',   
+  backgroundImage: `url(${backgroundImage3})`, filter: `brightness(100%)`, backgroundSize: 'cover',  
+  display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} >
+    <div className='modal' style={{//background: `transparentize('#FFFFFF', 0.8)`, 
+                  //backdropFilter: `brightness(150%)`,
+                  backgroundColor: `transparent`, 
+                  width: '40%',
+                  height: '500px',
+                  marginTop: '280px',
+                  backdropFilter: `brightness(125%) saturate(150%) blur(10px)`}} 
+                  
+          >
+      {/*<Modal.Content style={{backgroundColor: 'transparent',  background: 'none'}} >*/}
+      <div className='modal-content'>
+        <Route exact path='/' component={LoginForm}  />
+        <Route path='/sprints' component={LoginForm} />
+        <Route path='/login' component={LoginForm} />
+        <Route path='/invite' component={LoginForm} />
+        <Route path='/activate' component={ActivateAccountForm} />
+      </div>
+      {/*</Modal.Content>*/}
+    </div>
+  </div>
+  )
+  else if(!accountStore.accountsLoading && !issueStore.loadingInitial){
+    return (
+      <div>
+
+      {
+        <div>
+      <ModalContainer />
+      <SmallModalContainer />
+      <MediumModalContainer />
+      <NavBarTop />
+      <NavbarRight />
+
+      <Container style={{marginTop: '7em'}}>
+
+        <Route exact path='/' component={IssueDashboard} />
+        
+        {/*<Route path='/activate' component={AccountActivation} />*/}
+        <Route path='/sprints' component={SprintPage} />
+        <Route path='/about' component={AboutPage} />
+
+
+    </Container>
+
+    
+      </div>
+      }
+      {
+        
+        <ToastContainer
+        position="bottom-right"
+        theme='dark'
+        autoClose={false}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+        
+      }
+     
+      
+      </div>
+    );
   }
+    return (<></>)
 }
 
-function handleDeleteIssue(id: string) {
-  setSubmitting(true);
-  agent.Issues.delete(id).then(() => {
-    setIssues([...issues.filter(x => x.id !== id)]);
-    setSubmitting(false);
-  })
-  setIssues([...issues.filter(x => x.id !== id)]);
-}
+export default observer(App);
 
-  //const [{ data, error, setLocalData }, fetchProject] = useApi.get('/project');
 
-  //if (!data) return <PageLoader />;
-  //if (error) return <PageError />;
 
-  //const { project } = data;
 
-  //const updateLocalProjectIssues = (issueId, updatedFields) => {
-   // setLocalData(currentData => ({
-   //   project: {
-   //     ...currentData.project,
-   //     issues: updateArrayItemById(currentData.project.issues, issueId, updatedFields),
-   //   },
-   // }));
-  //};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const font = {
-    regular: 'font-family: "CircularStdBook"; font-weight: normal;',
-    medium: 'font-family: "CircularStdMedium"; font-weight: normal;',
-    bold: 'font-family: "CircularStdBold"; font-weight: normal;',
-    black: 'font-family: "CircularStdBlack"; font-weight: normal;',
-    size: (size: any) => `font-size: ${size}px;`,
-  };
+  regular: 'font-family: "CircularStdBook"; font-weight: normal;',
+  medium: 'font-family: "CircularStdMedium"; font-weight: normal;',
+  bold: 'font-family: "CircularStdBold"; font-weight: normal;',
+  black: 'font-family: "CircularStdBlack"; font-weight: normal;',
+  size: (size: any) => `font-size: ${size}px;`,
+};
 
 const Bottom = styled.div`
-  position: absolute;
-  bottom: 20px;
-  left: 0;
-  width: 100%;
+position: absolute;
+bottom: 20px;
+left: 0;
+width: 100%;
 `;
 
 
 const color = {
-  primary: '#0052cc', // Blue
-  success: '#0B875B', // green
-  danger: '#E13C3C', // red
-  warning: '#F89C1C', // orange
-  secondary: '#F4F5F7', // light grey
+primary: '#0052cc', // Blue
+success: '#0B875B', // green
+danger: '#E13C3C', // red
+warning: '#F89C1C', // orange
+secondary: '#F4F5F7', // light grey
 
-  textDarkest: '#172b4d',
-  textDark: '#42526E',
-  textMedium: '#5E6C84',
-  textLight: '#8993a4',
-  textLink: '#0052cc',
+textDarkest: '#172b4d',
+textDark: '#42526E',
+textMedium: '#5E6C84',
+textLight: '#8993a4',
+textLink: '#0052cc',
 
-  backgroundDarkPrimary: '#0747A6',
-  backgroundMedium: '#dfe1e6',
-  backgroundLight: '#ebecf0',
-  backgroundLightest: '#F4F5F7',
-  backgroundLightPrimary: '#D2E5FE',
-  backgroundLightSuccess: '#E4FCEF',
+backgroundDarkPrimary: '#0747A6',
+backgroundMedium: '#dfe1e6',
+backgroundLight: '#ebecf0',
+backgroundLightest: '#F4F5F7',
+backgroundLightPrimary: '#D2E5FE',
+backgroundLightSuccess: '#E4FCEF',
 
-  borderLightest: '#dfe1e6',
-  borderLight: '#C1C7D0',
-  borderInputFocus: '#4c9aff',
+borderLightest: '#dfe1e6',
+borderLight: '#C1C7D0',
+borderInputFocus: '#4c9aff',
 }
 
 const sizes = {
-  appNavBarLeftWidth: 64,
-  secondarySideBarWidth: 230,
-  minViewportWidth: 1000,
+appNavBarLeftWidth: 64,
+secondarySideBarWidth: 230,
+minViewportWidth: 1000,
 }
 
 const zIndexValues = {
-  modal: 1000,
-  dropdown: 101,
-  navLeft: 100,
+modal: 1000,
+dropdown: 101,
+navLeft: 100,
 }
 
 
 const mixin = {
 
-  hardwareAccelerate: css`
-    transform: translateZ(0);
-  `,
-  cover: css`
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-  `,
-    clickable: css`
-    cursor: pointer;
-    user-select: none;
-  `
+hardwareAccelerate: css`
+  transform: translateZ(0);
+`,
+cover: css`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+`,
+  clickable: css`
+  cursor: pointer;
+  user-select: none;
+`
 }
 
 const NavLeft = styled.aside`
@@ -183,68 +269,41 @@ background: ${color.backgroundDarkPrimary};
 transition: all 0.1s;
 ${mixin.hardwareAccelerate}
 &:hover {
-  width: 200px;
-  box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.6);
+width: 200px;
+box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.6);
 }
 `
 const Item = styled.div`
-  position: relative;
-  width: 100%;
-  height: 42px;
-  line-height: 42px;
-  padding-left: 64px;
-  color: #deebff;
-  transition: color 0.1s;
-  ${mixin.clickable}
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  i {
-    position: absolute;
-    left: 18px;
-  }
+position: relative;
+width: 100%;
+height: 42px;
+line-height: 42px;
+padding-left: 64px;
+color: #deebff;
+transition: color 0.1s;
+${mixin.clickable}
+&:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+i {
+  position: absolute;
+  left: 18px;
+}
 `;
 
 const ItemText = styled.div`
-  position: relative;
-  right: 12px;
-  visibility: hidden;
-  opacity: 0;
-  text-transform: uppercase;
-  transition: all 0.1s;
-  transition-property: right, visibility, opacity;
-  ${font.bold}
-  ${font.size(12)}
-  ${NavLeft}:hover & {
-    right: 0;
-    visibility: visible;
-    opacity: 1;
-  }
-`;
-
-if (loading) return <LoadingComponent content='Loading...'/>
-
-  return (
-    <div >
-
-    <NavbarRight openForm={handleFormOpen}/>
-    <Container style={{marginTop: '7em'}}>
-        <IssueDashboard 
-        issues={issues}
-        selectedIssue={selectedIssue}
-        selectIssue={handleSelectIssue}
-        cancelSelectIssue={handleCancelSelectIssue}
-        editMode={editMode}
-        openForm={handleFormOpen}
-        closeForm={handleFormClose}
-        createOrEdit={handleCreateOrEditIssue}
-        deleteIssue={handleDeleteIssue}
-        submitting={submitting}
-
-        />
-    </Container>
-    </div>
-  );
+position: relative;
+right: 12px;
+visibility: hidden;
+opacity: 0;
+text-transform: uppercase;
+transition: all 0.1s;
+transition-property: right, visibility, opacity;
+${font.bold}
+${font.size(12)}
+${NavLeft}:hover & {
+  right: 0;
+  visibility: visible;
+  opacity: 1;
 }
-
-export default App;
+`;

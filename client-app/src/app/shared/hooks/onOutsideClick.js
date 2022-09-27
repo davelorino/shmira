@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import useDeepCompareMemoize from '../hooks/deepCompareMemoize';
+import useDeepCompareMemoize from 'shared/hooks/deepCompareMemoize';
 
 const useOnOutsideClick = (
   $ignoredElementRefs,

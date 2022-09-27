@@ -23,7 +23,11 @@ namespace Domain
 
         public TimeSpan time_logged { get; set; }
 
+        public TimeSpan time_remaining { get; set; }
+
         public string status { get; set; }
+
+        public string issue_type { get; set; }
 
         public DateTime created_at { get; set; }
 
@@ -38,6 +42,8 @@ namespace Domain
         public string reviewer_id { get; set; }
 
         public string sprint_id { get; set; }
+
+        public int sort_order { get; set; }
 
         public ICollection<IssueAssignee> assignees { get; set; } = new List<IssueAssignee>();
 
