@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, List,  } from 'semantic-ui-react';
-import IssueList from './IssueList';
-import SprintList from './SprintList';
-import { Issue } from '../../../models/issue';
-import { Sprint } from '../../../models/sprint';
-import LoadingComponent from '../../../layout/LoadingComponent';
 import IssueForm from '../form/CreateIssueForm';
-import { Project } from '../../../models/project';
 import {useStore} from '../../../stores/store';
 import {observer} from 'mobx-react-lite';
 import IssueLists from '../../../layout/Lists/IssueLists';
 import IssueListsNoActiveSprint from '../../../layout/Lists/IssueListsNoActiveSprint';
 import {DragDropContext, DropResult} from 'react-beautiful-dnd';
 import Filters from './Filters/Filters';
-import LoginForm from '../form/login/LoginForm';
-import { toast } from 'react-toastify';
-import _ from 'lodash';
+import _, { concat } from 'lodash';
+import moment from 'moment';
 
 
 
@@ -49,6 +41,10 @@ export default observer(function IssuesDashboard() {
     };
 
 
+    const getDaysRemaining = () => {
+        var date_end = moment(selectedProject!.sprints.find(sprint => sprint.is_active)!.date_end);
+        return concat(moment(date_end).diff(moment(), 'days').toString(), " days remaining");
+    }
 
     const handleIssueDrop = ({destination, source, draggableId}: DropResult) => {
         if (!isPositionChanged(source, destination)) return;
@@ -67,6 +63,8 @@ export default observer(function IssuesDashboard() {
 
         var issueToUpdate = issuesByDate.find(issue => issue.id.toLowerCase() === issue_id.toLowerCase());
 
+        var source_status_name = issueToUpdate!.status;
+
         var number_of_todo = 0;
         var number_of_inprogress = 0;
         var number_of_review = 0;
@@ -76,16 +74,17 @@ export default observer(function IssuesDashboard() {
             number_of_inprogress = sprint.issues.filter(issue => issue.status == "In Progress").length;
             number_of_review = sprint.issues.filter(issue => issue.status == "Review").length;
 
-            if(number_of_todo > 0){
+            if(number_of_todo > 0 && issueToUpdate!.status == "To Do"){
                 number_of_todo = number_of_todo - 1;
             }
-            if(number_of_inprogress > 0){
+            if(number_of_inprogress > 0 && issueToUpdate!.status == "In Progress"){
                 number_of_inprogress = number_of_inprogress - 1;
             }
-            if(number_of_review > 0){
+            if(number_of_review > 0 && issueToUpdate!.status == "Review"){
                 number_of_review = number_of_review - 1;
             }
         })
+
         
         
         issueToUpdate!.status = destination_status_name;
@@ -99,7 +98,16 @@ export default observer(function IssuesDashboard() {
             issueToUpdate!.sort_order = parseInt('300'.concat((destination!.index + number_of_todo + number_of_inprogress).toString()));
         }
         if(issueToUpdate!.status == "Done"){
-            issueToUpdate!.sort_order = parseInt('4000'.concat((destination!.index + number_of_todo + number_of_inprogress + number_of_review).toString()))
+            if(source_status_name == "Done"){
+                if(destination!.index > source.index){
+                    issueToUpdate!.sort_order = parseInt('4000'.concat((destination!.index + number_of_todo + number_of_inprogress + number_of_review).toString())) + 1;
+                } else {
+                    issueToUpdate!.sort_order = parseInt('4000'.concat((destination!.index + number_of_todo + number_of_inprogress + number_of_review).toString()));
+                }
+            } else {
+                issueToUpdate!.sort_order = parseInt('4000'.concat((destination!.index + number_of_todo + number_of_inprogress + number_of_review).toString())) + 1;
+            }
+            
         }
 
         var issuesToUpdate: any[] = [];
@@ -169,7 +177,7 @@ export default observer(function IssuesDashboard() {
         })        
 
         if(destination_sprint_name === source_sprint_name){
-            updateIssues(issuesToUpdate);
+            issueStore.updateIssues(issuesToUpdate);
         } else {
             updateIssueAndSprint(
                 source_sprint_id,
@@ -181,6 +189,9 @@ export default observer(function IssuesDashboard() {
         }
     
       };
+
+
+
 
 
 
@@ -200,7 +211,8 @@ export default observer(function IssuesDashboard() {
 
 
                     <div key={sprint.id}>
-                    <div style={{display: 'inline-block'}}> {sprint.name}</div> <div style ={{fontSize: '11px', paddingLeft: '20px', display: 'inline-block', color: "grey"}}>{sprint.date_start.substr(0, 10)} - {sprint.date_end.substr(0, 10)}</div>
+                    <div style={{marginLeft: '10px', display: 'inline-block'}}> {sprint.name}</div> <div style ={{fontSize: '13px', paddingLeft: '20px', display: 'inline-block', color: "grey"}}>{moment(sprint.date_start.substr(0, 10)).format("MMM Do")} - {moment(sprint.date_end.substr(0, 10)).format("MMM Do") }</div>
+                    <div style={{marginRight: '20px', display: 'inline-block', float: 'right', fontSize: '13px', color: 'grey'}}>{getDaysRemaining()}</div>
                     <IssueLists sprint={sprint} key={sprint.id}/>
                     </div>
            

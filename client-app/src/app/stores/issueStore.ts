@@ -10,12 +10,14 @@ import { IssueAssignee } from '../models/issueAssignee';
 import { store } from './store';
 import agent from '../api/agent';
 import {v4 as uuid} from 'uuid';
+import moment from 'moment-timezone';
 
 
 export default class IssueStore {
     projectRegistry = new Map<string, Project>();
     sprintRegistry = new Map<string, Sprint>();
     issueRegistry = new Map<string, Issue>();
+    issueRegistry2 = new Map<string, Issue>();
     relevant_sprints = new Map<string, Sprint>();
     selectedProject: Project | undefined = undefined;
     filteredProject: any = undefined;
@@ -36,6 +38,10 @@ export default class IssueStore {
 
     get issuesByDate() {
         return Array.from(this.issueRegistry.values())
+    }
+
+    get allIssues() {
+        return Array.from(this.issueRegistry2.values())
     }
 
     get allProjects() {
@@ -109,20 +115,15 @@ export default class IssueStore {
     }
 
     loadProject = async (id: string) => {
+        console.log("Begin load project");
+        console.log(moment());
         try {
             const project = await agent.Projects.details(id);
             runInAction(() => {
                 this.projectRegistry.set(project.id, project);
-                project.sprints.map((sprint: any) => {
-                    if(sprint.is_active){
-                        sprint.issues.map((issue: any) => {
-                            console.log("Loaded sort order");
-                            console.log(issue.name);
-                            console.log(issue.sort_order);
-                        })
-                    }
-                })
-                //this.setLoadingInitial(false);
+                console.log("End load project");
+                console.log(moment());
+               //this.setLoadingInitial(false);
             })
         } catch (error) {
             console.log(error);
@@ -185,10 +186,6 @@ export default class IssueStore {
     filterProject = async () => {
         await this.loadProject(this.selectedProject!.id);
         runInAction(() => {
-            console.log("Search filter =");
-            console.log(this.searchFilter);
-            console.log("Search filter length =");
-            console.log(this.searchFilter.length);
             if(this.activeUsers.length > 0){
                 var project_id = this.selectedProject!.id;
                 var current_project = this.projectRegistry.get(project_id);
@@ -229,7 +226,6 @@ export default class IssueStore {
                     this.selectedProject = this.tempProject;
         }
         else if(this.searchFilter.length > 0){
-            console.log("Search filter length is greater than zero");
             var project_id = this.selectedProject!.id;
             var current_project = this.projectRegistry.get(project_id);
             this.tempProject = current_project;
@@ -302,6 +298,7 @@ export default class IssueStore {
             if(this.selectedProject !== undefined){
                 window.localStorage.setItem('selected_project_id', this.selectedProject.id);
                 this.updateRelevantSprints(this.selectedProject!);
+                //this.loadRelevantIssues(this.selectedProject);
             }  
         })
     }
@@ -352,22 +349,6 @@ export default class IssueStore {
         })
     }
 
-    refreshProjectStateCloseModal = async () => {
-        try {
-            await this.loadProjects();
-            runInAction(() => {
-                var project_id = this.selectedProject!.id;
-                var current_project = this.projectRegistry.get(project_id);
-                this.tempProject = current_project;
-                this.selectedProject! = this.tempProject;
-                store.modalStore.closeModal();
-            })
-        } catch (error) {
-            console.log(error);
-        }
-    }
-   
-
     createIssue = async (issue: Issue, sprint_id: string, sprint_issue: SprintIssue, issue_assignees: IssueAssignee[]) => {
         this.loading = true;
         try {
@@ -402,62 +383,15 @@ export default class IssueStore {
         }
     }
 
-    createIssueFrontEnd = (issue: Issue, sprint_id: string) => {
-        var project_id = this.selectedProject!.name;
-        this.loadProjects();
-        var current_project = this.projectRegistry.get(project_id);
-
-        this.tempProject = current_project;
-        this.selectedProject! = this.tempProject;
-
-        var sprints: Sprint[] = [];
-        current_project!.sprints.map(sprint => {
-            if(sprint.id.toLowerCase() === sprint_id.toLowerCase()){
-                sprint.issues.push(issue);
-            }
-            sprints.push(sprint);
-        })
-        this.tempProject.sprints = sprints;
-        this.selectedProject! = this.tempProject;
-    }
-
-    removeAssigneeFromIssueFrontend = async (sprint_id: string, assignee_id: string) => {
-        var project_id = this.selectedProject!.id;
-        await this.loadProjects();
-        runInAction(() => { 
-        
-            var current_project = this.projectRegistry.get(project_id);
-            this.tempProject = current_project;
-            this.selectedProject! = this.tempProject;
-
-            var sprints: Sprint[] = [];
-            current_project!.sprints.map(sprint => {
-                var issues: Issue[] = [];
-                if(sprint.id === sprint_id){
-                    sprint.issues.map(issue => {
-                        if(issue.id.toLowerCase() === this.selectedIssue!.id.toLowerCase()){
-                            var assignees: Assignee[] = [];
-                            issue.assignees.map(assignee => {
-                                if(assignee.id.toLowerCase() !== assignee_id.toLowerCase()){
-                                    assignees.push(assignee);
-                                }
-                            })
-                            issue.assignees = assignees;
-                        }
-                        issues.push(issue);
-                    })
-                    sprint.issues = issues;
-                }
-                sprints.push(sprint);
-            })
-            this.tempProject!.sprints = sprints;
-            this.selectedProject! = this.tempProject;
-        })
-    }
-
     removeAssigneeFromIssue = async (issue_assignee: IssueAssignee) => {
         this.loading = true;
+        var issue_to_update: any = {
+            ...this.issuesByDate.find(issue => issue.id === issue_assignee.IssueId)!
+        }
+        delete issue_to_update['assignees'];
+        issue_to_update.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true)
         try {
+            await agent.Issues.update(issue_to_update);
             await agent.Issues.removeAssigneeFromIssue(issue_assignee);
             await this.loadProjects();
             await this.loadIssues();
@@ -479,7 +413,13 @@ export default class IssueStore {
 
     addAssigneeToIssue = async (issue_assignee: IssueAssignee) => {
         this.loading = true;
+        var issue_to_update: any = {
+            ...this.issuesByDate.find(issue => issue.id === issue_assignee.IssueId)!
+        }
+        delete issue_to_update['assignees'];
+        issue_to_update.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true)
         try {
+            await agent.Issues.update(issue_to_update);
             await agent.Issues.addAssigneeToIssue(issue_assignee);
             await this.loadProjects();
             await this.loadIssues();
@@ -575,11 +515,10 @@ export default class IssueStore {
     ) => {
         this.loading = true;
         var issue_to_send: any = {
-            ...issue
+            ...issue,
+            updated_at: moment.tz(moment(), 'Australia/Sydney').toISOString(true),
         }
         delete issue_to_send['assignees'];
-        delete issue_to_send['created_at'];
-        delete issue_to_send['updated_at'];
         var issue_to_update: any = {
             issue: issue_to_send,
             source_sprint_id: source_sprint_id,
@@ -643,7 +582,8 @@ export default class IssueStore {
     updateIssue = async (issue: Issue) => {
         this.loading = true;
         var issueToSend: any = {
-            ...issue
+            ...issue,
+            updated_at: moment.tz(moment(), 'Australia/Sydney').toISOString(true)
         }
         delete issueToSend['assignees'];
         try {
@@ -664,19 +604,25 @@ export default class IssueStore {
         }
     }
 
+
     updateIssues = async (issuesToSend: any[]) => {
         this.loading = true;
-        console.log("issuesToSend =");
-        console.log(issuesToSend);
         try {
-            await agent.Issues.updateMultiple(issuesToSend);
-            await this.loadProject(this.selectedProject!.id);
+            var project_returned = await agent.Issues.updateMultiple(issuesToSend, this.selectedProject!.id);
+            this.projectRegistry.set(project_returned.id, project_returned);
+            //await this.loadProject(this.selectedProject!.id);
             runInAction(() => {
+                console.log("Project returned =");
+                console.log(project_returned);
+                
                 var project_id = this.selectedProject!.id;
                 var current_project = this.projectRegistry.get(project_id);
                 this.tempProject = current_project;
                 this.selectedProject! = this.tempProject;
+                
                 this.loading = false;
+                console.log("End");
+                console.log(moment());
             })
         } catch (error) {
             console.log(error);

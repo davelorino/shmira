@@ -16,7 +16,7 @@ const sleep = (delay: number) => {
     })
 }
 
-axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 axios.interceptors.request.use(config => {
     const token = store.commonStore.token;
@@ -25,8 +25,8 @@ axios.interceptors.request.use(config => {
  })
 
 axios.interceptors.response.use(async response => {
+    if(process.env.NODE_ENV === 'development') await sleep(1000);
     try {
-        await sleep(1000);
         return response;
     } catch (error) {
         console.log(error);
@@ -48,7 +48,7 @@ const Issues = {
     details: (id: string) => requests.get<Issue>(`/issues/${id}`),
     create: (issue: Issue) => requests.post<Issue>(`/issues`, issue),
     update: (issue: Issue) => requests.put(`issues/${issue.id}`, issue),
-    updateMultiple: (issues: Issue[]) => requests.put(`issues/update_multiple`, issues),
+    updateMultiple: (issues: Issue[], project_id: string) => requests.post(`issues/update_multiple/${project_id}`, issues),
     delete: (id: string) => requests.del(`issues/${id}`),
     addAssigneesToIssue: (issue_assignees: any) => requests.put(`issues/add_assignees_to_issue`, issue_assignees),
     addAssigneeToIssue: (issue_assignee: any) => requests.put(`issues/add_assignee_to_issue`, issue_assignee),

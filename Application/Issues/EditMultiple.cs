@@ -6,35 +6,54 @@ using Domain;
 using MediatR;
 using Persistence;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper.QueryableExtensions;
+using Application.Projects;
+using Application.Core;
 
 namespace Application.Issues
 {
     public class EditMultiple
     {
-        public class Command : IRequest
+        public class Command : IRequest<ProjectDto>
         {
         public List<Issue> Issues { get; set; }
+
+        public string Id { get; set; }
+
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, ProjectDto>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
-            public Handler(DataContext context, IMapper mapper)
+            public Handler(DataContext context, IMapper AutoMapper)
             {
                 _context = context;
-                _mapper = mapper;
+                _mapper = AutoMapper;
             }
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<ProjectDto> Handle(Command request, CancellationToken cancellationToken)
             {
-                    
+                    var all_issues = await _context.Issues.ToListAsync();
                     foreach(var current_issue in request.Issues){
-                        var issue = await _context.Issues.FindAsync(current_issue.Id);
+                        var issue = all_issues.Find(i => i.Id == current_issue.Id);
                         _mapper.Map(current_issue, issue);
-                        await _context.SaveChangesAsync();
                     }
+                    await _context.SaveChangesAsync();
 
-                    return Unit.Value;
+                    Console.WriteLine("The request id is");
+                    Console.WriteLine(request.Id);
+
+                    var project = await _context.Projects
+                    .ProjectTo<ProjectDto>(_mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync(x => x.Id == request.Id);
+
+                    Console.WriteLine("Project Id found =");
+                    Console.WriteLine(project.Id);
+
+                    return project;
+
+                    //return Unit.Value;
             }
         }
     }

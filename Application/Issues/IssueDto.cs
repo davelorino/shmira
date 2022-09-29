@@ -39,6 +39,8 @@ namespace Application.Issues
 
         public string sprint_id { get; set; }
 
+        public string project_id { get; set; }
+
         public int sort_order { get; set; }
 
         public List<AssigneeDto> assignees { get; set; } = new List<AssigneeDto>();

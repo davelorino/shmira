@@ -84,14 +84,6 @@ export default observer(function AddDatesToSprintForm() {
     }
 
     function handleAddSprintDates() {
-        console.log("Sprint Name:");
-        console.log(sprint_name);
-        console.log("Sprint Description:");
-        console.log(sprint_description);
-        console.log("Sprint Start Date:");
-        console.log(sprint_start_date);
-        console.log("Sprint End Date:");
-        console.log(sprint_end_date);
 
         var current_sprint: Partial<Sprint> = {
             ...selectedSprint!

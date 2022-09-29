@@ -30,10 +30,6 @@ namespace Application.Issues
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                //var user = await _context.Assignees.FirstOrDefaultAsync(x => 
-                //x.email == _userAccessor.GetEmail());
-
-                //request.Issue.assignees.Add(user);
 
                 _context.Issues.Add(request.Issue);
 

@@ -4,6 +4,7 @@ import { Container, Modal } from 'semantic-ui-react';
 import { css } from 'styled-components';
 import './fontStyles.css';
 import IssueDashboard from '../features/sprints/dashboard/IssuesDashboard';
+import InsightsDashboard from '../features/sprints/dashboard/InsightsDashboard';
 import SprintPage from '../features/sprints/SprintPage';
 import LoadingComponent from './LoadingComponent';
 import NavBarTop from './NavBarTop';
@@ -25,6 +26,7 @@ import ActivateAccountForm from '../features/sprints/form/login/ActivateAccountF
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import agent from '../api/agent';
+import Darkreader from 'react-darkreader';
 
 function App() {
 const { issueStore, userStore, modalStore, commonStore, accountStore } = useStore();
@@ -55,42 +57,14 @@ const { issueStore, userStore, modalStore, commonStore, accountStore } = useStor
         userStore.loadUsers();
       }, [])
 
-      /* For reasons I dont care to learn about or explain this approach wasn't working
-      useEffect(() => {
-        accountStore.loadInvites();
-      }, [accountStore])
 
-      useEffect(() => {
-        accountStore.loadAccounts();
-      }, [accountStore])
-
-      useEffect(() => {
-          issueStore.loadIssues();
-        }, [issueStore])
-      
-        useEffect(() => {
-          issueStore.loadSprints();
-        }, [issueStore])
-      
-        useEffect(() => {
-          issueStore.loadProjectsInitial();
-        }, [issueStore])
-      
-        useEffect(() => {
-          userStore.loadUsers();
-        }, [userStore])
-        */
-
-
-
-
-
-if (accountStore.accountsLoading) return <LoadingComponent content='Loading...'/>
+if (accountStore.accountsLoading) return <><Darkreader /> <LoadingComponent content='Loading...'/></>
 
 if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.loadingInitial) return (
   <div style={{height: '100vh',   
   backgroundImage: `url(${backgroundImage3})`, filter: `brightness(100%)`, backgroundSize: 'cover',  
   display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} >
+    <Darkreader />
     <div className='modal' style={{//background: `transparentize('#FFFFFF', 0.8)`, 
                   //backdropFilter: `brightness(150%)`,
                   backgroundColor: `transparent`, 
@@ -106,6 +80,7 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
         <Route path='/sprints' component={LoginForm} />
         <Route path='/login' component={LoginForm} />
         <Route path='/invite' component={LoginForm} />
+        <Route path='/insights' component={LoginForm} />
         <Route path='/activate' component={ActivateAccountForm} />
       </div>
       {/*</Modal.Content>*/}
@@ -115,7 +90,7 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
   else if(!accountStore.accountsLoading && !issueStore.loadingInitial){
     return (
       <div>
-
+        <Darkreader />
       {
         <div>
       <ModalContainer />
@@ -127,7 +102,7 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
       <Container style={{marginTop: '7em'}}>
 
         <Route exact path='/' component={IssueDashboard} />
-        
+        <Route path='/insights' component={InsightsDashboard} />
         {/*<Route path='/activate' component={AccountActivation} />*/}
         <Route path='/sprints' component={SprintPage} />
         <Route path='/about' component={AboutPage} />
@@ -159,7 +134,7 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
       </div>
     );
   }
-    return (<></>)
+    return (<><Darkreader /></>)
 }
 
 export default observer(App);

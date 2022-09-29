@@ -14,6 +14,7 @@ import { useStore } from '../stores/store';
 import IssueForm from '../features/sprints/form/CreateIssueForm';
 import SprintForm from '../features/sprints/form/SprintForm';
 import PeopleForm from '../features/sprints/form/PeopleForm';
+import EditProjectForm from '../features/sprints/form/EditProjectForm';
 import NewUserForm from '../features/sprints/form/CreatePeopleForm';
 import { observer } from 'mobx-react-lite';
 
@@ -22,7 +23,7 @@ import { observer } from 'mobx-react-lite';
 
 export default observer(function NavbarRight() {
 
-  const {issueStore, modalStore} = useStore();
+  const {issueStore, mediumModalStore} = useStore();
   const history = useHistory();
 
   var [openPeopleAccordion, setPeopleAccordion] = useState(false);
@@ -185,7 +186,7 @@ export default observer(function NavbarRight() {
       <Icon type="calendar" size={18} top={0} left={3} />
       <ItemText>Sprint</ItemText>
     </Item>
-    <Item onClick={() => modalStore.openModal(<PeopleForm />)} >
+    <Item onClick={() => mediumModalStore.openMediumModal(<EditProjectForm />)} >
       <Icon type="settings" size={18} top={0} left={3} />
       <ItemText>Project</ItemText>
     </Item>

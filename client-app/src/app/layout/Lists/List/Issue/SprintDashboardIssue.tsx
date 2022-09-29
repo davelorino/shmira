@@ -54,8 +54,8 @@ export default observer(function SprintBoardListIssue({ issue, index }: Props) {
               onClick={() => {issueStore.selectIssue(issue.id); console.log("This is the issue ="); console.log(issue); modalStore.openModal(<NewUpdateIssueForm />)} }
               >
               <IssueCardSprintVersion isBeingDragged={snapshot.isDragging && !snapshot.isDropAnimating} style={{overflow: "hidden"}} >
-                <div style={{display: 'inline-block'}}> {renderSelectedIssueType(issue)} </div>
-                <div style={{display: "inline-block", float: "left", clear: "both"}}></div>
+                <div style={{bottom: '6px', display: 'inline-block'}}> {renderSelectedIssueType(issue)} </div>
+                <div style={{top: '2px', display: "inline-block", float: "left", clear: "both"}}></div>
                   <IssuePriorityIcon priority={issue.priority}></IssuePriorityIcon>
                 <div style={{position: 'relative', top: '50%', transform: 'translateY(-50%)', display:  "inline-block", paddingLeft: '5px', clear: "both"}}> <TitleSprintVersion>{issue.name}</TitleSprintVersion></div>
                

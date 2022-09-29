@@ -34,6 +34,7 @@ export default observer(function ProjectBoardLists({sprint}: Props) {
         {sprint_status.map(status => (
           <List
             key={status}
+            sprint_id={sprint.id}
             project={selectedProject!}
             issues={sprint.issues.filter(issue => issue.status === status.substring(0, status.indexOf('-')))}
             status={status}

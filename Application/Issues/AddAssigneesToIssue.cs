@@ -35,41 +35,30 @@ namespace Application.Issues
             {
                     
                     
-                    foreach(var issue_assignee in request.issue_assignees){
-                        Console.WriteLine("Current IssueId =");
-                        Console.WriteLine(issue_assignee.IssueId);
-                        Console.WriteLine("Current Assignee =");
-                        Console.WriteLine(issue_assignee.AssigneeId);
+                foreach(var issue_assignee in request.issue_assignees){
 
-                        var issue = await _context.Issues
-                            .Include(a => a.assignees)
-                            .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == issue_assignee.IssueId.ToString().ToLower());
+                    var issue = await _context.Issues
+                        .Include(a => a.assignees)
+                        .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == issue_assignee.IssueId.ToString().ToLower());
 
-                        Console.WriteLine("Found issue =");
-                        Console.WriteLine(issue.Id);
-                        
-                        var assignee = await _context.Assignees
-                            .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == issue_assignee.AssigneeId.ToString().ToLower());
+                    var assignee = await _context.Assignees
+                        .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == issue_assignee.AssigneeId.ToString().ToLower());
 
-                        Console.WriteLine("Found assignee =");
-                        Console.WriteLine(assignee.Id);
-                        
-                        var already_assigned = issue.assignees.FirstOrDefault(x => x.AssigneeId.ToString().ToLower() == assignee.Id.ToString().ToLower());
+                    var already_assigned = issue.assignees.FirstOrDefault(x => x.AssigneeId.ToString().ToLower() == assignee.Id.ToString().ToLower());
 
-                        if(already_assigned == null){
-                             var the_issue_assignee_to_add = new IssueAssignee
-                            {
-                                Issue = issue,
-                                Assignee = assignee
-                            };
-                            issue.assignees.Add(the_issue_assignee_to_add);
-                        }
+                    if(already_assigned == null){
+                            var the_issue_assignee_to_add = new IssueAssignee
+                        {
+                            Issue = issue,
+                            Assignee = assignee
+                        };
+                        issue.assignees.Add(the_issue_assignee_to_add);
                     }
+                }
 
+                var result = await _context.SaveChangesAsync() > 0;
 
-                     var result = await _context.SaveChangesAsync() > 0;
-
-                    return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem adding assignees to issue.");
+                return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem adding assignees to issue.");
                   
 
             }

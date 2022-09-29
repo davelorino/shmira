@@ -14,7 +14,7 @@ import SprintForm from './form/SprintForm';
 import AddDatesToSprintForm from './form/AddDatesToSprintForm';
 import ConfirmCloseSprintForm from './form/ConfirmCloseSprintForm';
 import NewCreateIssueForm from './form/NewCreateIssueForm';
-
+import moment from 'moment';
 
 interface Props {
     sprint: Sprint;
@@ -152,7 +152,11 @@ export default observer(function SprintSectionContainer({ sprint }: Props) {
                             {sprint.date_start.toString().substr(0, 4) !== "0001" && sprint.name !== "Backlog" &&
                             <>
                             <BetterIcon style={{bottom: '0px', position: 'relative'}} top='0' size='11' code='\1F58B' /* pencil icon */ />
-                            <div onClick={() => { issueStore.selectSprint(sprint.id); modalStore.openModal(<AddDatesToSprintForm />)}} style={{fontSize: '12px', display: 'inline-block', paddingLeft: '22px'}}>{sprint.date_start.substr(0, 10) } - {sprint.date_end.substr(0,10)} </div>
+                            <div onClick={() => { issueStore.selectSprint(sprint.id); modalStore.openModal(<AddDatesToSprintForm />)}} 
+                                 style={{fontSize: '12px', display: 'inline-block', paddingLeft: '22px'}}
+                                 >
+                                {moment(sprint.date_start.substr(0, 10)).format("MMM Do") } - {moment(sprint.date_end.substr(0,10)).format("MMM Do")} 
+                            </div>
                             {
                                 sprint.is_active === true &&
                                 <div style={{fontSize: '12px', display: 'inline-block', paddingLeft: '15px'}}>Active Sprint</div>

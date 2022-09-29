@@ -16,6 +16,7 @@ import IssuePriorityIcon from '../../../layout/IssuePriorityIcon';
 import {StyledLabel} from './Styles';
 import {HoverDiv} from './Styles';
 import { v4 as uuid } from 'uuid';
+import moment from 'moment-timezone';
 
 export default observer(function NewCreateIssueForm() {
 
@@ -317,9 +318,10 @@ export default observer(function NewCreateIssueForm() {
             status: selectedIssueStatus,
             reporter_id: selectedReporter,
             issue_type: selectedIssueType,
-
+            project_id: selectedProject!.id,
             assignees: [],
-            created_at: new Date(),
+            created_at: moment.tz(moment(), 'Australia/Sydney').toISOString(true),
+            updated_at: moment.tz(moment(), 'Australia/Sydney').toISOString(true),
             description_text: '',
             time_logged: calculateIssueTimespan(selectedIssueLoggedDays, selectedIssueLoggedHours, selectedIssueLoggedMinutes),
             time_remaining: calculateIssueTimespan(selectedIssueRemainingDays, selectedIssueRemainingHours, selectedIssueRemainingMinutes),
@@ -328,7 +330,7 @@ export default observer(function NewCreateIssueForm() {
         }
 
         delete issue_to_create['assignees'];
-        delete issue_to_create['created_at'];
+        //delete issue_to_create['created_at'];
 
         var sprint_issue = {
             sprint_id: selectedIssueSprint,
@@ -357,9 +359,6 @@ export default observer(function NewCreateIssueForm() {
 
 
     const addAssigneeToIssue = (assignee_id: string) => {
-        
-        console.log("add Assignee to issue: ");
-        console.log(assignee_id);
         var assignees_to_set: string[] = [];
 
         if(selectedAssignees.length > 0){
@@ -369,12 +368,8 @@ export default observer(function NewCreateIssueForm() {
         }
 
         if(!assignees_to_set.includes(assignee_id)){
-            console.log("Adding assignee id:");
-            console.log(assignee_id);
             assignees_to_set.push(assignee_id);
         }
-        console.log("Assignees to set array:");
-        console.log(assignees_to_set);
         setSelectedAssignees(assignees_to_set);
     }
 

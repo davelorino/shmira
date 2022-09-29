@@ -4,20 +4,18 @@ import { Project } from '../../../models/project';
 import { Issue } from '../../../models/issue';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../../stores/store';
-
-import { IssueStatusCopy } from '../../../shared/constants/issues';
-
 import ProjectBoardListIssue from './Issue/ProjectDashboardIssue';
 import { List, Title, IssuesCount, Issues } from './Styles';
 
 interface Props {
   status: string;
+  sprint_id: string;
   project: Project;
   issues: Issue[];
 }
 
 
-export default observer(function ProjectBoardList({status, project, issues}: Props) {
+export default observer(function ProjectBoardList({status, project, sprint_id, issues}: Props) {
   
   const { issueStore } = useStore();
   const { issuesByDate, activeUsers} = issueStore;
@@ -29,14 +27,22 @@ export default observer(function ProjectBoardList({status, project, issues}: Pro
       { (provided) => {
         return(
         <List>
-          <Title>
-            {status_name}
-          </Title>
+          <div style={{display: 'inline-block'}}>
+            <Title style={{display: 'inline-block'}}>
+              {status_name}
+            </Title>
+            <Title style={{float: 'right', marginRight: '2px', display: 'inline-block'}}>
+              {issueStore.selectedProject!.sprints.find(sprint => sprint.is_active === true)!
+                .issues.filter(issue => issue.status === status_name)!.length}
+            </Title>
+          </div>
           <Issues
             {...provided.droppableProps}
             ref={provided.innerRef}
           >
-            {issues!.sort((a, b) => a.sort_order - b.sort_order).map((issue, index) => (
+            {issues
+              .sort((a, b) => a.sort_order - b.sort_order)
+              .map((issue, index) => (
                   <ProjectBoardListIssue key={issue.id} issue={issue} index={index}  />
             ))
           }

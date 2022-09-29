@@ -32,11 +32,11 @@ namespace Application.Projects
 
             public async Task<Result<ProjectDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var issue = await _context.Projects
+                var project = await _context.Projects
                     .ProjectTo<ProjectDto>(_mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync(x => x.Id == request.Id);
 
-                return Result<ProjectDto>.Success(issue);
+                return Result<ProjectDto>.Success(project);
             }
         }
     }

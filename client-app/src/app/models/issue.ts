@@ -12,12 +12,12 @@ export interface Issue {
     time_remaining: string;
     status: string;
     issue_type: string;
-    created_at: Date | null;
+    created_at: string;
+    updated_at: string;
     sort_order: number;
-    //updated_at: string;
     //reporter: Assignee | null;
     //team_id: string;
-    //project_id: string;
+    project_id: string;
     //reviewer_id: string;
     reporter_id: string;
     sprint_id: string;

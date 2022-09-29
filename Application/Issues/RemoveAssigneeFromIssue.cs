@@ -32,25 +32,17 @@ namespace Application.Issues
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                          
-                Console.WriteLine("Current IssueId =");
-                Console.WriteLine(request.issue_assignee.IssueId);
-                Console.WriteLine("Current Assignee =");
-                Console.WriteLine(request.issue_assignee.AssigneeId);
+                        
 
                 var issue = await _context.Issues
                     .Include(a => a.assignees)
                     .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == request.issue_assignee.IssueId.ToString().ToLower());
 
-                Console.WriteLine("Found issue =");
-                Console.WriteLine(issue.Id);
-                
+
                 var assignee = await _context.Assignees
                     .FirstOrDefaultAsync(x => x.Id.ToString().ToLower() == request.issue_assignee.AssigneeId.ToString().ToLower());
 
-                Console.WriteLine("Found assignee =");
-                Console.WriteLine(assignee.Id);
-                
+
                 var assignee_to_remove = issue.assignees.FirstOrDefault(x => x.AssigneeId.ToString().ToLower() == assignee.Id.ToString().ToLower());
  
                 issue.assignees.Remove(assignee_to_remove);

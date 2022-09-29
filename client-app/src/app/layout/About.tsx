@@ -21,7 +21,7 @@ export default observer(function AboutPage() {
                     <br/><br/>
                     Shmira is a Jira clone which aims to provide a feature rich project management tool.
                     <br/><br/> 
-                    I made this because other implementations I found served only as React/Angular portfolio projects whose purpose was to showcase the developers UI skills, but which ultimately lacked the minimum viable set of features necessary for someone to actually manage their projects using that tool.
+                    I made this because other implementations I found were primarily React/Angular portfolio projects made to showcase the developers UI skills, but which lack the set of features necessary for someone to manage their projects using that tool.
                 </p>
                     <h3>Core Features</h3>
                         <p>Shmira offers features that are absent from the other popular Jira clones that I have found:</p>
@@ -94,10 +94,10 @@ export default observer(function AboutPage() {
                 <img style={{maxWidth: '100%', maxHeight: '100%', overflow: 'hidden'}} src={shmirastack} />
                 <h3>Stack and Design</h3>
                 <p>Shmira has a relatively minimal tech footprint in terms of the stack. C# / .Net Core 6 on the backend, React and Typescript on the front end and Postgresql for the database.</p>
-                <div style={{display: 'inline-block'}}>
-                    <h3 style={{display: 'inline-block'}}>About Me</h3>
+                
+                <h3>About Me</h3>
                     
-                </div>
+                
                 
                 <p>I'm a 30 year old freelance developer in Sydney, Australia. I do a mix of consulting in both software development and data analysis. I check my email regularly so feel free to reach out at davelorino@gmail.com or on <a href='https://www.linkedin.com/in/davide-lorino-73963686/'>LinkedIn</a></p>
                 <div style={{marginTop: '30px', display: 'flex', justifyContent: 'center'}}>

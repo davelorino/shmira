@@ -17,11 +17,15 @@ import IssuePriorityIcon from '../../../layout/IssuePriorityIcon';
 import {StyledLabel} from './Styles';
 import {HoverDiv} from './Styles';
 import UpdateIssueFormTrackingWidget from './UpdateIssueFormTimeTrackingWidget';
+import AccountStore from '../../../stores/accountStore';
+import moment from 'moment';
+import "quill-mention/dist/quill.mention.css";
+import "quill-mention";
 
 
 export default observer(function NewUpdateIssueForm() {
 
-    const {issueStore, modalStore, userStore} = useStore();
+    const {issueStore, modalStore, userStore, commonStore} = useStore();
     const {
         selectedIssue,
         allSprints, 
@@ -158,6 +162,7 @@ export default observer(function NewUpdateIssueForm() {
                                     size='20' 
                                     name={project_assignee.first_name.concat(' ', project_assignee.second_name)} 
                                     round='20px'
+                                    src={project_assignee.photo?.url}
                                     />
                                 </AvatarIsActiveLabelBorder>
                 
@@ -211,6 +216,7 @@ export default observer(function NewUpdateIssueForm() {
                                     size='20' 
                                     name={project_assignee.first_name.concat(' ', project_assignee.second_name)} 
                                     round='20px'
+                                    src={project_assignee.photo?.url}
                                     />
                                 </AvatarIsActiveLabelBorder>
                 
@@ -250,6 +256,8 @@ export default observer(function NewUpdateIssueForm() {
         }
 
         selectedIssue!.sprint_id = sprint_id;
+
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
 
         updateIssueAndSprint(
             sprint_issue_to_remove.sprint_id,
@@ -322,40 +330,33 @@ export default observer(function NewUpdateIssueForm() {
     const statusOptions = [
         {key: '0', value: 'To Do', text: 'To Do', 
         content: (  <HoverDiv onClick={() => changeIssueStatus('To Do')}>
-                        <Label color='blue'>To Do</Label>
+                        <Label style={{minWidth: '80px'}} color='blue'>To Do</Label>
                     </HoverDiv> 
                  )
         },
         {key: '1', value: 'In Progress', text: 'In Progress',
         content: (  <HoverDiv onClick={() => changeIssueStatus('In Progress')}>
-                        <Label color='green'>In Progress</Label>
+                        <Label style={{minWidth: '80px'}} color='green'>In Progress</Label>
                     </HoverDiv> 
                  )
         },
         {key: '2', value: 'Review', text: 'Review',
         content: (  <HoverDiv onClick={() => changeIssueStatus('Review')}>
-                        <Label color='purple'>In Review</Label>
+                        <Label style={{minWidth: '80px'}} color='purple'>In Review</Label>
                     </HoverDiv> 
                  )
         },
         {key: '3', value: 'Done', text: 'Done',
         content: (  <HoverDiv onClick={() => changeIssueStatus('Done')}>
-                        <Label>Done</Label>
+                        <Label style={{alignText: 'center', minWidth: '80px'}}>Done</Label>
                     </HoverDiv> )
         }
     ]
-
-    const status_colours = [
-        {status: 'To Do', colour: 'blue'},
-        {status: 'In Progress', colour: 'green'},
-        {status: 'Review', colour: 'purple'},
-        {status: 'Done', colour: ''}
-    ]
     
     const priorityOptions = [
-        {key: '0', value: 'Low', text: 'Low', content: (<StyledLabel onClick={() => {changeIssuePriority("Low")}}> <IssuePriorityIcon priority="Low"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>Low</p></StyledLabel>) },
-        {key: '1', value: 'Medium', text: 'Medium', content: (<StyledLabel onClick={() => {changeIssuePriority("Medium")}}> <IssuePriorityIcon priority="Medium"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>Medium</p></StyledLabel>) },
-        {key: '2', value: 'High', text: 'High', content: (<StyledLabel onClick={() => {changeIssuePriority("High")}}> <IssuePriorityIcon priority="High"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>High</p></StyledLabel>) },
+        {key: '0', value: 'Low', text: 'Low', content: (<StyledLabel style={{minWidth: '90px'}} onClick={() => {changeIssuePriority("Low")}}> <IssuePriorityIcon priority="Low"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>Low</p></StyledLabel>) },
+        {key: '1', value: 'Medium', text: 'Medium', content: (<StyledLabel style={{minWidth: '90px'}} onClick={() => {changeIssuePriority("Medium")}}> <IssuePriorityIcon priority="Medium"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>Medium</p></StyledLabel>) },
+        {key: '2', value: 'High', text: 'High', content: (<StyledLabel style={{minWidth: '90px'}} onClick={() => {changeIssuePriority("High")}}> <IssuePriorityIcon priority="High"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>High</p></StyledLabel>) },
     ]
 
     const updateIssueDescription = () => {
@@ -375,6 +376,8 @@ export default observer(function NewUpdateIssueForm() {
         var updatedIssue: any = current_issue;
 
         selectedIssue!.description = quillDescriptionEditText;
+
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
         
         updateIssue(updatedIssue);
     }
@@ -393,6 +396,8 @@ export default observer(function NewUpdateIssueForm() {
         var updatedIssue: any = current_issue;
 
         selectedIssue!.issue_type = issue_type;
+
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
         
         updateIssue(updatedIssue);
     }
@@ -405,6 +410,8 @@ export default observer(function NewUpdateIssueForm() {
         var updated_issue: any = {
             ...selectedIssue!
         } 
+
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
 
         delete updated_issue['assignees'];
 
@@ -422,6 +429,8 @@ export default observer(function NewUpdateIssueForm() {
             ...selectedIssue!
         } 
 
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
+
         delete updated_issue['assignees'];
 
         issueStore.updateIssue(updated_issue);
@@ -431,6 +440,7 @@ export default observer(function NewUpdateIssueForm() {
     const changeIssueStatus = (status: string) => {
 
         selectedIssue!.status = status;
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
 
         var updated_issue: any = {
             ...selectedIssue!
@@ -446,6 +456,8 @@ export default observer(function NewUpdateIssueForm() {
 
         selectedIssue!.priority = priority;
 
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
+
         var updated_issue: any = {
             ...selectedIssue!
         } 
@@ -459,6 +471,8 @@ export default observer(function NewUpdateIssueForm() {
     const removeAssigneeFromIssue = (user_id: string) => {
 
         selectedIssue!.assignees = selectedIssue!.assignees.filter(assignee => assignee.id.toString().toLowerCase() !== user_id);
+
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
 
         var issue_assignee_to_remove = {
             AssigneeId: user_id,
@@ -477,6 +491,7 @@ export default observer(function NewUpdateIssueForm() {
     const addAssigneeToIssue = (assignee_id: string) => {
         var assignee_to_add = allUsers.find(assignee => assignee.id.toString().toLowerCase() === assignee_id.toLowerCase());
         selectedIssue!.assignees.push(assignee_to_add!);
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
         var issue_assignee_to_add = {
             AssigneeId: assignee_id,
             IssueId: selectedIssue!.id
@@ -501,6 +516,7 @@ export default observer(function NewUpdateIssueForm() {
         var updatedIssue: any = current_issue;
 
         selectedIssue!.name = issueTitle;
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
         
         updateIssue(updatedIssue);
 
@@ -508,20 +524,7 @@ export default observer(function NewUpdateIssueForm() {
     }
 
     
-      
-      /*
-      const renderRemainingOrEstimate = ({ timeRemaining, estimate }) => {
-        if (timeRemaining === 0 && estimate)) {
-          return null;
-        }
-        if (!isNil(timeRemaining)) {
-          return <div>{`${timeRemaining}h remaining`}</div>;
-        }
-        if (!isNil(estimate)) {
-          return <div>{`${estimate}h estimated`}</div>;
-        }
-      };
-      */
+    
 
     const extractTimespanObject = (timespan: string) => {
         var days = timespan.substring(0, timespan.indexOf('.'));
@@ -599,6 +602,7 @@ export default observer(function NewUpdateIssueForm() {
 
         selectedIssue!.time_logged = current_issue.time_logged;
         selectedIssue!.time_remaining = current_issue.time_remaining;
+        selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
 
         updateIssue(updatedIssue);
 
@@ -694,7 +698,7 @@ export default observer(function NewUpdateIssueForm() {
                 </div>
                 
                 {!issue_title_edit_state &&
-                <InvisibleTextInput fontsize={20} onClick={() => toggleIssueTitleEditor(issue_title_edit_state)}>
+                <InvisibleTextInput style={{cursor: 'pointer'}} fontsize={20} onClick={() => toggleIssueTitleEditor(issue_title_edit_state)}>
                    <h1 style={{paddingTop: "10px", paddingBottom: "10px", paddingLeft: "5px"}}> {selectedIssue!.name} </h1>
                 </InvisibleTextInput>
                 }
@@ -708,18 +712,23 @@ export default observer(function NewUpdateIssueForm() {
                     
                 }                
                 
-                <h5>Description</h5>
+                <h5 style={{marginLeft: '10px', marginBottom: '0px', paddingBottom: '0px'}}>Description</h5>
                 {!description_edit_state && 
-                <InvisibleTextInput style={{display: "flex", maxHeight: "700px", minHeight: "300px"}} fontsize={14} onClick={() => toggleDescriptionEditor(description_edit_state)}>
+                <InvisibleTextInput style={{marginTop: '4px', paddingTop: '0px', cursor: 'pointer', display: "flex", maxHeight: "700px", minHeight: "200px"}} fontsize={14} onClick={() => toggleDescriptionEditor(description_edit_state)}>
                     
-                    <div style={{paddingTop: "20px", marginBottom: "20px", marginLeft: "12px", marginRight: "12px"}}> {parse(selectedIssue!.description)} </div>
+                    <div style={{paddingTop: "8px", marginBottom: "20px", marginLeft: "12px", marginRight: "12px"}}> {parse(selectedIssue!.description)} </div>
                 
                 </InvisibleTextInput>
                 }
                 {
                     description_edit_state &&
                     <>
-                    <ReactQuill style={{minHeight: "300px", maxHeight: "700px"}} theme="snow" defaultValue={selectedIssue!.description} onChange={setQuillDescriptionEditText}/>
+                    <ReactQuill style={{minHeight: "300px", maxHeight: "700px"}} 
+                                theme="snow" 
+                                defaultValue={selectedIssue!.description} 
+                                onChange={setQuillDescriptionEditText}
+
+                        />
                     
                     <br/>
                     <Button size="mini" content="Save" color="blue" onClick={() =>{updateIssueDescription(); toggleDescriptionEditor(description_edit_state)} }/>
@@ -729,7 +738,12 @@ export default observer(function NewUpdateIssueForm() {
                   <h5>Comments</h5>
  
                 <div style={{display: "inline-block"}}>
-                    <StyledAvatar style={{paddingTop: "12px"}} size="30" round="16px" name="Davide Lorino" />
+                    <StyledAvatar style={{paddingTop: "12px"}} size="30" round="16px" 
+                    src={selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)?.photo?.url}
+                    name={selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)!.first_name
+                            .concat(" ", selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)!.second_name)
+                    }
+                    />
                 </div>
                 <div style={{display: "inline-block", paddingLeft: "15px", width: "90%"}}>
                     <TextArea placeholder="Add a comment..."></TextArea>
@@ -759,9 +773,10 @@ export default observer(function NewUpdateIssueForm() {
 
                         value={user.id}
                         //onClick={() => handleClick(selectedProject, user)
-                        size='20' 
+                        size='25' 
                         name={user.first_name.concat(' ', user.second_name)} 
-                        round='20px'
+                        round='25px'
+                        src={selectedProject!.assignees.find(assignee => assignee.id === user.id)!.photo?.url}
                         />
                     </AvatarIsActiveLabelBorder>
                     
@@ -792,9 +807,10 @@ export default observer(function NewUpdateIssueForm() {
 
                         value={selectedIssue!.reporter_id}
                         //onClick={() => handleClick(selectedProject, user)
-                        size='20' 
+                        size='25' 
                         name={selectedProject!.assignees.find(assignee => assignee.id === selectedIssue!.reporter_id)!.first_name.concat(' ', selectedProject!.assignees.find(assignee => assignee.id === selectedIssue!.reporter_id)!.second_name)} 
-                        round='20px'
+                        round='25px'
+                        src={selectedProject!.assignees.find(assignee => assignee.id === selectedIssue!.reporter_id)!.photo?.url}
                         />
                     </AvatarIsActiveLabelBorder>
                     
@@ -816,18 +832,9 @@ export default observer(function NewUpdateIssueForm() {
                     onChange={(e) => handleChangeReporter(e)} 
                     />
                     <div></div>
-                    {
-                        /*
-                        <h5>ORIGINAL ESTIMATE</h5> 
-                        {selectedIssue!.original_estimated_duration !== null &&
-                        <div style={{width: "fit-content", backdropFilter: "brightness(120%)"}}>
-                           <div style={{paddingTop: "5px", paddingBottom: "5px", paddingLeft: "5px", paddingRight: "5px"}}> {parseTimeSpan(selectedIssue!.original_estimated_duration)} </div>
-                        </div>
-                         }
-                        */
-                    }
+                   
                     <br/>
-                    <div style={{cursor: 'pointer'}} //</Grid.Column>onClick={() => handleLogTimeEditDivClick}
+                    <div style={{cursor: 'pointer'}} 
                     >
                     <InvisibleTextInput style={{cursor: "pointer"}} fontsize={12} >
                     <h5 onClick={toggleLogTimeEditState} style={{marginLeft: "0px", marginBottom: "5px"}}>LOG TIME</h5> 
@@ -869,43 +876,45 @@ export default observer(function NewUpdateIssueForm() {
                     }
                     <UpdateIssueFormTrackingWidget></UpdateIssueFormTrackingWidget>
                     </div>
-                       <h5>SPRINT</h5>
-                       <StyledLabel //color={status_colours.find(sc => sc.status === selectedIssue!.status).colour}
-                        ><p style={{paddingBottom: "3px", paddingTop:"3px"}}> {selectedProject!.sprints.find(sprint => sprint.id === selectedIssue!.sprint_id)!.name}</p></StyledLabel>
-                       <Dropdown 
-                            downward 
-                            multiple
-                            closeOnChange
-                            placeholder='' 
-                            value='' 
-                            label='Sprint' 
-                            name='sprint' 
-                            options={reformatSprintOptions(selectedProject!.sprints)} 
-                            //onChange={(e) => handleChangeSprint(e)} 
-                            />
-                       <h5>PRIORITY</h5>
-                       <StyledLabel> <IssuePriorityIcon priority={selectedIssue!.priority}></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>{selectedIssue!.priority}</p></StyledLabel>
-                       <Dropdown 
-                            downward 
-                            multiple
-                            closeOnChange
-                            placeholder='' 
-                            value='' 
-                            label='Priority' 
-                            name='priority' 
-                            options={priorityOptions}
-                            //onChange={(e) => handleChangeSprint(e)} 
-                            />
-                        
-                
-                        
-                        
-                             
-                        
-                                
-                        <br/><br/>
-
-                        
+                    <div style={{marginTop: '20px'}}>
+                        <div style={{display: 'inline-block', width: '50%'}}>
+                        <h5>SPRINT</h5>
+                        <StyledLabel //color={status_colours.find(sc => sc.status === selectedIssue!.status).colour}
+                            ><p style={{paddingBottom: "3px", paddingTop:"3px"}}> {selectedProject!.sprints.find(sprint => sprint.id === selectedIssue!.sprint_id)!.name}</p></StyledLabel>
+                        <Dropdown 
+                                downward 
+                                multiple
+                                closeOnChange
+                                placeholder='' 
+                                value='' 
+                                label='Sprint' 
+                                name='sprint' 
+                                options={reformatSprintOptions(selectedProject!.sprints)} 
+                                //onChange={(e) => handleChangeSprint(e)} 
+                                />
+                            </div>
+                            <div style={{display: 'inline-block', width: '50%'}}>
+                        <h5>PRIORITY</h5>
+                        <StyledLabel> <IssuePriorityIcon priority={selectedIssue!.priority}></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>{selectedIssue!.priority}</p></StyledLabel>
+                        <Dropdown 
+                                downward 
+                                multiple
+                                closeOnChange
+                                placeholder='' 
+                                value='' 
+                                label='Priority' 
+                                name='priority' 
+                                options={priorityOptions}
+                                //onChange={(e) => handleChangeSprint(e)} 
+                                />
+                            </div>
+                        </div>
+                        <p style={{marginTop: '30px', fontSize: '13px', color: 'grey'}}>
+                            {'Created '.concat(moment(selectedIssue!.created_at).fromNow())}
+                        </p>
+                        <p style={{marginTop: '15px', fontSize: '13px', color: 'grey'}}>
+                            {'Last updated '.concat(moment(selectedIssue!.updated_at)?.fromNow())}
+                        </p>
                 
                 </Grid.Column>   
              </Grid>   

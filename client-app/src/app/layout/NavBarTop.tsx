@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Input, Menu, Dropdown, Button } from 'semantic-ui-react'
 import Avatar from 'react-avatar';
+import { Issue } from '../models/issue';
 import { Project } from '../models/project';
 import { Assignee } from '../models/assignee';
 import Icon from './Icon'
@@ -14,6 +15,8 @@ import ProjectForm from '../features/sprints/form/ProjectForm';
 import InviteConfirmationForm from '../features/sprints/form/InviteConfirmationForm';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
+import _ from 'lodash';
+import Darkreader from 'react-darkreader';
 
 const Item = styled.div`
       position: relative;
@@ -105,6 +108,20 @@ function renderInviteNotification() {
 }
 
 
+function addProjectIdToLegacyTickets() {
+  issueStore.selectedProject!.sprints.find(sprint => sprint.is_active === true)!
+    .issues.map(issue => {
+      issue.project_id = issueStore.selectedProject!.id;
+    });
+    var issues_to_send: any[] = _.cloneDeep(issueStore.selectedProject!.sprints.find(sprint => sprint.is_active !== true)!.issues);
+    issues_to_send.map(issue => {
+      delete issue['assignees'];
+    })
+    
+    issueStore.updateIssues(issues_to_send);
+  }
+  
+
 
 
   function renderProjectOptions(allProjects: Project[]) {
@@ -191,6 +208,10 @@ function renderInviteNotification() {
             </Item>
             
           <Menu.Menu position='right'>
+          
+            <Item style={{marginRight: '20px'}}>
+              <Darkreader defaultDarken />
+            </Item>
             <Item>
               <Button
                 onClick={() => {commonStore.logout()}}//}

@@ -7,6 +7,8 @@ using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Application.Issues;
+using Application.Projects;
+
 using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
@@ -19,32 +21,33 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetIssues()
         {
-            return HandleResult(await Mediator.Send(new List.Query()));
+            return HandleResult(await Mediator.Send(new Application.Issues.List.Query()));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetIssue(Guid id)
         {
-            return HandleResult(await Mediator.Send(new Details.Query{Id = id}));
+            return HandleResult(await Mediator.Send(new Application.Issues.Details.Query{Id = id}));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateIssue(Issue issue)
         {
-            return Ok(await Mediator.Send(new Create.Command{Issue = issue}));
+
+            return Ok(await Mediator.Send(new Application.Issues.Create.Command{Issue = issue}));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> EditIssue(Guid Id, Issue issue)
         {
             issue.Id = Id;
-            return Ok(await Mediator.Send(new Edit.Command{Issue = issue}));
+            return Ok(await Mediator.Send(new Application.Issues.Edit.Command{Issue = issue}));
         }
 
-        [HttpPut("update_multiple")]
-        public async Task<IActionResult> EditIssues([FromBody] List<Issue> issues)
+        [HttpPost("update_multiple/{project_id}")]
+        public async Task<ProjectDto> EditIssues([FromBody] List<Issue> issues, string project_id)
         {
-            return Ok(await Mediator.Send(new EditMultiple.Command{Issues = issues}));
+            return await Mediator.Send(new Application.Issues.EditMultiple.Command{Issues = issues, Id = project_id});
         }
 
         [HttpPut("{Id}/assign/{assignee_id}")]
@@ -80,7 +83,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIssue(Guid Id)
         {
-            return Ok(await Mediator.Send(new Delete.Command{Id = Id}));
+            return Ok(await Mediator.Send(new Application.Issues.Delete.Command{Id = Id}));
         }
 
     }
