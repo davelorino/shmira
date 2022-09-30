@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect, useLayoutEffect } from 'react'
 import { Input, Menu, Dropdown, Button } from 'semantic-ui-react'
 import Avatar from 'react-avatar';
-import { Issue } from '../models/issue';
+import { runInAction } from 'mobx';
 import { Project } from '../models/project';
 import { Assignee } from '../models/assignee';
 import Icon from './Icon'
@@ -16,7 +16,8 @@ import InviteConfirmationForm from '../features/sprints/form/InviteConfirmationF
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
-import Darkreader from 'react-darkreader';
+import { useDarkreader } from 'react-darkreader';
+import { useHistory } from 'react-router-dom';
 
 const Item = styled.div`
       position: relative;
@@ -86,10 +87,11 @@ const StyledDropdownItem = styled(Dropdown.Item)`
 
 
 const NavBarTop = () => {
-
   const {issueStore, modalStore, smallModalStore, mediumModalStore, commonStore, accountStore} = useStore();
   const {allProjects, selectProject} = issueStore;
   const { allInvites } = accountStore;
+  const history = useHistory();
+
 
 
 function renderInviteNotification() {
@@ -105,6 +107,10 @@ function renderInviteNotification() {
       progress: undefined
   })
   }
+}
+
+function handleLogout () {
+    accountStore.logout();
 }
 
 
@@ -209,12 +215,9 @@ function addProjectIdToLegacyTickets() {
             
           <Menu.Menu position='right'>
           
-            <Item style={{marginRight: '20px'}}>
-              <Darkreader defaultDarken />
-            </Item>
             <Item>
               <Button
-                onClick={() => {commonStore.logout()}}//}
+                onClick={() => {handleLogout();}}//}
                 size='mini'
                 color='blue'
                 content='Log Out'
@@ -229,10 +232,12 @@ function addProjectIdToLegacyTickets() {
               <Avatar onClick={() => {modalStore.openModal(<EditProfileForm />)}}
                       style={{marginTop: '7px', marginRight: '10px', cursor: "pointer"}} 
                       size="30" round="30px"
+                      
                       src={
                         issueStore.selectedProject!.assignees.find((assignee: Assignee) => assignee.id_app_user === commonStore.account_id)!.photo ? 
                         issueStore.selectedProject!.assignees.find((assignee: Assignee) => assignee.id_app_user === commonStore.account_id)!.photo.url : ''}
                       name={accountStore.allAccounts.find(account => account.id === commonStore.account_id)!.first_name.concat(' ', accountStore.allAccounts.find(account => account.id === commonStore.account_id)!.second_name)}
+                      
                       />
             
              

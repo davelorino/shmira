@@ -1,4 +1,5 @@
 import { makeAutoObservable, reaction } from 'mobx';
+import { store } from './store';
 
 export default class CommonStore {
     token: string | null = window.localStorage.getItem('jwt');
@@ -53,6 +54,15 @@ export default class CommonStore {
                 }
             }
         )
+    }
+
+    loadInitial = () => {
+        store.issueStore.loadProjectsInitial();
+        store.accountStore.loadInvites();
+        store.accountStore.loadAccounts();
+        store.issueStore.loadIssues();
+        store.issueStore.loadSprints();
+        store.userStore.loadUsers();
     }
 
     logout = () => {

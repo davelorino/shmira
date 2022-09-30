@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "5tmMyOwRWa6SQmmewBDqt1WX5NCAoFflTbBlwPHKSNO1xHD6rgPiJH2RB5wmMMcLlsXisMtNOGEtuxhTbVznqw==",
+  "dgSpecHash": "8JEMWuO82JuKblM19Oey+2fgRnfAw0QRJIBCxzh9hX4PLhBPyyZn3bXNZ+o146zftAu1tRNAj2sAhg7HD2PGQA==",
   "success": true,
   "projectFilePath": "/Users/Davide/Desktop/demo/Shmira2/Domain/Domain.csproj",
   "expectedPackageFiles": [
@@ -30,6 +30,8 @@
     "/Users/Davide/.nuget/packages/microsoft.identitymodel.protocols/6.10.0/microsoft.identitymodel.protocols.6.10.0.nupkg.sha512",
     "/Users/Davide/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/6.10.0/microsoft.identitymodel.protocols.openidconnect.6.10.0.nupkg.sha512",
     "/Users/Davide/.nuget/packages/microsoft.identitymodel.tokens/6.22.0/microsoft.identitymodel.tokens.6.22.0.nupkg.sha512",
+    "/Users/Davide/.nuget/packages/npgsql/6.0.7/npgsql.6.0.7.nupkg.sha512",
+    "/Users/Davide/.nuget/packages/npgsql.entityframeworkcore.postgresql/6.0.7/npgsql.entityframeworkcore.postgresql.6.0.7.nupkg.sha512",
     "/Users/Davide/.nuget/packages/system.collections.immutable/6.0.0/system.collections.immutable.6.0.0.nupkg.sha512",
     "/Users/Davide/.nuget/packages/system.diagnostics.diagnosticsource/6.0.0/system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
     "/Users/Davide/.nuget/packages/system.identitymodel.tokens.jwt/6.22.0/system.identitymodel.tokens.jwt.6.22.0.nupkg.sha512",

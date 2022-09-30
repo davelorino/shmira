@@ -27,7 +27,7 @@ export default class IssueStore {
     selectedSprint: Sprint | undefined = undefined;
     editMode = false;
     loading = false;
-    loadingInitial = false;
+    loadingInitial = true;
     searchFilter = '';
 
     
@@ -75,6 +75,7 @@ export default class IssueStore {
          //this.setLoadingInitial(false);
         } catch (error) {
             console.log(error);
+
             //this.setLoadingInitial(false);
         }
     }
@@ -87,11 +88,34 @@ export default class IssueStore {
                     this.projectRegistry.set(project.id, project);
                 })
                 if(window.localStorage.getItem('selected_project_id') !== null){
-                    this.selectProject(window.localStorage.getItem('selected_project_id')!)
-                } else {
-                    this.selectProject(projects[0].id);
+                    this.selectProject(window.localStorage.getItem('selected_project_id')!);
+                    //this.setLoadingInitial(false);
+                } 
+                else{
+                    this.selectProject(projects[0]);
+                    this.setLoadingInitial(false);
                 }
-                this.setLoadingInitial(false);
+                /*
+                else 
+                {
+                    for (const project of projects){
+                        console.log("Running the thing");
+                        console.log(store.commonStore.assignee_id!);
+                        var assignee_ids: string[] = [];
+                        project.assignees.forEach((assignee: Assignee) => {
+                            assignee_ids.push(assignee.id);
+                        })
+                        if(assignee_ids.includes(store.commonStore.assignee_id!)){
+                            console.log("Assignee id condition met");
+                            this.selectProject(project.id);
+                            this.setLoadingInitial(false);
+                            break;
+                        }
+                        //break;
+                    }
+                    //this.selectProject(projects[0].id);
+                } */
+                //this.setLoadingInitial(false);
             })
         } catch (error) {
             console.log(error);
@@ -138,7 +162,7 @@ export default class IssueStore {
                 sprints.forEach((sprint: Sprint) => {
                     this.sprintRegistry.set(sprint.id, sprint);
                 })
-                this.setLoadingInitial(false);
+                //this.setLoadingInitial(false);
             })
         } catch (error) {
             console.log(error);
@@ -147,7 +171,24 @@ export default class IssueStore {
     }
 
 
-
+    selectProjectByAssignee = (assignee_id: string, projects: Project[], token: string) => {
+        for (const project of projects){
+            console.log("Running the thing");
+            console.log(store.commonStore.assignee_id!);
+            var assignee_ids: string[] = [];
+            project.assignees.forEach((assignee: Assignee) => {
+                assignee_ids.push(assignee.id);
+            })
+            if(assignee_ids.includes(store.commonStore.assignee_id!)){
+                console.log("Assignee id condition met");
+                this.selectedProject = project;
+                
+                //this.setLoadingInitial(false);
+                //break;
+            }
+            //break;
+        }
+    }
 
     updateRelevantIssues = (relevant_sprints: Sprint[]) => {
         console.log("update relevant issues triggered")
@@ -298,6 +339,7 @@ export default class IssueStore {
             if(this.selectedProject !== undefined){
                 window.localStorage.setItem('selected_project_id', this.selectedProject.id);
                 this.updateRelevantSprints(this.selectedProject!);
+                this.setLoadingInitial(false);
                 //this.loadRelevantIssues(this.selectedProject);
             }  
         })

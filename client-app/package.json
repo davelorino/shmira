@@ -4,9 +4,12 @@
   "private": true,
   "dependencies": {
     "@emailjs/browser": "^3.7.0",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mui/material": "^5.10.7",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/node": "^16.11.47",
@@ -60,6 +63,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "postbuild": "mv build ../API/wwwroot",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

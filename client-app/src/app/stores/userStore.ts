@@ -25,7 +25,7 @@ export default class UserStore {
     */
     user_loading = false;
     userRegistry = new Map<string, Assignee>();
-    loadingInitial = false;
+    loadingInitial = true;
     user_logged_in = false;
 
 

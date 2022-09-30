@@ -18,19 +18,29 @@ import AboutPage from './About';
 //import AccountActivation from './AccountActivation';
 import { Route } from 'react-router-dom';
 import LoginForm from '../features/sprints/form/login/LoginForm';
-import { DragDropContext } from 'react-beautiful-dnd';
-import backgroundImage from './shmirabackground.jpeg';
-import backgroundImage2 from './shmirabackground2.jpg';
 import backgroundImage3 from './shmirabackground3.jpg';
 import ActivateAccountForm from '../features/sprints/form/login/ActivateAccountForm';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import agent from '../api/agent';
-import Darkreader from 'react-darkreader';
+import Darkreader, { useDarkreader } from 'react-darkreader';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 function App() {
 const { issueStore, userStore, modalStore, commonStore, accountStore } = useStore();
-
+const drtheme={
+  brightness: 120,
+  contrast: 100,
+  sepia: 0,
+}
+const [isDark, toggle] = useDarkreader(true, drtheme);
 
 
   const {selectedIssue, 
@@ -48,23 +58,26 @@ const { issueStore, userStore, modalStore, commonStore, accountStore } = useStor
   const { user_logged_in } = userStore;
 
       useEffect(() => {
+        issueStore.loadingInitial = true;
         accountStore.accountsLoading = true;
-        issueStore.loadProjectsInitial();
-        accountStore.loadInvites();
-        accountStore.loadAccounts();
-        issueStore.loadIssues();
-        issueStore.loadSprints();
-        userStore.loadUsers();
+        commonStore.loadInitial();
+        //issueStore.loadProjectsInitial();
+        //accountStore.loadInvites();
+        //accountStore.loadAccounts();
+        //issueStore.loadIssues();
+        //issueStore.loadSprints();
+        //userStore.loadUsers();
       }, [])
 
 
-if (accountStore.accountsLoading) return <><Darkreader /> <LoadingComponent content='Loading...'/></>
+if (issueStore.loadingInitial || commonStore.assignee_id == null && (accountStore.accountsLoading || issueStore.loadingInitial)) return <><LoadingComponent content='Loading...'/></>
 
-if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.loadingInitial) return (
+if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.loadingInitial)  {
+  {console.log("App started")}
+  return (
   <div style={{height: '100vh',   
   backgroundImage: `url(${backgroundImage3})`, filter: `brightness(100%)`, backgroundSize: 'cover',  
   display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} >
-    <Darkreader />
     <div className='modal' style={{//background: `transparentize('#FFFFFF', 0.8)`, 
                   //backdropFilter: `brightness(150%)`,
                   backgroundColor: `transparent`, 
@@ -86,11 +99,10 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
       {/*</Modal.Content>*/}
     </div>
   </div>
-  )
-  else if(!accountStore.accountsLoading && !issueStore.loadingInitial){
+  )}
+  else if(issueStore.selectedProject! !== null && !accountStore.accountsLoading && !issueStore.loadingInitial){
     return (
       <div>
-        <Darkreader />
       {
         <div>
       <ModalContainer />
@@ -134,7 +146,7 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
       </div>
     );
   }
-    return (<><Darkreader /></>)
+    return (<></>)
 }
 
 export default observer(App);

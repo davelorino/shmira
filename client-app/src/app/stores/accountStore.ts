@@ -80,16 +80,18 @@ export default class AccountStore {
             this.loginLoading = true;
             const user = await agent.Accounts.login(creds);
             const user_assignee = await agent.Assignees.findByAppUserId(user.id);
-            store.commonStore.setToken(user.token);
+            const projects = await agent.Projects.list();
             store.commonStore.setAssigneeId(user_assignee.id);
             store.commonStore.setAccountId(user.id);
             store.commonStore.setEmail(user.email);
             runInAction(() => {
+                store.issueStore.selectProjectByAssignee(user_assignee.id, projects, user.token);
                 this.someone_is_logged_in = true;
                 this.account = user;
                 this.assignee = user_assignee;
                 console.log("This is the logged in account: ");
                 this.loginLoading = false;
+                store.commonStore.setToken(user.token);
                 console.log(this.account);
             })
         } catch(error) {
@@ -218,10 +220,11 @@ export default class AccountStore {
 
 
     logout = () => {
+        window.location.reload();
         store.commonStore.setToken(null);
         window.localStorage.removeItem('jwt');
         this.account = null;
-        this.someone_is_logged_in = false;
+        this.someone_is_logged_in = false;     
     }
 
     register = async (creds: AccountFormValues, e: any, form: any) => {

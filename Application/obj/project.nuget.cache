@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Z3ZtAK1qxPWlEUY+oRln7yRiCAaEVClVhAXM5z+exdMSGoUtfkdIuA1cl/M3yJNY6J/89e58mjtKxTgUQTGl7A==",
+  "dgSpecHash": "TZ26vU8142AFV0FfU7WHVOgOruC0gPZg4X04ic441X7uDdSjvou63uFbx/g6y4+CF2AAua87lcizdvQh4iFqRg==",
   "success": true,
   "projectFilePath": "/Users/Davide/Desktop/demo/Shmira2/Application/Application.csproj",
   "expectedPackageFiles": [
@@ -44,6 +44,8 @@
     "/Users/Davide/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/6.10.0/microsoft.identitymodel.protocols.openidconnect.6.10.0.nupkg.sha512",
     "/Users/Davide/.nuget/packages/microsoft.identitymodel.tokens/6.22.0/microsoft.identitymodel.tokens.6.22.0.nupkg.sha512",
     "/Users/Davide/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512",
+    "/Users/Davide/.nuget/packages/npgsql/6.0.7/npgsql.6.0.7.nupkg.sha512",
+    "/Users/Davide/.nuget/packages/npgsql.entityframeworkcore.postgresql/6.0.7/npgsql.entityframeworkcore.postgresql.6.0.7.nupkg.sha512",
     "/Users/Davide/.nuget/packages/sqlitepclraw.bundle_e_sqlite3/2.0.6/sqlitepclraw.bundle_e_sqlite3.2.0.6.nupkg.sha512",
     "/Users/Davide/.nuget/packages/sqlitepclraw.core/2.0.6/sqlitepclraw.core.2.0.6.nupkg.sha512",
     "/Users/Davide/.nuget/packages/sqlitepclraw.lib.e_sqlite3/2.0.6/sqlitepclraw.lib.e_sqlite3.2.0.6.nupkg.sha512",

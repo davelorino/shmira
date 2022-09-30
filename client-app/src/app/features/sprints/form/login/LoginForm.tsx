@@ -11,6 +11,7 @@ import SignUpButton from '../../../../layout/SignUpButton';
 import { GoogleLoginButton } from 'react-social-login-buttons';
 import { AccountFormValues } from '../../../../models/account';
 import SignupForm from './SignupForm';
+import { useDarkreader } from 'react-darkreader';
 
 
 export default observer(function LoginForm() {
@@ -21,6 +22,7 @@ export default observer(function LoginForm() {
     const [formType, setFormType] = useState('login');
     var [emailState, setEmailState] = useState('');
     var [passwordState, setPasswordState] = useState('');
+    //const [isDark, toggle] = useDarkreader(false);
 
     function login(){
         var account: AccountFormValues = {
