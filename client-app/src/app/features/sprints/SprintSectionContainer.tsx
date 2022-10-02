@@ -59,12 +59,8 @@ interface Props {
   height: 42px;
   line-height: 42px;
   padding-left: 10px;
-  color: #deebff;
   transition: color 0.1s;
   ${mixin.clickable}
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
   i {
     position: absolute;
     left: 18px;

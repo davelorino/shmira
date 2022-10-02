@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.29759527.css",
-    "main.js": "/static/js/main.b75968ef.js",
+    "main.css": "/static/css/main.2ef67368.css",
+    "main.js": "/static/js/main.28490e3f.js",
     "static/media/shmirabackground3.jpg": "/static/media/shmirabackground3.eae7dccc1ef939dc386f.jpg",
     "static/media/Shmira Stack.png": "/static/media/Shmira Stack.87ef4692112a326dceb9.png",
     "static/media/linkedinprofile.jpeg": "/static/media/linkedinprofile.3ff0204f279ff3084d51.jpeg",
@@ -17,11 +17,11 @@
     "static/media/jira.woff": "/static/media/jira.ba8c1c53b0ec8bc7a044.woff",
     "static/media/jira.ttf": "/static/media/jira.c920b0e90777bed859c0.ttf",
     "index.html": "/index.html",
-    "main.29759527.css.map": "/static/css/main.29759527.css.map",
-    "main.b75968ef.js.map": "/static/js/main.b75968ef.js.map"
+    "main.2ef67368.css.map": "/static/css/main.2ef67368.css.map",
+    "main.28490e3f.js.map": "/static/js/main.28490e3f.js.map"
   },
   "entrypoints": [
-    "static/css/main.29759527.css",
-    "static/js/main.b75968ef.js"
+    "static/css/main.2ef67368.css",
+    "static/js/main.28490e3f.js"
   ]
 }

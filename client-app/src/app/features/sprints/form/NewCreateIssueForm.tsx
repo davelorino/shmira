@@ -13,6 +13,7 @@ import  "react-quill/dist/quill.snow.css";
 import parse from 'html-react-parser';
 import Icon from '../../../layout/Icon/index';
 import IssuePriorityIcon from '../../../layout/IssuePriorityIcon';
+import IssueTypeIcon from '../../../layout/IssueTypeIcon';
 import {StyledLabel} from './Styles';
 import {HoverDiv} from './Styles';
 import { v4 as uuid } from 'uuid';
@@ -20,7 +21,7 @@ import moment from 'moment-timezone';
 
 export default observer(function NewCreateIssueForm() {
 
-    const {issueStore, modalStore, userStore} = useStore();
+    const {issueStore, modalStore, commonStore, userStore} = useStore();
     const {
         selectedIssue,
         allSprints, 
@@ -221,21 +222,24 @@ export default observer(function NewCreateIssueForm() {
     const issueTypeOptions = [
         {key: '0', value: 'Story', text: 'Story', 
                 content: (<HoverDiv style={{display: 'inline-block'}} onClick={() => setSelectedIssueType('Story')}>
-                                <Icon color='#65BA43'type='story' size={14} />
+                                <IssueTypeIcon color='#65BA43 !important' type='story' size={14} />
                                 <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                                     Story
                                 </div> 
                           </HoverDiv> )},
         {key: '1', value: 'Bug', text: 'Bug', 
                 content: (<HoverDiv style={{display: 'inline-block'}} onClick={() => setSelectedIssueType('Bug')}>
-                                <Icon color='#E44D42'  type='bug' size={14} />
+                               
+                                <IssueTypeIcon color='#E44D42' type='bug' size={14} />
                                 <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                                     Bug
-                                </div> 
+                                
+                                </div>
+
                             </HoverDiv> )},
         {key: '2', value: 'Task', text: 'Task', 
                 content: (<HoverDiv style={{display: 'inline-block'}} onClick={() => setSelectedIssueType('Task')}>
-                                <Icon color='#4FADE6' type='task' size={14} />
+                                <IssueTypeIcon color='#4FADE6 !important' type='task' size={14} />
                                 <div  style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                                     Task
                                 </div>
@@ -420,7 +424,7 @@ export default observer(function NewCreateIssueForm() {
         if(selectedIssueType == "Story"){
             return(
                 <StyledLabel style={{display: 'inline-block'}} >
-                <Icon color='#65BA43'type='story' size={14} />
+                <IssueTypeIcon color='#65BA43'type='story' size={14} />
                 <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                     Story
                 </div> 
@@ -430,7 +434,7 @@ export default observer(function NewCreateIssueForm() {
         if(selectedIssueType == "Bug"){
             return(
                 <StyledLabel style={{display: 'inline-block'}}>
-                    <Icon color='#E44D42'  type='bug' size={14} />
+                    <IssueTypeIcon color='#E44D42'  type='bug' size={14} />
                     <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                         Bug
                     </div> 
@@ -440,7 +444,7 @@ export default observer(function NewCreateIssueForm() {
         if(selectedIssueType == "Task"){
             return(
                 <StyledLabel style={{display: 'inline-block'}} >
-                    <Icon color='#4FADE6' type='task' size={14} />
+                    <IssueTypeIcon color='#4FADE6' type='task' size={14} />
                     <div  style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                         Task
                     </div>
@@ -531,7 +535,7 @@ export default observer(function NewCreateIssueForm() {
                 
                 <h5>Description</h5>
                 {!description_edit_state && 
-                <InvisibleTextInput style={{display: "flex", maxHeight: "700px", minHeight: "300px"}} fontsize={14} onClick={() => toggleDescriptionEditor(description_edit_state)}>
+                <InvisibleTextInput style={{display: "flex", maxHeight: "700px", minHeight: "200px"}} fontsize={14} onClick={() => toggleDescriptionEditor(description_edit_state)}>
                     
                     <div style={{paddingTop: "20px", marginBottom: "20px", marginLeft: "12px", marginRight: "12px"}}> {parse(selectedIssueDescription)} </div>
                 
@@ -540,7 +544,7 @@ export default observer(function NewCreateIssueForm() {
                 {
                     description_edit_state &&
                     <>
-                    <ReactQuill theme="snow" defaultValue={selectedIssueDescription} onChange={setSelectedIssueDescription}/>
+                    <ReactQuill style={{minHeight: '300px', maxHeight: '700px'}} theme="snow" defaultValue={selectedIssueDescription} onChange={setSelectedIssueDescription}/>
                     
                     <br/>
                     <Button size="mini" content="Save" color="blue" onClick={() =>{toggleDescriptionEditor(description_edit_state)} }/>
@@ -549,7 +553,11 @@ export default observer(function NewCreateIssueForm() {
                 <h5>Comments</h5>
  
                 <div style={{display: "inline-block"}}>
-                    <StyledAvatar style={{paddingTop: "12px"}} size="30" round="16px" name="Davide Lorino" />
+                    <StyledAvatar style={{paddingTop: "12px"}} size="30" round="16px" 
+                    src={selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)?.photo?.url}
+                    name={selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)!.first_name
+                            .concat(" ", selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)!.second_name)}
+                    />
                 </div>
                 <div style={{display: "inline-block", paddingLeft: "15px", width: "90%"}}>
                     <TextArea placeholder="Add a comment..."></TextArea>
@@ -692,37 +700,43 @@ export default observer(function NewCreateIssueForm() {
                                 
                         </>
                     }
-                       <h5>SPRINT</h5>
-                       <StyledLabel //color={status_colours.find(sc => sc.status === selectedIssue!.status).colour}
-                        ><p style={{paddingBottom: "3px", paddingTop:"3px"}}> {selectedProject!.sprints.find(sprint => sprint.id === selectedIssueSprint)?.name}</p></StyledLabel>
-                       <Dropdown 
-                            downward 
-                            multiple
-                            closeOnChange
-                            placeholder='' 
-                            value='' 
-                            label='Sprint' 
-                            name='sprint' 
-                            options={reformatSprintOptions(allSprints)} 
-                            //onChange={(e) => handleChangeSprint(e)} 
-                            />
-                       <h5>PRIORITY</h5>
-                       <StyledLabel> <IssuePriorityIcon priority={selectedIssuePriority}></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>{selectedIssuePriority}</p></StyledLabel>
-                       <Dropdown 
-                            downward 
-                            multiple
-                            closeOnChange
-                            placeholder='' 
-                            value='' 
-                            label='Priority' 
-                            name='priority' 
-                            options={priorityOptions}
-                            //onChange={(e) => handleChangeSprint(e)} 
-                            />                            
+                    <div style={{marginTop: '20px'}}>
+                        <div style={{display: 'inline-block', width: '50%'}}>
+                        <h5>SPRINT</h5>
+                        <StyledLabel //color={status_colours.find(sc => sc.status === selectedIssue!.status).colour}
+                            ><p style={{paddingBottom: "3px", paddingTop:"3px"}}> {selectedProject!.sprints.find(sprint => sprint.id === selectedIssueSprint)?.name}</p></StyledLabel>
+                        <Dropdown 
+                                downward 
+                                multiple
+                                closeOnChange
+                                placeholder='' 
+                                value='' 
+                                label='Sprint' 
+                                name='sprint' 
+                                options={reformatSprintOptions(allSprints)} 
+                                //onChange={(e) => handleChangeSprint(e)} 
+                                />
+                        </div>
+                        <div style={{display: 'inline-block', width: '50%'}}>
+                        <h5>PRIORITY</h5>
+                        <StyledLabel> <IssuePriorityIcon priority={selectedIssuePriority}></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>{selectedIssuePriority}</p></StyledLabel>
+                        <Dropdown 
+                                downward 
+                                multiple
+                                closeOnChange
+                                placeholder='' 
+                                value='' 
+                                label='Priority' 
+                                name='priority' 
+                                options={priorityOptions}
+                                //onChange={(e) => handleChangeSprint(e)} 
+                                />    
+                        </div>   
+                    </div>                     
                         <br/><br/>
 
                         
-                <Button loading={loading} floated="right" content={'Create Issue'} onClick={() => handleCreateIssue()}></Button>
+                <Button style={{marginRight: '10px'}} color='blue' size='small' loading={loading} floated="right" content={'Create Issue'} onClick={() => handleCreateIssue()}></Button>
                 </Grid.Column>   
                 
              </Grid>   

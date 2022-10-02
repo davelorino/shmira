@@ -19,21 +19,17 @@ export const IssueCard = styled.div<IIssueCard>`
   margin-bottom: 5px;
   border-radius: 3px;
   cursor: move;
-  background: #fff;
-  box-shadow: 0px 1px 2px 0px rgba(9, 30, 66, 0.25);
+  background: #181A1A !important;
   transition: background 0.1s;
   ${mixin.clickable}
   @media (max-width: 1100px) {
     padding: 10px 8px 8px;
   }
-  &:hover {
-    background: ${color.backgroundLight};
-  }
   ${props =>
     props.isBeingDragged &&
     css`
       transform: rotate(3deg);
-      box-shadow: 5px 10px 30px 0px rgba(9, 30, 66, 0.15);
+      //box-shadow: 5px 10px 30px 0px rgba(9, 30, 66, 0.15);
     `}
 `;
 
@@ -43,25 +39,21 @@ export const IssueCardSprintVersion = styled.div<IIssueCard>`
   border-radius: 1px;
   border: solid;
   cursor: move;
-  border-color: #FFFFFF;
   border-width: thin;
-  background: #fff;
   width: 100%;
   height: 40px;
-  box-shadow: 0px 1px 2px 0px rgba(9, 30, 66, 0.25);
+  background: #181A1A !important;
   transition: background 0.1s;
+  border-color: #303436 !important;
   ${mixin.clickable}
   @media (max-width: 1100px) {
     padding: 10px 8px 8px;
-  }
-  &:hover {
-    background: ${color.backgroundLight};
   }
   ${props =>
     props.isBeingDragged &&
     css`
       //transform: rotate(3deg);
-      box-shadow: 5px 10px 30px 0px rgba(9, 30, 66, 0.15);
+      //box-shadow: 5px 10px 30px 0px rgba(9, 30, 66, 0.15);
     `}
 `;
 
@@ -98,6 +90,6 @@ export const Assignees = styled.div`
 /*
 export const AssigneeAvatar = styled(Avatar)`
   margin-left: -2px;
-  box-shadow: 0 0 0 2px #fff;
+  //box-shadow: 0 0 0 2px #fff;
 `;
 */

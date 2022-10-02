@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "E3KPkM+p5sI6BuhyYR4ZGeB4msbnRxbedEoDNDetZig=",
+  "Hash": "tYolrODVepubFt+SEptih13dR4i+SkU2PmOvsu/H+6M=",
   "Source": "API",
   "BasePath": "_content/API",
   "Mode": "Default",
@@ -170,6 +170,23 @@
       "OriginalItemSpec": "wwwroot/static/css/main.29759527.css.map"
     },
     {
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/.main.b75968ef.js.map.icloud",
+      "SourceId": "API",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
+      "BasePath": "_content/API",
+      "RelativePath": "static/js/.main.b75968ef.js.map.icloud",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/static/js/.main.b75968ef.js.map.icloud"
+    },
+    {
       "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.b75968ef.js",
       "SourceId": "API",
       "SourceType": "Discovered",
@@ -202,23 +219,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/static/js/main.b75968ef.js.LICENSE.txt"
-    },
-    {
-      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.b75968ef.js.map",
-      "SourceId": "API",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
-      "BasePath": "_content/API",
-      "RelativePath": "static/js/main.b75968ef.js.map",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/static/js/main.b75968ef.js.map"
     },
     {
       "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/media/CircularStd-Black.00cb4881193e9281e57a.woff2",

@@ -9,13 +9,13 @@ export const List = styled.div`
   min-height: 400px;
   width: 25%;
   border-radius: 3px;
-  background: ${color.backgroundLightest};
+  background: #1D1F21 !important;
 `;
 
 export const Title = styled.div`
   padding: 13px 10px 17px;
   text-transform: uppercase;
-  color: ${color.textMedium};
+  color: #A1988C !important;
   ${font.size(12.5)};
   ${mixin.truncateText}
 `;

@@ -113,6 +113,7 @@ namespace API.Controllers
             if (await _userManager.Users.AnyAsync(x => x.Email.ToLower() == registerDto.email.ToLower()))
             {
                 ModelState.AddModelError("email", "Email taken");
+                Console.WriteLine("Email taken");
                 return ValidationProblem(ModelState);
             }
 
@@ -124,9 +125,18 @@ namespace API.Controllers
                 UserName = registerDto.email
             };
 
+            Console.WriteLine("Creating user");
+            Console.WriteLine(user.Email);
+            Console.WriteLine(user.first_name);
+            Console.WriteLine(user.second_name);
+            Console.WriteLine(user.UserName);
+
             var temp_password = "Pa$$w0rd";
 
             var result = await _userManager.CreateAsync(user, temp_password);
+
+            Console.WriteLine("Result is:");
+            Console.WriteLine(result);
 
             if(result.Succeeded)
             {
@@ -138,7 +148,51 @@ namespace API.Controllers
                 id_app_user = user_from_db.Id.ToString()
                };
 
-                 _context.Assignees.Add(assignee);
+                _context.Assignees.Add(assignee);
+
+                await _context.SaveChangesAsync();
+
+                var assignee_from_db = await _context.Assignees.FirstOrDefaultAsync(current_assignee => current_assignee.id_app_user == assignee.id_app_user);
+
+                var first_project = new Project
+                {
+                    name = "My First Project",
+                    description = "Update the details of this project or create a new one to get started",
+                    owner_id = assignee_from_db.Id.ToString()
+                };
+
+                _context.Projects.Add(first_project);
+
+                await _context.SaveChangesAsync();
+
+                var project_from_db = await _context.Projects.FirstOrDefaultAsync(current_project => current_project.owner_id == first_project.owner_id);
+
+                var project_assignee = new ProjectAssignee
+                {
+                    AssigneeId = assignee_from_db.Id,
+                    ProjectId = project_from_db.Id
+                };
+
+                var backlog_sprint = new Sprint
+                {
+                    name = "Backlog",
+                    project_id = project_from_db.Id.ToString()
+                };
+
+                _context.Sprints.Add(backlog_sprint);
+
+                await _context.SaveChangesAsync();
+
+                var sprint_from_db = await _context.Sprints.FirstOrDefaultAsync(current_sprint => current_sprint.project_id == backlog_sprint.project_id);
+                
+                var project_sprint = new ProjectSprint 
+                {
+                    ProjectId = project_from_db.Id,
+                    SprintId = sprint_from_db.Id
+                };
+
+                project_from_db.assignees.Add(project_assignee);
+                project_from_db.sprints.Add(project_sprint);
 
                 await _context.SaveChangesAsync();
 

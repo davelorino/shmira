@@ -16,7 +16,6 @@ import InviteConfirmationForm from '../features/sprints/form/InviteConfirmationF
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
-import { useDarkreader } from 'react-darkreader';
 import { useHistory } from 'react-router-dom';
 
 const Item = styled.div`

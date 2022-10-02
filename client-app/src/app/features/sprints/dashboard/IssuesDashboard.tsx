@@ -8,6 +8,7 @@ import {DragDropContext, DropResult} from 'react-beautiful-dnd';
 import Filters from './Filters/Filters';
 import _, { concat } from 'lodash';
 import moment from 'moment';
+import '../../../../darkmode.css';
 
 
 

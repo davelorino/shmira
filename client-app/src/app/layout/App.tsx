@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import { Container, Modal } from 'semantic-ui-react';
 import { css } from 'styled-components';
@@ -23,15 +23,9 @@ import ActivateAccountForm from '../features/sprints/form/login/ActivateAccountF
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import agent from '../api/agent';
-import Darkreader, { useDarkreader } from 'react-darkreader';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import '../../darkmode.css';
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
+
 
 function App() {
 const { issueStore, userStore, modalStore, commonStore, accountStore } = useStore();
@@ -40,8 +34,6 @@ const drtheme={
   contrast: 100,
   sepia: 0,
 }
-const [isDark, toggle] = useDarkreader(true, drtheme);
-
 
   const {selectedIssue, 
          editMode, 
@@ -56,6 +48,7 @@ const [isDark, toggle] = useDarkreader(true, drtheme);
       } = issueStore;
 
   const { user_logged_in } = userStore;
+
 
       useEffect(() => {
         issueStore.loadingInitial = true;
