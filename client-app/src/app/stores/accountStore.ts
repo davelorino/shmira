@@ -169,7 +169,7 @@ export default class AccountStore {
             await agent.Invites.create(invitation)
             runInAction(() => {
                 if(isUserRegistered === "User registered"){
-                    var base_link = "http://localhost:3000";
+                    var base_link = "http://shmira.herokuapp.com";
                     var generated_link = base_link.concat('/invites/accept/', invitation.id);
                     this.sendCollaborationEmail(e, form, generated_link, user_sending_invite);
                 } else {
@@ -233,7 +233,7 @@ export default class AccountStore {
             var user = await agent.Accounts.register(creds);
             var assignee = await agent.Assignees.findByAppUserId(user.id);
             runInAction(() => {
-                var base_link = "http://localhost:3000";
+                var base_link = "http://shmira.herokuapp.com";
                 var generated_link = base_link.concat("/activate?id=".concat(user.id));
                 this.sendActivationEmail(e, form, generated_link);
                 this.loading = false;
