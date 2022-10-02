@@ -1,4 +1,1 @@
-client-app/public/darkmode.css -linguist-vendored
-client-app/src/darkmode.css -linguist-vendored
-API/wwwroot/darkmode.css -linguist-vendored
-API/wwwroot/static/css/main.2ef67368 -linguist-vendored
+*.css -linguist-vendored
