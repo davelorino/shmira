@@ -1,1 +1,2 @@
-./client-app/public/darkmode.css -linguist-vendored
+/client-app/public/darkmode.css -linguist-vendored
+/client-app/src/darkmode.css -linguist-vendored
