@@ -943,11 +943,11 @@ export default observer(function NewUpdateIssueForm() {
                                 
                         </>
                     }
-                    <div style={{display: 'inline', width: '100%', marginTop: '20px'}}>
-                        <div style={{display: 'inline-block', width: '50%'}}>
-                        <h5>SPRINT</h5>
+                    <div  style={{width: '100%', marginTop: '20px'}}>
+                        <div style={{ width: '100%'}}>
+                        <h5 style={{verticalAlign: 'top'}}>SPRINT</h5>
                         <StyledLabel //color={status_colours.find(sc => sc.status === selectedIssue!.status).colour}
-                            ><p style={{paddingBottom: "3px", paddingTop:"3px"}}> {selectedProject!.sprints.find(sprint => sprint.id === selectedIssue!.sprint_id)!.name}</p></StyledLabel>
+                            ><p style={{verticalAlign: 'top', paddingBottom: "3px", paddingTop:"3px"}}> {selectedProject!.sprints.find(sprint => sprint.id === selectedIssue!.sprint_id)!.name}</p></StyledLabel>
                         <Dropdown 
                                 downward 
                                 multiple
@@ -960,7 +960,7 @@ export default observer(function NewUpdateIssueForm() {
                                 //onChange={(e) => handleChangeSprint(e)} 
                                 />
                             </div>
-                            <div style={{display: 'inline-block', width: '50%'}}>
+                            <div style={{marginTop: '20px', width: '100%'}}>
                         <h5>PRIORITY</h5>
                         <StyledLabel> <IssuePriorityIcon priority={selectedIssue!.priority}></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>{selectedIssue!.priority}</p></StyledLabel>
                         <Dropdown 
