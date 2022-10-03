@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.2ef67368.css",
-    "main.js": "/static/js/main.a54ef5b9.js",
+    "main.js": "/static/js/main.196d4688.js",
     "static/media/shmirabackground3.jpg": "/static/media/shmirabackground3.eae7dccc1ef939dc386f.jpg",
     "static/media/Shmira Stack.png": "/static/media/Shmira Stack.87ef4692112a326dceb9.png",
     "static/media/linkedinprofile.jpeg": "/static/media/linkedinprofile.3ff0204f279ff3084d51.jpeg",
@@ -18,10 +18,10 @@
     "static/media/jira.ttf": "/static/media/jira.c920b0e90777bed859c0.ttf",
     "index.html": "/index.html",
     "main.2ef67368.css.map": "/static/css/main.2ef67368.css.map",
-    "main.a54ef5b9.js.map": "/static/js/main.a54ef5b9.js.map"
+    "main.196d4688.js.map": "/static/js/main.196d4688.js.map"
   },
   "entrypoints": [
     "static/css/main.2ef67368.css",
-    "static/js/main.a54ef5b9.js"
+    "static/js/main.196d4688.js"
   ]
 }
