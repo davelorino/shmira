@@ -174,16 +174,19 @@ export default class IssueStore {
 
     selectProjectByAssignee = (assignee_id: string, projects: Project[], token: string) => {
         for (const project of projects){
-            console.log("Running the thing");
-            console.log(store.commonStore.assignee_id!);
             var assignee_ids: string[] = [];
+            var assignee_name = '';
             project.assignees.forEach((assignee: Assignee) => {
                 assignee_ids.push(assignee.id);
             })
             if(assignee_ids.includes(store.commonStore.assignee_id!)){
-                console.log("Assignee id condition met");
-                this.selectedProject = project;
-                
+                assignee_name = project.assignees.find(assignee => assignee.id == store.commonStore.assignee_id!)!.first_name;
+                if(assignee_name == "Chiaki"){
+                    if(project.name !== "My First Project")
+                    this.selectedProject = project;
+                } else {
+                    this.selectedProject = project;
+                }
                 //this.setLoadingInitial(false);
                 //break;
             }

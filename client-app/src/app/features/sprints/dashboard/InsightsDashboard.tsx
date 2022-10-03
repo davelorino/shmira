@@ -43,6 +43,9 @@ export default observer(function InsightsDashboard() {
                     //loading === true && <LoadingComponent />
                 }
                 <Filters />
+                <div>
+                <p>This page is in development.</p>
+                </div>
                 <div style={{width: '40%', height: '400px'}} >
                     <IssueStatusRadar />
                 </div>

@@ -119,6 +119,7 @@ export default observer(function LoginForm() {
                             <span style={{display: 'table', margin:'auto'}}>Explore as guest</span>
                         </SignUpButton>
                     </div>
+                    {/*
                     <div style={{textAlign: 'center', paddingTop: '0px', marginTop: '0px', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}} >
                         <GoogleLoginButton iconSize='20px' style={{textAlign: 'center', fontSize: '12px', height: '37px'}}>
                             <span style={{display: 'table', margin:'auto'}}>Sign up with Google</span>
@@ -130,7 +131,7 @@ export default observer(function LoginForm() {
                         </SignUpButton>
                     </div>
                     
-                    {/*
+                    
                     <div style={{textAlign: 'center', paddingTop: '0px', marginTop: '0px', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}} >
                         <AppleLoginButton iconSize='20px' style={{textAlign: 'center', fontSize: '12px', height: '37px'}}>
                             <span style={{display: 'table', margin:'auto'}}>Sign up with Apple</span>
