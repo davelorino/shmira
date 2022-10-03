@@ -39,11 +39,12 @@ export const Right = styled.div`
 `;
 
 export const BarCont = styled.div`
-  height: 5px;
-  border-radius: 4px;
-  border: solid;
+  //height: 5px;
+  //border-radius: 4px;
+  //border: solid;
   overflow: hidden;
   //border-color: '#dfe1e6' !important;
+  border: 1px solid #dfe1e6;
 `;
 
 interface IBar {
@@ -51,13 +52,14 @@ interface IBar {
 }
 
 export const Bar = styled.div<IBar>`
-  height: 5px;
+  //height: 5px;
   //border: 5px 4px solid '#0052cc';
-  border: solid;
+  //border: solid;
   overflow: hidden;
-  //border-color: "#0052cc" !important;
   //transition: all 0.1s;
+  border: 4px solid #0052cc;
   width: ${props => props.width}%;
+  //border-color: "#0052cc" !important;
 `;
 
 

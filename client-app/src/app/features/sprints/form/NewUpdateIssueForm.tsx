@@ -5,6 +5,7 @@ import { useStore } from '../../../stores/store';
 import { observer } from 'mobx-react-lite';
 import { Sprint } from '../../../models/sprint';
 import { Issue } from '../../../models/issue';
+import { Comment } from '../../../models/comment';
 import * as Yup from 'yup';
 import { Assignee } from '../../../models/assignee';
 import { StyledLabelAvatar, StyledAvatar, AvatarIsActiveLabelBorder } from '../dashboard/Filters/Styles';
@@ -14,6 +15,7 @@ import  "react-quill/dist/quill.snow.css";
 import parse from 'html-react-parser';
 import Icon from '../../../layout/Icon/index';
 import IssuePriorityIcon from '../../../layout/IssuePriorityIcon';
+import IssueTypeIcon from '../../../layout/IssueTypeIcon';
 import {StyledLabel} from './Styles';
 import {HoverDiv} from './Styles';
 import UpdateIssueFormTrackingWidget from './UpdateIssueFormTimeTrackingWidget';
@@ -21,6 +23,7 @@ import AccountStore from '../../../stores/accountStore';
 import moment from 'moment';
 import "quill-mention/dist/quill.mention.css";
 import "quill-mention";
+import { v4 as uuid } from 'uuid';
 
 
 export default observer(function NewUpdateIssueForm() {
@@ -81,6 +84,8 @@ export default observer(function NewUpdateIssueForm() {
     var [selectedIssueRemainingDays, setSelectedIssueRemainingDays] = useState(0);
     var [selectedIssueRemainingHours, setSelectedIssueRemainingHours] = useState(0);
     var [selectedIssueRemainingMinutes, setSelectedIssueRemainingMinutes] = useState(0);
+    var [comment_edit_state, setCommentEditState] = useState(false);
+    var [comment_state, setCommentState] = useState("");
 
     function toggleLogTimeEditState() {
         setLogTimeEditState(!log_time_edit_state);
@@ -272,21 +277,21 @@ export default observer(function NewUpdateIssueForm() {
     const issueTypeOptions = [
         {key: '0', value: 'Story', text: 'Story', 
                 content: (<HoverDiv style={{display: 'inline-block'}} onClick={() => changeIssueType('Story')}>
-                                <Icon color='#65BA43'type='story' size={14} />
+                                <IssueTypeIcon color='#65BA43'type='story' size={14} />
                                 <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                                     Story
                                 </div> 
                           </HoverDiv> )},
         {key: '1', value: 'Bug', text: 'Bug', 
                 content: (<HoverDiv style={{display: 'inline-block'}} onClick={() => changeIssueType('Bug')}>
-                                <Icon color='#E44D42'  type='bug' size={14} />
+                                <IssueTypeIcon color='#E44D42'  type='bug' size={14} />
                                 <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                                     Bug
                                 </div> 
                             </HoverDiv> )},
         {key: '2', value: 'Task', text: 'Task', 
                 content: (<HoverDiv style={{display: 'inline-block'}} onClick={() => changeIssueType('Task')}>
-                                <Icon color='#4FADE6' type='task' size={14} />
+                                <IssueTypeIcon color='#4FADE6' type='task' size={14} />
                                 <div  style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                                     Task
                                 </div>
@@ -297,7 +302,7 @@ export default observer(function NewUpdateIssueForm() {
         if(selectedIssue!.issue_type == "Story"){
             return(
                 <StyledLabel style={{display: 'inline-block'}} >
-                <Icon color='#65BA43'type='story' size={14} />
+                <IssueTypeIcon color='#65BA43'type='story' size={14} />
                 <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                     Story
                 </div> 
@@ -307,7 +312,7 @@ export default observer(function NewUpdateIssueForm() {
         if(selectedIssue!.issue_type == "Bug"){
             return(
                 <StyledLabel style={{display: 'inline-block'}} >
-                    <Icon color='#E44D42'  type='bug' size={14} />
+                    <IssueTypeIcon color='#E44D42'  type='bug' size={14} />
                     <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                         Bug
                     </div> 
@@ -317,7 +322,7 @@ export default observer(function NewUpdateIssueForm() {
         if(selectedIssue!.issue_type == "Task"){
             return(
                 <StyledLabel style={{display: 'inline-block'}} >
-                    <Icon color='#4FADE6' type='task' size={14} />
+                    <IssueTypeIcon color='#4FADE6' type='task' size={14} />
                     <div  style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
                         Task
                     </div>
@@ -529,7 +534,7 @@ export default observer(function NewUpdateIssueForm() {
     const extractTimespanObject = (timespan: string) => {
         var days = timespan.substring(0, timespan.indexOf('.'));
         
-        if(days === null){days = '0';}
+        if(days === null || days === ''){days = '0';}
        
         
         var hours = timespan.substring(timespan.indexOf('.') + 1, timespan.indexOf(':'));
@@ -549,6 +554,15 @@ export default observer(function NewUpdateIssueForm() {
         };
 
         return (time_span);
+    }
+
+    const resetTimeState = () => {
+        setSelectedIssueLoggedMinutes(0);
+        setSelectedIssueLoggedHours(0);
+        setSelectedIssueLoggedDays(0);
+        setSelectedIssueRemainingMinutes(0);
+        setSelectedIssueRemainingHours(0);
+        setSelectedIssueRemainingDays(0);
     }
 
     const addTimeSpans = (first_time_span: any, second_time_span: any) => {
@@ -592,7 +606,12 @@ export default observer(function NewUpdateIssueForm() {
         delete current_issue['assignees'];
         
         var time_logged = calculateIssueTimespan(selectedIssueLoggedDays, selectedIssueLoggedHours, selectedIssueLoggedMinutes);
+        console.log("updateLoggedTime:: Time logged =");
+        console.log(time_logged);
         current_issue.time_logged = addTimeSpans(time_logged, current_issue.time_logged);
+        console.log("updateLoggedTime:: Time added =");
+        console.log(current_issue.time_logged);
+
 
         var time_remaining = calculateIssueTimespan(selectedIssueRemainingDays, selectedIssueRemainingHours, selectedIssueRemainingMinutes);
         console.log("Time remaining =");
@@ -603,6 +622,8 @@ export default observer(function NewUpdateIssueForm() {
         selectedIssue!.time_logged = current_issue.time_logged;
         selectedIssue!.time_remaining = current_issue.time_remaining;
         selectedIssue!.updated_at = moment.tz(moment(), 'Australia/Sydney').toISOString(true);
+
+        resetTimeState();
 
         updateIssue(updatedIssue);
 
@@ -623,6 +644,24 @@ export default observer(function NewUpdateIssueForm() {
 
     const handleChangeReporter = (e: any) => {
         setSelectedReporter(e.target.value);
+    }
+
+    function submitComment() {
+
+        var comment_to_send = {
+            Id: uuid(),
+            commenter_assignee_id: commonStore.assignee_id!,
+            comment: comment_state,
+            comment_posted: moment.tz(moment().subtract(moment.duration("11:00:00")), 'Australia/Sydney').toISOString(true)
+        }
+
+        var comment_to_add = {
+            ...comment_to_send,
+            comment_posted: moment.tz(moment(), 'Australia/Sydney').toISOString(true)
+        }
+
+        selectedIssue!.comments!.push(comment_to_add);
+        issueStore.addCommentToIssue(selectedIssue!.id, comment_to_send);
     }
 
 
@@ -736,7 +775,30 @@ export default observer(function NewUpdateIssueForm() {
                     </>
                 }
                   <h5>Comments</h5>
- 
+                  {
+                    selectedIssue!.comments!.map(comment => 
+                        (
+                            <div style={{width: '100%'}}>
+                                <div style={{verticalAlign: 'top', display: 'inline-block'}}> 
+                                    <StyledAvatar size="30" round="16px" 
+                                        src={selectedProject!.assignees.find(assignee => assignee.id === comment.commenter_assignee_id)!.photo?.url}
+                                        name={selectedProject!.assignees.find(assignee => assignee.id === comment.commenter_assignee_id)!.first_name
+                                                .concat(" ", selectedProject!.assignees.find(assignee => assignee.id === comment.commenter_assignee_id)!.second_name)
+                                        }
+                                    />
+                                </div>
+                                <div style={{paddingLeft: '15px', display: 'inline-block', width: '90%'}}>
+                                    <h5>{selectedProject!.assignees.find(assignee => assignee.id === comment.commenter_assignee_id)!.first_name.concat(' ', selectedProject!.assignees.find(assignee => assignee.id === comment.commenter_assignee_id)!.second_name, '    ', moment(comment.comment_posted).fromNow())}</h5>
+                                    <p>{comment.comment} </p>
+                                    <br/>
+
+                                </div>
+                            </div>
+                            
+                        )
+                    )
+                  }
+                <div style={{marginTop: '20px'}}></div>
                 <div style={{display: "inline-block"}}>
                     <StyledAvatar style={{paddingTop: "12px"}} size="30" round="16px" 
                     src={selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)?.photo?.url}
@@ -746,8 +808,13 @@ export default observer(function NewUpdateIssueForm() {
                     />
                 </div>
                 <div style={{display: "inline-block", paddingLeft: "15px", width: "90%"}}>
-                    <TextArea placeholder="Add a comment..."></TextArea>
+                    <TextArea onChange={(e) => setCommentState(e.target.value)} placeholder="Add a comment..."></TextArea>
                 </div>
+
+                <div style={{marginTop: '10px', marginRight: '30px', float: 'right', display: 'inline-block'}}>
+                    <Button size='tiny' content='Comment' color='blue' onClick={() => submitComment()}/>
+                </div>
+                
                 </Grid.Column>
                 <Grid.Column width={6}>
                 <div style={{paddingTop: "10px"}}></div>
@@ -834,12 +901,14 @@ export default observer(function NewUpdateIssueForm() {
                     <div></div>
                    
                     <br/>
-                    <div style={{cursor: 'pointer'}} 
+                    <InvisibleTextInput onClick={toggleLogTimeEditState} fontsize={12} style={{cursor: 'pointer'}} 
                     >
-                    <InvisibleTextInput style={{cursor: "pointer"}} fontsize={12} >
-                    <h5 onClick={toggleLogTimeEditState} style={{marginLeft: "0px", marginBottom: "5px"}}>LOG TIME</h5> 
-                     </InvisibleTextInput>
-
+                    <div style={{paddingTop: '10px', paddingBottom: '10px'}}>
+                    <h5  style={{marginLeft: "0px", marginBottom: "5px"}}>LOG TIME</h5> 
+                    
+                    <UpdateIssueFormTrackingWidget></UpdateIssueFormTrackingWidget>
+                    </div>
+                    </InvisibleTextInput>
                     {log_time_edit_state &&
                         <>
                             <div className='inline fields'>
@@ -874,8 +943,6 @@ export default observer(function NewUpdateIssueForm() {
                                 
                         </>
                     }
-                    <UpdateIssueFormTrackingWidget></UpdateIssueFormTrackingWidget>
-                    </div>
                     <div style={{marginTop: '20px'}}>
                         <div style={{display: 'inline-block', width: '50%'}}>
                         <h5>SPRINT</h5>

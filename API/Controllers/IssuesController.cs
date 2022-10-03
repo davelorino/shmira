@@ -50,6 +50,18 @@ namespace API.Controllers
             return await Mediator.Send(new Application.Issues.EditMultiple.Command{Issues = issues, Id = project_id});
         }
 
+        [HttpPost("comment/{issue_id}")]
+        public async Task<IActionResult> AddComment([FromBody] Comment comment, string issue_id)
+        {
+            return Ok(await Mediator.Send(new Application.Issues.AddComment.Command{Comment = comment, Id = issue_id}));
+        }
+
+        [HttpDelete("comment/{issue_id}")]
+        public async Task<IActionResult> DeleteComment([FromBody] Comment comment, string issue_id)
+        {
+            return Ok(await Mediator.Send(new Application.Issues.DeleteComment.Command{Comment = comment, Id = issue_id}));
+        }
+
         [HttpPut("{Id}/assign/{assignee_id}")]
         public async Task<IActionResult> AddAssignee(Guid Id, Guid assignee_id)
         {

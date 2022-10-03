@@ -264,17 +264,23 @@ export default observer(function SprintPage() {
 
         issuesToUpdate.map(issue => {
             delete issue['assignees']
+            delete issue['comments']
         })        
 
         if(destination_sprint_id === source_sprint_id){
             updateIssues(issuesToUpdate);
         } else {
+            var issueToUpdateSanitized: any = {
+                ...issueToUpdate
+            }
+            delete issueToUpdateSanitized['assignees'];
+            delete issueToUpdateSanitized['comments'];
             updateIssueAndSprint(
                 source_sprint_id,
                 destination_sprint_id,
                 issueToUpdate!.name,
                 issueToUpdate!.id,
-                issueToUpdate!
+                issueToUpdateSanitized!
                 );
         }
 

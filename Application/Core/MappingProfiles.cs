@@ -48,6 +48,7 @@ namespace Application.Core
                 .ForMember(d => d.updated_at, o => o.MapFrom(s => s.Issue.updated_at))
                 .ForMember(d => d.sprint_id, o => o.MapFrom(s => s.Sprint.Id.ToString().ToLower()))
                 .ForMember(d => d.priority, o => o.MapFrom(s => s.Issue.priority))
+                .ForMember(d => d.comments, o => o.MapFrom(s => s.Issue.comments))
                 .ForMember(d => d.original_estimated_duration, o => o.MapFrom(s => s.Issue.original_estimated_duration))
                 .ForMember(d => d.assignees, o => o.MapFrom(s => s.Issue.assignees));
 

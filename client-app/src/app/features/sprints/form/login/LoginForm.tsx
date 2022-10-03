@@ -34,6 +34,15 @@ export default observer(function LoginForm() {
         accountStore.login(account).catch(error => setError('Invalid email or password'))
     }
 
+    function guestLogin(){
+        var account: AccountFormValues = {
+            email: "chiakitachibana@shmiratest.com",
+            password: "Pa$$w0rd"
+        }
+
+        accountStore.login(account).catch(error => setError('Invalid email or password'))
+    }
+
     useEffect(() => {
         const listener = (event: any) => {
           if (event.code === "Enter" || event.code === "NumpadEnter") {
@@ -105,6 +114,11 @@ export default observer(function LoginForm() {
                         <label style={{color: 'red'}}>Wrong email or password</label>
                     }
                     <hr style={{width: '100%', borderColor: 'grey'}} />
+                    <div style={{textAlign: 'center', paddingTop: '0px', marginTop: '0px', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}} >
+                        <SignUpButton onClick={() => guestLogin()} iconSize='20px' style={{textAlign: 'center', fontSize: '12px', height: '37px'}}>
+                            <span style={{display: 'table', margin:'auto'}}>Explore as guest</span>
+                        </SignUpButton>
+                    </div>
                     <div style={{textAlign: 'center', paddingTop: '0px', marginTop: '0px', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}} >
                         <GoogleLoginButton iconSize='20px' style={{textAlign: 'center', fontSize: '12px', height: '37px'}}>
                             <span style={{display: 'table', margin:'auto'}}>Sign up with Google</span>

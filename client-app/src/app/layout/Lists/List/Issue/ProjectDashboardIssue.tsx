@@ -8,6 +8,7 @@ import NewUpdateIssueForm from '../../../../features/sprints/form/NewUpdateIssue
 import { StyledAvatar, AvatarIsActiveLabelBorder } from '../../../../features/sprints/dashboard/Filters/Styles';
 import { Label } from 'semantic-ui-react';
 import IssuePriorityIcon from '../../../../layout/IssuePriorityIcon';
+import IssueTypeIcon from '../../../../layout/IssueTypeIcon';
 import Icon from '../../../Icon';
 
 //import { IssueTypeIcon, IssuePriorityIcon } from 'shared/components';
@@ -24,17 +25,17 @@ interface Props {
 function renderSelectedIssueType(issue: Issue) {
   if(issue.issue_type == "Story"){
       return(
-          <Icon color='#65BA43'type='story' size={14} />
+          <IssueTypeIcon color='#65BA43'type='story' size={14} />
       )
   }
   if(issue.issue_type == "Bug"){
       return(
-              <Icon color='#E44D42'  type='bug' size={14} />
+              <IssueTypeIcon color='#E44D42'  type='bug' size={14} />
       )
   }
   if(issue.issue_type == "Task"){
       return(
-              <Icon color='#4FADE6' type='task' size={14} />
+              <IssueTypeIcon color='#4FADE6' type='task' size={14} />
       )
   }
 }

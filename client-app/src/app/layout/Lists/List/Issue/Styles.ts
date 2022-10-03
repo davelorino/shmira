@@ -20,7 +20,11 @@ export const IssueCard = styled.div<IIssueCard>`
   border-radius: 3px;
   cursor: move;
   background: #181A1A !important;
-  transition: background 0.1s;
+  //transition: background 0.1s;
+  &:hover {
+    backdrop-filter: brightness(120%);
+    filter: brightness(140%);
+  };
   ${mixin.clickable}
   @media (max-width: 1100px) {
     padding: 10px 8px 8px;
@@ -43,7 +47,10 @@ export const IssueCardSprintVersion = styled.div<IIssueCard>`
   width: 100%;
   height: 40px;
   background: #181A1A !important;
-  transition: background 0.1s;
+  &:hover {
+    backdrop-filter: brightness(120%);
+    filter: brightness(140%);
+  };
   border-color: #303436 !important;
   ${mixin.clickable}
   @media (max-width: 1100px) {

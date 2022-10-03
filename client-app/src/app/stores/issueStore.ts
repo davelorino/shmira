@@ -4,6 +4,7 @@ import { Issue } from '../models/issue';
 import { Sprint } from '../models/sprint';
 import { Assignee } from '../models/assignee';
 import { Project } from '../models/project';
+import { Comment } from '../models/comment';
 import { ProjectSprintAndBacklog } from '../models/projectSprintAndBacklog';
 import { SprintIssue } from '../models/sprintissue';
 import { IssueAssignee } from '../models/issueAssignee';
@@ -480,6 +481,21 @@ export default class IssueStore {
         }
     }
 
+    addCommentToIssue = async (issue_id: string, comment: Comment) => {
+        try {
+            await agent.Issues.addComment(issue_id, comment);
+            await this.loadProject(this.selectedProject!.id);
+            runInAction(() => {
+                var project_id = this.selectedProject!.id;
+                var current_project = this.projectRegistry.get(project_id);
+                this.tempProject = current_project;
+                this.selectedProject! = this.tempProject;
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     createProject = async (project: Project, project_sprint: any, project_assignees: any) => {
         this.loading = true;
         try {
@@ -560,7 +576,6 @@ export default class IssueStore {
             ...issue,
             updated_at: moment.tz(moment(), 'Australia/Sydney').toISOString(true),
         }
-        delete issue_to_send['assignees'];
         var issue_to_update: any = {
             issue: issue_to_send,
             source_sprint_id: source_sprint_id,
@@ -628,6 +643,7 @@ export default class IssueStore {
             updated_at: moment.tz(moment(), 'Australia/Sydney').toISOString(true)
         }
         delete issueToSend['assignees'];
+        delete issueToSend['comments'];
         try {
             await agent.Issues.update(issueToSend);
             await this.loadProject(this.selectedProject!.id);

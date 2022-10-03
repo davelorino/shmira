@@ -144,6 +144,30 @@ namespace Persistence.Migrations
                     b.ToTable("Assignees");
                 });
 
+            modelBuilder.Entity("Domain.Comment", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("IssueId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("comment")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("comment_posted")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("commenter_assignee_id")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IssueId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("Domain.Invitation", b =>
                 {
                     b.Property<string>("Id")
@@ -562,6 +586,13 @@ namespace Persistence.Migrations
                     b.Navigation("Photo");
                 });
 
+            modelBuilder.Entity("Domain.Comment", b =>
+                {
+                    b.HasOne("Domain.Issue", null)
+                        .WithMany("comments")
+                        .HasForeignKey("IssueId");
+                });
+
             modelBuilder.Entity("Domain.IssueAssignee", b =>
                 {
                     b.HasOne("Domain.Assignee", "Assignee")
@@ -725,6 +756,8 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Issue", b =>
                 {
                     b.Navigation("assignees");
+
+                    b.Navigation("comments");
                 });
 
             modelBuilder.Entity("Domain.Project", b =>

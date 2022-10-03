@@ -272,13 +272,6 @@ export default observer(function NewCreateIssueForm() {
                     </HoverDiv> )
         }
     ]
-
-    const status_colours = [
-        {status: 'To Do', colour: 'blue'},
-        {status: 'In Progress', colour: 'green'},
-        {status: 'Review', colour: 'purple'},
-        {status: 'Done', colour: ''}
-    ]
     
     const priorityOptions = [
         {key: '0', value: 'Low', text: 'Low', content: (<StyledLabel onClick={() => {setSelectedIssuePriority("Low")}}> <IssuePriorityIcon priority="Low"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>Low</p></StyledLabel>) },
@@ -324,8 +317,8 @@ export default observer(function NewCreateIssueForm() {
             issue_type: selectedIssueType,
             project_id: selectedProject!.id,
             assignees: [],
-            created_at: moment.tz(moment(), 'Australia/Sydney').toISOString(true),
-            updated_at: moment.tz(moment(), 'Australia/Sydney').toISOString(true),
+            created_at: moment.tz(moment().subtract(moment.duration("11:00:00")), 'Australia/Sydney').toISOString(true),
+            updated_at: moment.tz(moment().subtract(moment.duration("11:00:00")), 'Australia/Sydney').toISOString(true),
             description_text: '',
             time_logged: calculateIssueTimespan(selectedIssueLoggedDays, selectedIssueLoggedHours, selectedIssueLoggedMinutes),
             time_remaining: calculateIssueTimespan(selectedIssueRemainingDays, selectedIssueRemainingHours, selectedIssueRemainingMinutes),

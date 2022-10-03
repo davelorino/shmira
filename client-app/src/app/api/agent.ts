@@ -6,6 +6,7 @@ import { Sprint } from '../models/sprint';
 import { Assignee } from '../models/assignee';
 import { SprintIssue } from '../models/sprintissue';
 import { Invitation } from '../models/invitation';
+import { Comment } from '../models/comment';
 import { SprintIssueUpdated } from '../models/sprintIssueUpdated';
 import { Account, AccountFormValues } from '../models/account';
 import { store } from '../stores/store';
@@ -50,6 +51,7 @@ const Issues = {
     update: (issue: Issue) => requests.put(`issues/${issue.id}`, issue),
     updateMultiple: (issues: Issue[], project_id: string) => requests.post(`issues/update_multiple/${project_id}`, issues),
     delete: (id: string) => requests.del(`issues/${id}`),
+    addComment: (issue_id: string, comment: Comment) => requests.post(`issues/comment/${issue_id}`, comment),
     addAssigneesToIssue: (issue_assignees: any) => requests.put(`issues/add_assignees_to_issue`, issue_assignees),
     addAssigneeToIssue: (issue_assignee: any) => requests.put(`issues/add_assignee_to_issue`, issue_assignee),
     removeAssigneeFromIssue: (issue_assignee: any) => requests.put(`issues/remove_assignee_from_issue`, issue_assignee)

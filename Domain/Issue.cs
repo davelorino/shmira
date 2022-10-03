@@ -47,5 +47,7 @@ namespace Domain
 
         public ICollection<IssueAssignee> assignees { get; set; } = new List<IssueAssignee>();
 
+        public ICollection<Comment> comments { get; set; } = new List<Comment>();
+
     }
 }

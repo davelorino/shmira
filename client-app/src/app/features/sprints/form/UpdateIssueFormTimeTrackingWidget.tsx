@@ -5,6 +5,11 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '../../../stores/store';
 
 function convertTimespanToMinutes(timespan: string) {
+  if(timespan == "00:00:00"){
+    return 0
+  }
+  console.log("Timespan received =");
+  console.log(timespan);
     var days = parseInt(timespan.substring(0, timespan.indexOf('.')));
     var days_to_minutes = 0;
     console.log("Days = ");
@@ -64,9 +69,12 @@ function calculateTrackingBarWidth(time_logged: string, time_remaining: string, 
 
 
 function parseTimeSpan(timespan: string) {
+    if(timespan == "00:00:00"){
+      return '0 hours'
+    }
     var days = timespan.substring(0, timespan.indexOf('.'));
     
-    if(days === null){days = '0';}
+    if(days === null || days === ''){days = '0';}
     var days_string = '';
     if(days === '001'){ days_string = 'day'; } else { days_string = 'days'}
     
@@ -87,12 +95,12 @@ function parseTimeSpan(timespan: string) {
     var time_span = '';
 
     if(days === '0' && hours === '0'){
-        time_span = minutes.concat(' ', minutes_string);
+        time_span = parseInt(minutes).toString().concat(' ', minutes_string);
     }
     else if(days === '0'){
-        time_span = hours.concat(' ', hours_string, ' ', minutes, ' ', minutes_string);
+        time_span = parseInt(hours).toString().concat(' ', hours_string, ' ', parseInt(minutes).toString(), ' ', minutes_string);
     }
-    else { time_span = days.concat(' ', days_string, ' ', parseInt(hours).toString(), ' ', hours_string, ' ', parseInt(minutes).toString(), ' ', minutes_string);  }
+    else { time_span = parseInt(days).toString().concat(' ', days_string, ' ', parseInt(hours).toString(), ' ', hours_string, ' ', parseInt(minutes).toString(), ' ', minutes_string);  }
     
     return(time_span);
 }

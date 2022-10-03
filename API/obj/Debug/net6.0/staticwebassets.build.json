@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "tYolrODVepubFt+SEptih13dR4i+SkU2PmOvsu/H+6M=",
+  "Hash": "eWL/LA91MX3k1YMhFulnd7pSCpRPr9SnFas+1+JMj0M=",
   "Source": "API",
   "BasePath": "_content/API",
   "Mode": "Default",
@@ -32,6 +32,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/asset-manifest.json"
+    },
+    {
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/darkmode.css",
+      "SourceId": "API",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
+      "BasePath": "_content/API",
+      "RelativePath": "darkmode.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/darkmode.css"
     },
     {
       "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/favicon.ico",
@@ -136,12 +153,12 @@
       "OriginalItemSpec": "wwwroot/robots.txt"
     },
     {
-      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/css/main.29759527.css",
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/css/main.2ef67368.css",
       "SourceId": "API",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
       "BasePath": "_content/API",
-      "RelativePath": "static/css/main.29759527.css",
+      "RelativePath": "static/css/main.2ef67368.css",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -150,15 +167,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/static/css/main.29759527.css"
+      "OriginalItemSpec": "wwwroot/static/css/main.2ef67368.css"
     },
     {
-      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/css/main.29759527.css.map",
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/css/main.2ef67368.css.map",
       "SourceId": "API",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
       "BasePath": "_content/API",
-      "RelativePath": "static/css/main.29759527.css.map",
+      "RelativePath": "static/css/main.2ef67368.css.map",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -167,15 +184,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/static/css/main.29759527.css.map"
+      "OriginalItemSpec": "wwwroot/static/css/main.2ef67368.css.map"
     },
     {
-      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/.main.b75968ef.js.map.icloud",
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/.main.97b27d46.js.map.icloud",
       "SourceId": "API",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
       "BasePath": "_content/API",
-      "RelativePath": "static/js/.main.b75968ef.js.map.icloud",
+      "RelativePath": "static/js/.main.97b27d46.js.map.icloud",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -184,15 +201,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/static/js/.main.b75968ef.js.map.icloud"
+      "OriginalItemSpec": "wwwroot/static/js/.main.97b27d46.js.map.icloud"
     },
     {
-      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.b75968ef.js",
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.97b27d46.js",
       "SourceId": "API",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
       "BasePath": "_content/API",
-      "RelativePath": "static/js/main.b75968ef.js",
+      "RelativePath": "static/js/main.97b27d46.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -201,15 +218,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/static/js/main.b75968ef.js"
+      "OriginalItemSpec": "wwwroot/static/js/main.97b27d46.js"
     },
     {
-      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.b75968ef.js.LICENSE.txt",
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.97b27d46.js.LICENSE.txt",
       "SourceId": "API",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
       "BasePath": "_content/API",
-      "RelativePath": "static/js/main.b75968ef.js.LICENSE.txt",
+      "RelativePath": "static/js/main.97b27d46.js.LICENSE.txt",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -218,7 +235,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/static/js/main.b75968ef.js.LICENSE.txt"
+      "OriginalItemSpec": "wwwroot/static/js/main.97b27d46.js.LICENSE.txt"
     },
     {
       "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/media/CircularStd-Black.00cb4881193e9281e57a.woff2",

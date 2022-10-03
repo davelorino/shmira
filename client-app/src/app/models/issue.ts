@@ -1,4 +1,5 @@
 import { Assignee } from './assignee';
+import { Comment } from './comment';
 
 export interface Issue {
     id: string;
@@ -22,4 +23,5 @@ export interface Issue {
     reporter_id: string;
     sprint_id: string;
     assignees: Assignee[];
+    comments?: Comment[];
 }

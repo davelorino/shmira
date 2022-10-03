@@ -175,6 +175,7 @@ export default observer(function IssuesDashboard() {
 
         issuesToUpdate.map(issue => {
            delete issue['assignees']
+           delete issue['comments']
         })        
 
         if(destination_sprint_name === source_sprint_name){

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Assignees;
+using Domain;
 
 namespace Application.Issues
 {
@@ -44,5 +45,7 @@ namespace Application.Issues
         public int sort_order { get; set; }
 
         public List<AssigneeDto> assignees { get; set; } = new List<AssigneeDto>();
+
+        public ICollection<Comment> comments { get; set; } = new List<Comment>();
     }
 }
