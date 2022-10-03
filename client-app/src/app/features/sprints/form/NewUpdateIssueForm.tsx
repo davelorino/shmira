@@ -943,7 +943,7 @@ export default observer(function NewUpdateIssueForm() {
                                 
                         </>
                     }
-                    <div style={{marginTop: '20px'}}>
+                    <div style={{display: 'inline', width: '100%', marginTop: '20px'}}>
                         <div style={{display: 'inline-block', width: '50%'}}>
                         <h5>SPRINT</h5>
                         <StyledLabel //color={status_colours.find(sc => sc.status === selectedIssue!.status).colour}

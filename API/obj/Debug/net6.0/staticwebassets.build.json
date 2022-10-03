@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "eWL/LA91MX3k1YMhFulnd7pSCpRPr9SnFas+1+JMj0M=",
+  "Hash": "5McROq3f93I3Icj1nIcN4wYnsqxjk51cGk4b+Mlzwbw=",
   "Source": "API",
   "BasePath": "_content/API",
   "Mode": "Default",
@@ -187,12 +187,12 @@
       "OriginalItemSpec": "wwwroot/static/css/main.2ef67368.css.map"
     },
     {
-      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/.main.97b27d46.js.map.icloud",
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.ce52acf6.js",
       "SourceId": "API",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
       "BasePath": "_content/API",
-      "RelativePath": "static/js/.main.97b27d46.js.map.icloud",
+      "RelativePath": "static/js/main.ce52acf6.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -201,15 +201,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/static/js/.main.97b27d46.js.map.icloud"
+      "OriginalItemSpec": "wwwroot/static/js/main.ce52acf6.js"
     },
     {
-      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.97b27d46.js",
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.ce52acf6.js.LICENSE.txt",
       "SourceId": "API",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
       "BasePath": "_content/API",
-      "RelativePath": "static/js/main.97b27d46.js",
+      "RelativePath": "static/js/main.ce52acf6.js.LICENSE.txt",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -218,15 +218,15 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/static/js/main.97b27d46.js"
+      "OriginalItemSpec": "wwwroot/static/js/main.ce52acf6.js.LICENSE.txt"
     },
     {
-      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.97b27d46.js.LICENSE.txt",
+      "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/js/main.ce52acf6.js.map",
       "SourceId": "API",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/",
       "BasePath": "_content/API",
-      "RelativePath": "static/js/main.97b27d46.js.LICENSE.txt",
+      "RelativePath": "static/js/main.ce52acf6.js.map",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -235,7 +235,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/static/js/main.97b27d46.js.LICENSE.txt"
+      "OriginalItemSpec": "wwwroot/static/js/main.ce52acf6.js.map"
     },
     {
       "Identity": "/Users/Davide/Desktop/demo/Shmira2/API/wwwroot/static/media/CircularStd-Black.00cb4881193e9281e57a.woff2",

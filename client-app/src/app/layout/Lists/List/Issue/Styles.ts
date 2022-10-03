@@ -66,9 +66,9 @@ export const IssueCardSprintVersion = styled.div<IIssueCard>`
 
 export const Title = styled.p`
   padding-bottom: 11px;
-  ${font.size(15)}
+  ${font.size(13.5)}
   @media (max-width: 1100px) {
-    ${font.size(14.5)}
+    ${font.size(13.5)}
   }
 `;
 
