@@ -55,7 +55,7 @@ export default observer(function ProjectBoardListIssue({ issue, index }: Props) 
     <Draggable draggableId={issue.id} index={index} key={issue.id}>
       {( provided,  snapshot) => (
           <div
-          style={{display: "flex", overflow: "hidden"}}
+          style={{cursor: 'move', display: "flex", overflow: "hidden"}}
           ref={provided.innerRef}
           data-testid="list-issue"
           {...provided.draggableProps}

@@ -47,7 +47,7 @@ export default observer(function SprintBoardListIssue({ issue, index }: Props) {
         <Draggable draggableId={issue.id} index={index} key={issue.id}>
           {( provided,  snapshot) => (
               <div
-              style={{display: "flex", overflow: "hidden"}}
+              style={{cursor: 'move', display: "flex", overflow: "hidden"}}
               ref={provided.innerRef}
               data-testid="list-issue"
               {...provided.draggableProps}
@@ -66,6 +66,7 @@ export default observer(function SprintBoardListIssue({ issue, index }: Props) {
                       issue.assignees.map((assignee, index) => (
                     <AvatarIsActiveLabelBorder isActive={false} key={assignee.id} index={index}>
                       <StyledAvatar 
+                      style={{marginRight: '5px'}}
                       value={assignee.id}
                       size='20'
                       src={assignee.photo ? assignee.photo.url : ''} 

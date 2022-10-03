@@ -18,7 +18,7 @@ export const IssueCard = styled.div<IIssueCard>`
   padding: 10px;
   margin-bottom: 5px;
   border-radius: 3px;
-  cursor: move;
+  cursor: move !important;
   background: #181A1A !important;
   //transition: background 0.1s;
   &:hover {
@@ -42,7 +42,7 @@ export const IssueCardSprintVersion = styled.div<IIssueCard>`
   padding: 10px;
   border-radius: 1px;
   border: solid;
-  cursor: move;
+  cursor: move !important;
   border-width: thin;
   width: 100%;
   height: 40px;
@@ -76,7 +76,7 @@ export const TitleSprintVersion = styled.p`
   padding-bottom: 5px;
   ${font.size(12)}
   @media (max-width: 1100px) {
-    ${font.size(14.5)}
+    ${font.size(12)}
   }
 `;
 
