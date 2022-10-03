@@ -64,23 +64,23 @@ export default observer(function ProjectBoardListIssue({ issue, index }: Props) 
           >
           <IssueCard isBeingDragged={snapshot.isDragging && !snapshot.isDropAnimating} style={{overflow: "hidden"}} >
             <Title>{issue.name}</Title>
-            <div style={{display: "inline-block", float: "left", clear: "both"}}></div>
+            <div style={{position: 'absolute', paddingBottom: '0px', marginBottom: '0px', bottom: '0px', left: '0px'}}></div>
              {
               renderSelectedIssueType(issue)
              }
               
               <IssuePriorityIcon priority={issue.priority}></IssuePriorityIcon>
-            <div style={{display: "inline-block", float: "right", clear: "both"}}>
+            <div style={{display: "inline-block", paddingBottom: '0px', marginRight: '5px', float: "right", clear: "both"}}>
               
                 {
                   issue.assignees.map((assignee, index) => (
                 <AvatarIsActiveLabelBorder isActive={false} index={index}>
                   <StyledAvatar 
                   value={assignee.id}
-                  size='20' 
+                  size='24' 
                   src={assignee.photo ? assignee.photo.url : ''}
                   name={assignee.first_name.concat(' ', assignee.second_name)} 
-                  round='20px'
+                  round='24px'
                   />
                 </AvatarIsActiveLabelBorder>
                   ))
