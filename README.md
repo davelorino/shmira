@@ -1,11 +1,10 @@
 # shmira
 A project management tool.
 
-This is just a way for me to make something that I can actually benefit from using.
+Shmira offers features found in popular project management tools, such as registration and login, invite a collaborator (registered or unregistered), create an unlimited number of projects, sprints, and issues - Shmira also provides backlog for every project. 
 
-I think two things will determine whether this was successful:
+C# API, React and Typescript frontend and Postgresql database.
 
-1. Does this make it easier to manage and track my projects?
-2. Is the experience of using this more enjoyable than just using a notepad?
+The C# API follows the design principle of clean architecture, the mediator design pattern and Command-Query-Responsibility-Separation.
 
-I think its possible to achieve one and not both goals, however I think that both are essential requirements in order to call this a win. We'll see.
+Feel free to reach out to me for any enquiries: https://www.linkedin.com/in/davide-lorino-73963686/
