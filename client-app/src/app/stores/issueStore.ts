@@ -1,5 +1,4 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import { useHistory } from 'react-router-dom';
 import { Issue } from '../models/issue';
 import { Sprint } from '../models/sprint';
 import { Assignee } from '../models/assignee';
@@ -10,7 +9,6 @@ import { SprintIssue } from '../models/sprintissue';
 import { IssueAssignee } from '../models/issueAssignee';
 import { store } from './store';
 import agent from '../api/agent';
-import {v4 as uuid} from 'uuid';
 import moment from 'moment-timezone';
 
 
@@ -73,11 +71,8 @@ export default class IssueStore {
                 this.issueRegistry.set(issue.id, issue);
            })
          })
-         //this.setLoadingInitial(false);
         } catch (error) {
             console.log(error);
-
-            //this.setLoadingInitial(false);
         }
     }
 
@@ -90,33 +85,11 @@ export default class IssueStore {
                 })
                 if(window.localStorage.getItem('selected_project_id') !== null){
                     this.selectProject(window.localStorage.getItem('selected_project_id')!);
-                    //this.setLoadingInitial(false);
                 } 
                 else{
                     this.selectProject(projects[0]);
                     this.setLoadingInitial(false);
                 }
-                /*
-                else 
-                {
-                    for (const project of projects){
-                        console.log("Running the thing");
-                        console.log(store.commonStore.assignee_id!);
-                        var assignee_ids: string[] = [];
-                        project.assignees.forEach((assignee: Assignee) => {
-                            assignee_ids.push(assignee.id);
-                        })
-                        if(assignee_ids.includes(store.commonStore.assignee_id!)){
-                            console.log("Assignee id condition met");
-                            this.selectProject(project.id);
-                            this.setLoadingInitial(false);
-                            break;
-                        }
-                        //break;
-                    }
-                    //this.selectProject(projects[0].id);
-                } */
-                //this.setLoadingInitial(false);
             })
         } catch (error) {
             console.log(error);
@@ -140,19 +113,13 @@ export default class IssueStore {
     }
 
     loadProject = async (id: string) => {
-        console.log("Begin load project");
-        console.log(moment());
         try {
             const project = await agent.Projects.details(id);
             runInAction(() => {
                 this.projectRegistry.set(project.id, project);
-                console.log("End load project");
-                console.log(moment());
-               //this.setLoadingInitial(false);
             })
         } catch (error) {
             console.log(error);
-            //this.setLoadingInitial(false);
         }
     }
 
@@ -163,7 +130,6 @@ export default class IssueStore {
                 sprints.forEach((sprint: Sprint) => {
                     this.sprintRegistry.set(sprint.id, sprint);
                 })
-                //this.setLoadingInitial(false);
             })
         } catch (error) {
             console.log(error);
@@ -187,41 +153,16 @@ export default class IssueStore {
                 } else {
                     this.selectedProject = project;
                 }
-                //this.setLoadingInitial(false);
-                //break;
             }
-            //break;
         }
     }
 
     updateRelevantIssues = (relevant_sprints: Sprint[]) => {
-        console.log("update relevant issues triggered")
-        
         runInAction(() => {
             this.issueRegistry.clear();
             relevant_sprints.map((sprint) => {
                 sprint.issues.map((issue, index) => {
-                    /*
-                    if(issue.sort_order == 0){
-                        if(issue.status == "To Do"){
-                            issue.sort_order = index;
-                        }
-                        if(issue.status == "In Progress"){
-                            issue.sort_order = parseInt('20'.concat(index.toString()));
-                        }
-                        if(issue.status == "Review"){
-                            issue.sort_order = parseInt('300'.concat(index.toString()));
-                        }
-                        if(issue.status == "Done"){
-                            issue.sort_order = parseInt('4000'.concat(index.toString()));
-                        }
-                    
-                    }
-                    */
-                    //console.log("Updated sort order");
-                    //console.log(issue.sort_order);
-                    this.issueRegistry.set(issue.id, issue);
-                    
+                    this.issueRegistry.set(issue.id, issue);   
                 })
             })
         })
@@ -281,8 +222,6 @@ export default class IssueStore {
                 if(sprint.is_active){
                     sprint.issues.map(issue => {             
                         if(issue.name.toLowerCase().includes(this.searchFilter.toLowerCase())){
-                            console.log("Found a matching issue");
-                            console.log(issue);
                             issues.push(issue);
                         }
                     })
@@ -295,7 +234,6 @@ export default class IssueStore {
         }
         else{
             var project_id = this.selectedProject!.id;
-            //this.loadProjects();
             this.selectedProject = this.projectRegistry.get(project_id);
         }
     })
@@ -312,11 +250,9 @@ export default class IssueStore {
                 }
             }
             if(found === 1){
-                console.log("Found");
                 this.activeUsers = this.activeUsers.filter(user => user !== user_id)
             }
             if(found === 0){
-                console.log("Not found");
                 this.activeUsers.push(user_id);
             }      
         })
@@ -330,7 +266,6 @@ export default class IssueStore {
                 relevant_sprints.push(sprint);
                 this.sprintRegistry.set(sprint.id, sprint);
             })
-            console.log("Update relevant sprints triggered");
             this.updateRelevantIssues(relevant_sprints);
         })
 
@@ -344,7 +279,6 @@ export default class IssueStore {
                 window.localStorage.setItem('selected_project_id', this.selectedProject.id);
                 this.updateRelevantSprints(this.selectedProject!);
                 this.setLoadingInitial(false);
-                //this.loadRelevantIssues(this.selectedProject);
             }  
         })
     }
@@ -364,7 +298,6 @@ export default class IssueStore {
 
     openForm = (id?: string) => {
         id ? this.selectIssue(id) : this.cancelSelectedIssue();
-        //this.editMode = true;
     }
 
     closeForm = () => {

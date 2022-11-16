@@ -1,16 +1,9 @@
 import { Account, AccountFormValues } from '../models/account';
 import { makeAutoObservable, runInAction } from 'mobx';
-import { useHistory } from 'react-router-dom';
-import { Issue } from '../models/issue';
-import { Sprint } from '../models/sprint';
 import { Assignee } from '../models/assignee';
 import { Invitation } from '../models/invitation';
-import { ProjectSprintAndBacklog } from '../models/projectSprintAndBacklog';
-import { SprintIssue } from '../models/sprintissue';
-import { IssueAssignee } from '../models/issueAssignee';
 import { store } from './store';
 import agent from '../api/agent';
-import {v4 as uuid} from 'uuid';
 import emailjs from '@emailjs/browser';
 
 export default class AccountStore {
@@ -89,7 +82,6 @@ export default class AccountStore {
                 this.someone_is_logged_in = true;
                 this.account = user;
                 this.assignee = user_assignee;
-                console.log("This is the logged in account: ");
                 this.loginLoading = false;
                 store.commonStore.setToken(user.token);
                 console.log(this.account);
@@ -169,7 +161,7 @@ export default class AccountStore {
             await agent.Invites.create(invitation)
             runInAction(() => {
                 if(isUserRegistered === "User registered"){
-                    var base_link = "http://www.shmira.com.au";
+                    var base_link = "https://www.shmira.com.au";
                     var generated_link = base_link.concat('/invites/accept/', invitation.id);
                     this.sendCollaborationEmail(e, form, generated_link, user_sending_invite);
                 } else {
@@ -233,7 +225,7 @@ export default class AccountStore {
             var user = await agent.Accounts.register(creds);
             var assignee = await agent.Assignees.findByAppUserId(user.id);
             runInAction(() => {
-                var base_link = "http://shmira.herokuapp.com";
+                var base_link = "https://www.shmira.com.au";
                 var generated_link = base_link.concat("/activate?id=".concat(user.id));
                 this.sendActivationEmail(e, form, generated_link);
                 this.loading = false;

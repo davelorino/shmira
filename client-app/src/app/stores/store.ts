@@ -2,7 +2,7 @@ import IssueStore from './issueStore';
 import ModalStore from './modalStore';
 import MediumModalStore from './mediumModalStore';
 import SmallModalStore from './smallModalStore';
-import {createContext, useContext} from 'react';
+import { createContext, useContext } from 'react';
 import UserStore from './userStore';
 import CommonStore from './commonStore';
 import AccountStore from './accountStore';
