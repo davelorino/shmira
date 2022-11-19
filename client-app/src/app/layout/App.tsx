@@ -10,59 +10,38 @@ import LoadingComponent from './LoadingComponent';
 import NavBarTop from './NavBarTop';
 import { useStore } from '../stores/store';
 import { observer } from 'mobx-react-lite';
-import { AccountFormValues } from '../models/account';
 import ModalContainer from '../shared/modals/ModalContainer';
 import MediumModalContainer from '../shared/modals/MediumModalContainer';
 import SmallModalContainer from '../shared/modals/SmallModalContainer';
 import NavbarRight from './NavbarRight';
 import AboutPage from './About';
-//import AccountActivation from './AccountActivation';
 import { Route } from 'react-router-dom';
 import LoginForm from '../features/sprints/form/login/LoginForm';
 import backgroundImage3 from './shmirabackground3.jpg';
 import ActivateAccountForm from '../features/sprints/form/login/ActivateAccountForm';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import agent from '../api/agent';
 import '../../darkmode.css';
 
 
 
 function App() {
-  const { issueStore, userStore, modalStore, commonStore, accountStore } = useStore();
-  const drtheme={
-    brightness: 120,
-    contrast: 100,
-    sepia: 0,
-  }
+  const { issueStore, commonStore, accountStore } = useStore();
 
-  const [loginError, setError] = useState('');
+  useEffect(() => {
+    issueStore.loadingInitial = true;
+    accountStore.accountsLoading = true;
+    commonStore.loadInitial();
+  }, [])
 
-  const {selectedIssue, 
-         editMode, 
-         updateIssue, 
-         deleteIssue, 
-         selectedProject, 
-         selectProject,
-         allProjects,
-         allSprints,
-         issuesByDate,
-         updateIssueAndSprint
-      } = issueStore;
-
-  const { user_logged_in } = userStore;
-
-
-      useEffect(() => {
-        issueStore.loadingInitial = true;
-        accountStore.accountsLoading = true;
-        commonStore.loadInitial();
-      }, [])
-
-
-
-if (issueStore.loadingInitial || commonStore.assignee_id === null && (accountStore.accountsLoading || issueStore.loadingInitial)) return <><LoadingComponent content='Loading...'/></>
-
+if (
+  issueStore.loadingInitial || 
+  commonStore.assignee_id === null && 
+  (
+    accountStore.accountsLoading || 
+    issueStore.loadingInitial
+  )
+) return <><LoadingComponent content='Loading...'/></>
 
 if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.loadingInitial)  {
   {console.log("App started")}
@@ -98,9 +77,11 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
   </div>
   )}
   
-  else if(issueStore.selectedProject! !== undefined && !accountStore.accountsLoading && !issueStore.loadingInitial){
-    console.log("Third path");
-    console.log(issueStore.selectedProject!)
+  else if(
+    issueStore.selectedProject! !== undefined && 
+    !accountStore.accountsLoading && 
+    !issueStore.loadingInitial
+  ){
     return (
       <div>
       {
@@ -110,23 +91,15 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
           <MediumModalContainer />
           <NavBarTop />
           <NavbarRight />
-
           <Container style={{marginTop: '7em'}}>
-
             <Route exact path='/' component={IssueDashboard} />
             <Route path='/insights' component={InsightsDashboard} />
-            {/*<Route path='/activate' component={AccountActivation} />*/}
             <Route path='/sprints' component={SprintPage} />
             <Route path='/about' component={AboutPage} />
-
-
-          </Container>
-
-    
+          </Container>    
         </div>
       }
-      {
-        
+      { 
         <ToastContainer
             position="bottom-right"
             theme='dark'
@@ -139,15 +112,11 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
             draggable
             pauseOnHover
         />
-        
       }
-     
-      
     </div>
     );
   }
-    console.log("Final path");
-    return (<></>)
+  return (<></>)
 }
 
 export default observer(App);

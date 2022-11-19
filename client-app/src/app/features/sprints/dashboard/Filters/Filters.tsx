@@ -6,7 +6,6 @@ import { useStore } from '../../../../stores/store';
 import { observer } from 'mobx-react-lite';
 import { Input } from 'semantic-ui-react';
 import { StyledAvatar, AvatarIsActiveBorder } from './Styles';
-import moment from 'moment';
 import { FaChartLine } from 'react-icons/fa';
 
 export default observer(function ProjectBoardFilters() {
@@ -34,7 +33,10 @@ export default observer(function ProjectBoardFilters() {
     }
 
     function filterOnlyMyIssues() {
-      issueStore.activeUsers = [selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)!.id];
+      issueStore.activeUsers = [selectedProject!.assignees
+        .find(assignee => 
+          assignee.id_app_user === commonStore.account_id
+        )!.id];
       issueStore.filterProject();
     }
 
@@ -55,38 +57,84 @@ export default observer(function ProjectBoardFilters() {
         placeholder="Search for issues..."
         onChange={(e) => handleSearchFilterChange(e.target.value)}
       />
-      {
-        
+      {   
         selectedProject.assignees.map( (user, index) => (
-          <AvatarIsActiveBorder isActive={activeUsers.includes(user.id)} index={index * (-index) } >
-          <StyledAvatar 
-                value={user.id}
-                onClick={() => handleClick(selectedProject, user)
-                }
-                size='30'
-                src={user.photo ? user.photo.url : ''} 
-                name={user.first_name.concat(' ', user.second_name)} 
-                round='20px'
-          />
+          <AvatarIsActiveBorder 
+            isActive={activeUsers.includes(user.id)} 
+            index={index * (-index)} 
+            >
+            <StyledAvatar 
+              value={user.id}
+              onClick={() => 
+                handleClick(selectedProject, user)
+              }
+              size='30'
+              src={user.photo ? user.photo.url : ''} 
+              name={user.first_name.concat(' ', user.second_name)} 
+              round='20px'
+            />
           </AvatarIsActiveBorder>
-          ))
-        }
-      <div style={{cursor: 'pointer', color: '#deebff', marginLeft: '30px', alignItems: 'center', paddingTop: '15px', display: 'inline-block'}}
-           onClick={() => filterOnlyMyIssues()}
+        ))
+      }
+      <div 
+        style={{
+          cursor: 'pointer', 
+          color: '#deebff', 
+          marginLeft: '30px', 
+          alignItems: 'center', 
+          paddingTop: '15px', 
+          display: 'inline-block'
+        }}
+        onClick={() => filterOnlyMyIssues()}
       > 
-          <p>Only my issues</p> 
+        <p>Only my issues</p> 
       </div>
-      <div style={{cursor: 'pointer', color: '#deebff', marginLeft: '15px', alignItems: 'center', paddingTop: '15px', display: 'inline-block'}}
-          onClick={() => clearAllFilters()}
+      <div 
+        style={{
+          cursor: 'pointer', 
+          color: '#deebff', 
+          marginLeft: '15px', 
+          alignItems: 'center', 
+          paddingTop: '15px', 
+          display: 'inline-block'
+        }}
+        onClick={() => clearAllFilters()}
       >  
-          <p>Clear all</p> 
+        <p>Clear all</p> 
       </div>
-      <div onClick={() => history.push('/insights')} style={{marginTop: '18px', marginRight: '10px', float: 'right', display: 'inline-block'}}>
-      <p style={{cursor: 'pointer', color: '#deebff', float: 'right', bottom: '5px', marginRight: '8px', marginBottom: '5px', marginLeft: '5px', display: 'inline-block'}}>Insights</p>         
-        <FaChartLine size='18' style={{cursor: 'pointer', color: '#deebff', float: 'right', top: '10px', display: 'inline-block', paddingBottom: '0px', marginBottom: '0px', bottom: '0px' }} />
+      <div 
+        onClick={() => history.push('/insights')} 
+        style={{
+          marginTop: '18px', 
+          marginRight: '10px', 
+          float: 'right', 
+          display: 'inline-block'
+        }}>
+        <p style={{
+          cursor: 'pointer', 
+          color: '#deebff', 
+          float: 'right', 
+          bottom: '5px', 
+          marginRight: '8px', 
+          marginBottom: '5px', 
+          marginLeft: '5px', 
+          display: 'inline-block'
+          }}>Insights
+        </p>         
+        <FaChartLine 
+          size='18' 
+          style={{
+            cursor: 'pointer', 
+            color: '#deebff', 
+            float: 'right', 
+            top: '10px', 
+            display: 'inline-block', 
+            paddingBottom: '0px', 
+            marginBottom: '0px', 
+            bottom: '0px' 
+          }}/>
+        </div>
       </div>
-     
-    </div>
   );
 });
 
