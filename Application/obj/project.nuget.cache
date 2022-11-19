@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "A+MhLR/7JsVXA1RoaOJNgQIZ7JRD3McwNhzyXZ2d/uCuy5yc3Oq3t2DfzrzGvaFFgHBVAPhbwqvUsixLlJaC2Q==",
+  "dgSpecHash": "3uuu7Vp9eGKLT19Jz2qxuowxDp2TSKySAR0zwkIcZobXXNvhFT9cSUTBLFlrh20ZYMWjQKPXCKf/uVBhJomVoA==",
   "success": true,
-  "projectFilePath": "/Users/Davide/Desktop/demo/Shmira2/Application/Application.csproj",
+  "projectFilePath": "/Users/Davide/Documents/Shmira3/shmira/Application/Application.csproj",
   "expectedPackageFiles": [
     "/Users/Davide/.nuget/packages/automapper/11.0.0/automapper.11.0.0.nupkg.sha512",
     "/Users/Davide/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/11.0.0/automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",

@@ -88,8 +88,10 @@ export default class IssueStore {
                 } 
                 else{
                     this.selectProject(projects[0]);
-                    this.setLoadingInitial(false);
+                    //this.setLoadingInitial(false);
                 }
+                setTimeout(() => this.setLoadingInitial(false), 3000)
+                
             })
         } catch (error) {
             console.log(error);

@@ -14,7 +14,6 @@ import { useLocation, useHistory } from 'react-router-dom';
 
 export default observer(function ActivationForm() {
 
-  
     const { userStore, accountStore, issueStore } = useStore();
     const { loading } = issueStore;
     const [activationError, setError] = useState('');
@@ -55,74 +54,174 @@ export default observer(function ActivationForm() {
     }
 
     if(accountActivated === false) {
-        return (
-            
-            <div className='darkreader' style={{backgroundColor: 'transparent'}}>
-                
-            
-            
-                <div style={{width: '100%', minHeight: '500px',
-                            backgroundColor: 'transparent',
-                            display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
-                            padding: '15px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center',
-                            backgroundSize: 'cover', position: 'relative', zIndex: '1'}}>
-                    <div style={{paddingTop: '0px', marginTop: '20px', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}} >
-                        <Icon top={0} type='duck' size={40} />
+        return (    
+            <div 
+                className='darkreader' 
+                style={{backgroundColor: 'transparent'}}>
+                <div style={{
+                    width: '100%', 
+                    minHeight: '500px',
+                    backgroundColor: 'transparent',
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    justifyContent: 'center',
+                    padding: '15px', 
+                    backgroundRepeat: 'no-repeat', 
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover', 
+                    position: 'relative', 
+                    zIndex: '1'
+                    }}>
+                    <div style={{
+                        paddingTop: '0px', 
+                        marginTop: '20px', 
+                        width: '100%', 
+                        display: 'flex', 
+                        flexWrap: 'wrap', 
+                        justifyContent: 'center'
+                        }}>
+                        <Icon 
+                            top={0} 
+                            type='duck' 
+                            size={40}
+                            />
                     </div>
-                    <h2 style={{marginTop: '5px'}}>Activate your account</h2>
-                    <input type='email' name='email' placeholder='example@company.com' onChange={(e) => {setError(''); updateEmailState(e.target.value)}} 
-                        style={{border: '0.5px solid', marginBottom: '10px', color: 'white', backgroundColor: 'transparent', position: 'relative', width: '100%', lineHeight: '1.2', height: '45px', display: 'block', fontSize: '16px', padding: '0 5px 0 5px'}} />
+                    <h2 style={{marginTop: '5px'}}>
+                            Activate your account
+                    </h2>
+                    <input 
+                        type='email' 
+                        name='email' 
+                        placeholder='example@company.com' 
+                        onChange={(e) => {
+                            setError(''); 
+                            updateEmailState(e.target.value)
+                        }} 
+                        style={{
+                            border: '0.5px solid', 
+                            marginBottom: '10px', 
+                            color: 'white', 
+                            backgroundColor: 'transparent', 
+                            position: 'relative', 
+                            width: '100%', 
+                            lineHeight: '1.2', 
+                            height: '45px', 
+                            display: 'block', 
+                            fontSize: '16px', 
+                            padding: '0 5px 0 5px'
+                            }}/>
                     <br/><br/>
-                    <input type='password' name='password' placeholder='password' onChange={(e) => {setError(''); updatePasswordState(e.target.value)}}
-                        style={{border: '0.5px solid', marginBottom: '10px', color: 'white', backgroundColor: 'transparent', position: 'relative', width: '100%', lineHeight: '1.2', height: '45px', display: 'block', fontSize: '16px', padding: '0 5px 0 5px'}}
+                    <input 
+                        type='password' 
+                        name='password' 
+                        placeholder='password' 
+                        onChange={(e) => {
+                            setError(''); 
+                            updatePasswordState(e.target.value)
+                        }}
+                        style={{
+                            border: '0.5px solid', 
+                            marginBottom: '10px', 
+                            color: 'white', 
+                            backgroundColor: 'transparent', 
+                            position: 'relative', 
+                            width: '100%', 
+                            lineHeight: '1.2', 
+                            height: '45px', 
+                            display: 'block', 
+                            fontSize: '16px', 
+                            padding: '0 5px 0 5px'
+                        }}
                     />
-                    <div style={{width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
-                    <Button  content='Activate' size='tiny' loading={loading} onClick={() => activate()} 
-                    style={{marginTop: '10px', marginBottom: '10px', position: 'relative', clear: 'both', float: 'right'
-                            , lineHeight: '1.2', height: '32px'}}
-                    />
+                    <div style={{
+                        width: '100%', 
+                        display: 'flex', 
+                        flexWrap: 'wrap', 
+                        justifyContent: 'center'
+                        }}>
+                        <Button  
+                            content='Activate' 
+                            size='tiny' 
+                            loading={loading} 
+                            onClick={() => activate()} 
+                            style={{
+                                marginTop: '10px', 
+                                marginBottom: '10px', 
+                                position: 'relative', 
+                                clear: 'both', 
+                                float: 'right',
+                                lineHeight: '1.2', 
+                                height: '32px'
+                            }}
+                        />
                     </div>
                     {
                         activationError.length > 1 &&
                         <label style={{color: 'red'}}>Problem activating.</label>
-                    }
-                  
+                    }    
                     <br/><br/>
                 </div>
-            
-            
             </div>
         )
     } else return (
         <div className='darkreader' style={{backgroundColor: 'transparent'}}>
-                
-            
-            
-        <div style={{width: '100%', minHeight: '500px',
-                    backgroundColor: 'transparent',
-                    display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
-                    padding: '15px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center',
-                    backgroundSize: 'cover', position: 'relative', zIndex: '1'}}>
-            <div style={{paddingTop: '0px', marginTop: '20px', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}} >
-                <Icon top={0} type='duck' size={40} />
-            </div>
-            <h2 style={{marginTop: '5px'}}>Activate your account</h2>
-            <div style={{paddingTop: '0px', marginTop: '20px', width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}} >
-            All set! Your account has been activated.
-            </div>
-            <Button  content='Sign in' size='tiny' loading={loading} onClick={() => history.push('/')} 
-            style={{marginTop: '10px', marginBottom: '10px', position: 'relative', clear: 'both', float: 'right'
-                    , lineHeight: '1.2', height: '32px'}}
-            />
+            <div style={{
+                width: '100%', 
+                minHeight: '500px',
+                backgroundColor: 'transparent',
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                justifyContent: 'center',
+                padding: '15px', 
+                backgroundRepeat: 'no-repeat', 
+                backgroundPosition: 'center',
+                backgroundSize: 'cover', 
+                position: 'relative', 
+                zIndex: '1'
+                }}>
+                <div style={{
+                    paddingTop: '0px', 
+                    marginTop: '20px', 
+                    width: '100%', 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    justifyContent: 'center'
+                    }}>
+                    <Icon top={0} type='duck' size={40} />
+                </div>
+                <h2 style={{marginTop: '5px'}}>Activate your account</h2>
+                <div style={{
+                    paddingTop: '0px', 
+                    marginTop: '20px', 
+                    width: '100%', 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    justifyContent: 'center'
+                    }}>
+                All set! Your account has been activated.
+                </div>
+
+                <Button  
+                    content='Sign in' 
+                    size='tiny' 
+                    loading={loading} 
+                    onClick={() => history.push('/')} 
+                    style={{
+                        marginTop: '10px', 
+                        marginBottom: '10px', 
+                        position: 'relative', 
+                        clear: 'both', 
+                        float: 'right',
+                        lineHeight: '1.2', 
+                        height: '32px'
+                    }}
+                />
             </div>
             {
                 activationError.length > 1 &&
                 <label style={{color: 'red'}}>Problem activating.</label>
             }
-          
             <br/><br/>
         </div>
-    
-
     )
 })

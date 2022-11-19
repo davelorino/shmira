@@ -2546,11 +2546,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/Davide/Desktop/demo/Shmira2/API/API.csproj",
+      "projectUniqueName": "/Users/Davide/Documents/Shmira3/shmira/API/API.csproj",
       "projectName": "API",
-      "projectPath": "/Users/Davide/Desktop/demo/Shmira2/API/API.csproj",
+      "projectPath": "/Users/Davide/Documents/Shmira3/shmira/API/API.csproj",
       "packagesPath": "/Users/Davide/.nuget/packages/",
-      "outputPath": "/Users/Davide/Desktop/demo/Shmira2/API/obj/",
+      "outputPath": "/Users/Davide/Documents/Shmira3/shmira/API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/Davide/.nuget/NuGet/NuGet.Config"
@@ -2566,11 +2566,11 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "/Users/Davide/Desktop/demo/Shmira2/Application/Application.csproj": {
-              "projectPath": "/Users/Davide/Desktop/demo/Shmira2/Application/Application.csproj"
+            "/Users/Davide/Documents/Shmira3/shmira/Application/Application.csproj": {
+              "projectPath": "/Users/Davide/Documents/Shmira3/shmira/Application/Application.csproj"
             },
-            "/Users/Davide/Desktop/demo/Shmira2/Infrastructure/Infrastructure.csproj": {
-              "projectPath": "/Users/Davide/Desktop/demo/Shmira2/Infrastructure/Infrastructure.csproj"
+            "/Users/Davide/Documents/Shmira3/shmira/Infrastructure/Infrastructure.csproj": {
+              "projectPath": "/Users/Davide/Documents/Shmira3/shmira/Infrastructure/Infrastructure.csproj"
             }
           }
         }

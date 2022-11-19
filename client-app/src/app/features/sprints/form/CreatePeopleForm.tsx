@@ -1,32 +1,20 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { Segment, Button, Header, Dropdown} from 'semantic-ui-react';
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import { useStore } from '../../../stores/store';
 import { observer } from 'mobx-react-lite';
-import { Assignee } from '../../../models/assignee';
-import { Sprint } from '../../../models/sprint';
 import { ProjectAssignee } from '../../../models/projectAssignee';
 import * as Yup from 'yup';
 import MyTextInput from '../../../shared/form/MyTextInput';
 import MyMultipleSelectInput from '../../../shared/form/MyMultiSelectInput';
-import MySelectInput from '../../../shared/form/MySelectInput';
-import MyDateInput from '../../../shared/form/MyDateInput';
-import { Issue } from '../../../models/issue';
-import { SprintIssue } from '../../../models/sprintissue';
 import { v4 as uuid } from 'uuid';
 import { Project } from '../../../models/project';
 
 export default observer(function NewUserForm() {
 
     const {issueStore, modalStore, userStore} = useStore();
-    const {
-        selectedProject,
-        allSprints, 
-        allProjects, 
-        closeForm, 
-        createProject, 
-        loading,
-        updateSprint,
+    const { 
+        allProjects
     } = issueStore;
 
     const {
@@ -36,7 +24,10 @@ export default observer(function NewUserForm() {
     const validationSchema = Yup.object({
         first_name: Yup.string().required('The issue title is a required MyTextInput.'),
         second_name: Yup.string().required('The issue title is a required MyTextInput.'),
-        email: Yup.string().email().required('An email is required so the new account holder can activate their account and set a password.')
+        email: Yup
+                .string()
+                .email()
+                .required('An email is required so the new account holder can activate their account and set a password.')
     })
 
 
@@ -62,30 +53,23 @@ export default observer(function NewUserForm() {
         var project_assignees: ProjectAssignee[] = [];
         values.projects.map((project: string) => {
             var current_project = allProjects.find(p => p.name === project);
-
             var current_project_id = current_project!.id;
 
             var project_assignee = {
                 ProjectId: current_project_id,
                 AssigneeId: new_user.id
             }
-            console.log("Project assignee");
-            console.log(project_assignee);
             project_assignees.push(project_assignee);
         })
-        console.log(project_assignees);
-
         createUser(new_user, project_assignees);
     }
 
-      //createProject(values, newProjectSprint);
     
-
-    const reformatProjectOptions = (allProjects: Project[]) => 
-    allProjects.map(project => ({
-            key: project.id,
-            value: project.name,
-            text: project.name
+    const reformatProjectOptions = (allProjects: Project[]) =>     
+        allProjects.map(project => ({
+                key: project.id,
+                value: project.name,
+                text: project.name
         }))
 
 
@@ -103,13 +87,30 @@ export default observer(function NewUserForm() {
                 {({ handleSubmit, isValid, isSubmitting, dirty }) => (
              <Form className='ui form' onSubmit={handleSubmit} autoComplete='off'>
   
-                <MyTextInput   placeholder='' label='First Name' name='first_name' />
+                <MyTextInput   
+                    placeholder='' 
+                    label='First Name' 
+                    name='first_name' 
+                    />
 
-                <MyTextInput   placeholder='' label='Second Name' name='second_name' />
+                <MyTextInput   
+                    placeholder='' 
+                    label='Second Name' 
+                    name='second_name' 
+                    />
 
-                <MyTextInput placeholder='' label='Email' name='email' />
+                <MyTextInput 
+                    placeholder='' 
+                    label='Email' 
+                    name='email' 
+                    />
                 
-                <MyMultipleSelectInput placeholder='Select the projects that you want to give this user access to' options={reformatProjectOptions(allProjects)} label='Projects' name='projects' />
+                <MyMultipleSelectInput 
+                    placeholder='Select the projects that you want to give this user access to' 
+                    options={reformatProjectOptions(allProjects)} 
+                    label='Projects' 
+                    name='projects' 
+                    />
 
                 <Button 
                     disabled={isSubmitting || !isValid || !dirty}
@@ -119,8 +120,16 @@ export default observer(function NewUserForm() {
                     type='submit' 
                     content='Submit'
                     />
-                <Button onClick={() => {modalStore.closeModal; modalStore.closeModal; modalStore.closeModal;}} floated='right'  type='button' content='Cancel'/>
-     
+                <Button 
+                    onClick={() => {
+                        modalStore.closeModal; 
+                        modalStore.closeModal; 
+                        modalStore.closeModal;
+                    }} 
+                    floated='right'  
+                    type='button' 
+                    content='Cancel'
+                    />
             </Form>
             )}
             </Formik>

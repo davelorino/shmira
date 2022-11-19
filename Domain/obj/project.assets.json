@@ -1350,11 +1350,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/Davide/Desktop/demo/Shmira2/Domain/Domain.csproj",
+      "projectUniqueName": "/Users/Davide/Documents/Shmira3/shmira/Domain/Domain.csproj",
       "projectName": "Domain",
-      "projectPath": "/Users/Davide/Desktop/demo/Shmira2/Domain/Domain.csproj",
+      "projectPath": "/Users/Davide/Documents/Shmira3/shmira/Domain/Domain.csproj",
       "packagesPath": "/Users/Davide/.nuget/packages/",
-      "outputPath": "/Users/Davide/Desktop/demo/Shmira2/Domain/obj/",
+      "outputPath": "/Users/Davide/Documents/Shmira3/shmira/Domain/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/Davide/.nuget/NuGet/NuGet.Config"

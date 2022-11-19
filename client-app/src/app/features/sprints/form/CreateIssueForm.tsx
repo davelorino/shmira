@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Segment, Button, Header} from 'semantic-ui-react';
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import { useStore } from '../../../stores/store';
@@ -8,14 +8,10 @@ import { Sprint } from '../../../models/sprint';
 import * as Yup from 'yup';
 import MyTextInput from '../../../shared/form/MyTextInput';
 import MySelectInput from '../../../shared/form/MySelectInput';
-import MyDateInput from '../../../shared/form/MyDateInput';
-import { Issue } from '../../../models/issue';
 import { Assignee } from '../../../models/assignee';
 import { IssueAssignee } from '../../../models/issueAssignee';
-import { SprintIssue } from '../../../models/sprintissue';
 import { v4 as uuid } from 'uuid';
 import MyMultipleSelectInput from '../../../shared/form/MyMultiSelectInput';
-import agent from '../../../api/agent';
 
 export default observer(function CreateIssueForm() {
 
@@ -31,10 +27,8 @@ export default observer(function CreateIssueForm() {
 
     const {issueStore, modalStore, userStore} = useStore();
     const {
-        selectedIssue,
         allSprints, 
         allProjects, 
-        closeForm, 
         selectedProject,
         createIssue, 
         updateIssue, 
@@ -64,7 +58,6 @@ export default observer(function CreateIssueForm() {
         hours: '',
         minutes: '',
         original_estimated_duration: '',
-        //created_at: null,
         sprint: '',
         assignees: []
     }
@@ -152,8 +145,8 @@ export default observer(function CreateIssueForm() {
                         assignees: issue_assignee_dto
                     }
 
-                    //issueStore.createIssueFrontEnd(frontend_issue_representation, sprintIssue.sprint_id);
                     createIssue(newIssue, sprint!.id, sprintIssue, issue_assignees);
+                
                 }
             })     
         } else {
@@ -165,9 +158,6 @@ export default observer(function CreateIssueForm() {
         }
 
     }
-
-
-
 
     const reformatProjectOptions = (allProjects: Project[]) => 
     allProjects.map(project => ({
@@ -214,41 +204,82 @@ export default observer(function CreateIssueForm() {
                 {({ handleSubmit, isValid, isSubmitting, dirty }) => (
              <Form className='ui form' onSubmit={handleSubmit} autoComplete='off'>
   
-                <MySelectInput placeholder='' label='Project' name='project' options={reformatProjectOptions(allProjects)} />
-                <MyTextInput   placeholder='' label='Summary' name='name' />
-                
-                <MyTextInput   placeholder='' label='Description' name='description' />
-                
-                {/*
-                        <MyDateInput
-                            placeholderText='Date'
-                            name='created_at'
-                            title='Finish by'
+                {/* Select Project Name */}
+                <MySelectInput 
+                    placeholder='' 
+                    label='Project' 
+                    name='project' 
+                    options={reformatProjectOptions(allProjects)} 
+                    />
 
-                        />
-                */}
-
-                    <label font-size='3'>
-                        Estimated Duration
-                    </label>
-                        <div className='inline fields'>
-                    
-                            <label>Days</label>
-                            <Field type='number' placeholder='0d' name='days' />
-                            <label>  </label>
-                            
-                            <label>Hours</label>
-                            <Field  type='number' placeholder='0h' name='hours' />
-                            <label>  </label>
-                            <label>Minutes</label>
-                            <Field  type='number' placeholder='0m' name='minutes' />
-                    
-                        </div>
-                        <MySelectInput placeholder='' label='Sprint' name='sprint' options={reformatSprintOptions(allSprints)} />
-                        <MySelectInput placeholder='' label='Priority' name='priority' options={priorityOptions} />
-                        <MySelectInput placeholder='' label='Status' name='status' options={statusOptions} />
+                {/* Enter issue name */}
+                <MyTextInput   
+                    placeholder='' 
+                    label='Summary' 
+                    name='name' 
+                    />
                 
-                        <MyMultipleSelectInput placeholder='' label='Assign' name='assignees' options={formatProjectAssignees(projectAssignees)} />
+                {/* Enter description */}
+                <MyTextInput   
+                    placeholder='' 
+                    label='Description' 
+                    name='description' 
+                    />
+                
+                {/* Estimated duration */}
+                <label font-size='3'>
+                    Estimated Duration
+                </label>
+
+                {/* Days, hours minutes (estimated duration) */}
+                <div className='inline fields'>
+                    
+                    <label>Days</label>
+                    <Field type='number' placeholder='0d' name='days' />
+                    <label>  </label>
+                    
+                    <label>Hours</label>
+                    <Field  type='number' placeholder='0h' name='hours' />
+                    <label>  </label>
+
+                    <label>Minutes</label>
+                    <Field  type='number' placeholder='0m' name='minutes' />
+                    
+                </div>
+                
+                {/* Select sprint */}
+                <MySelectInput 
+                    placeholder='' 
+                    label='Sprint' 
+                    name='sprint' 
+                    options={reformatSprintOptions(allSprints)} 
+                    />
+
+                {/* Select issue priority (low, medium, high) */}
+                <MySelectInput 
+                    placeholder='' 
+                    label='Priority' 
+                    name='priority' 
+                    options={priorityOptions} 
+                    />
+
+                {/* Select issue status (to do, in progress, in review, done) */}
+                <MySelectInput 
+                    placeholder='' 
+                    label='Status' 
+                    name='status' 
+                    options={statusOptions} 
+                    />
+                
+                {/* Select assignees */}
+                <MyMultipleSelectInput 
+                    placeholder='' 
+                    label='Assign' 
+                    name='assignees' 
+                    options={formatProjectAssignees(projectAssignees)} 
+                    />
+
+                {/* Create issue */}
                 <Button 
                     disabled={isSubmitting || !isValid || !dirty}
                     loading={loading} 
@@ -257,7 +288,14 @@ export default observer(function CreateIssueForm() {
                     type='submit' 
                     content='Submit'
                     />
-                <Button onClick={modalStore.closeModal} floated='right'  type='button' content='Cancel'/>
+
+                {/* Close modal (cancel) */}
+                <Button 
+                    onClick={modalStore.closeModal} 
+                    floated='right'  
+                    type='button' 
+                    content='Cancel'
+                />
      
             </Form>
             )}

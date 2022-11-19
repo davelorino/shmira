@@ -33,17 +33,17 @@ const Item = styled.div`
     `;
 
 const FirstItem = styled.div`
-position: relative;
-//width: 100%;
-height: 42px;
-line-height: 42px;
-padding-left: 0px;
-color: #deebff;
-transition: color 0.1s;
-i {
-  position: absolute;
-  left: 20px;
-}
+    position: relative;
+    //width: 100%;
+    height: 42px;
+    line-height: 42px;
+    padding-left: 0px;
+    color: #deebff;
+    transition: color 0.1s;
+    i {
+      position: absolute;
+      left: 20px;
+    }
 `;
 
 const StyledDropdownItem = styled(Dropdown.Item)`

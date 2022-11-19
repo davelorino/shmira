@@ -1885,11 +1885,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/Davide/Desktop/demo/Shmira2/Persistence/Persistence.csproj",
+      "projectUniqueName": "/Users/Davide/Documents/Shmira3/shmira/Persistence/Persistence.csproj",
       "projectName": "Persistence",
-      "projectPath": "/Users/Davide/Desktop/demo/Shmira2/Persistence/Persistence.csproj",
+      "projectPath": "/Users/Davide/Documents/Shmira3/shmira/Persistence/Persistence.csproj",
       "packagesPath": "/Users/Davide/.nuget/packages/",
-      "outputPath": "/Users/Davide/Desktop/demo/Shmira2/Persistence/obj/",
+      "outputPath": "/Users/Davide/Documents/Shmira3/shmira/Persistence/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/Davide/.nuget/NuGet/NuGet.Config"
@@ -1905,8 +1905,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "/Users/Davide/Desktop/demo/Shmira2/Domain/Domain.csproj": {
-              "projectPath": "/Users/Davide/Desktop/demo/Shmira2/Domain/Domain.csproj"
+            "/Users/Davide/Documents/Shmira3/shmira/Domain/Domain.csproj": {
+              "projectPath": "/Users/Davide/Documents/Shmira3/shmira/Domain/Domain.csproj"
             }
           }
         }

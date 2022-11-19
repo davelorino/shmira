@@ -1,21 +1,21 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { Segment, Button, Label, Grid, Dropdown, TextArea} from 'semantic-ui-react';
-import { Formik, Form, ErrorMessage, Field } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { useStore } from '../../../stores/store';
 import { observer } from 'mobx-react-lite';
 import { Sprint } from '../../../models/sprint';
 import * as Yup from 'yup';
 import { Assignee } from '../../../models/assignee';
 import { StyledLabelAvatar, StyledAvatar, AvatarIsActiveLabelBorder } from '../dashboard/Filters/Styles';
-import {InvisibleTextInput, StyledInput} from '../../../shared/form/Styles';
+import { InvisibleTextInput, StyledInput } from '../../../shared/form/Styles';
 import ReactQuill from 'react-quill';
 import  "react-quill/dist/quill.snow.css";
 import parse from 'html-react-parser';
 import Icon from '../../../layout/Icon/index';
 import IssuePriorityIcon from '../../../layout/IssuePriorityIcon';
 import IssueTypeIcon from '../../../layout/IssueTypeIcon';
-import {StyledLabel} from './Styles';
-import {HoverDiv} from './Styles';
+import { StyledLabel } from './Styles';
+import { HoverDiv } from './Styles';
 import { v4 as uuid } from 'uuid';
 import moment from 'moment-timezone';
 
@@ -26,18 +26,9 @@ export default observer(function NewCreateIssueForm() {
         selectedIssue,
         allSprints, 
         selectedProject,
-        allProjects, 
-        closeForm, 
         createIssue, 
-        updateIssue,
-        updateIssueAndSprint, 
         loading,
-        updateSprint,
     } = issueStore;
-
-    const { 
-        allUsers
-    } = userStore;
 
     const validationSchema = Yup.object({
         name: Yup.string().required('The issue title is a required MyTextInput.')
@@ -45,13 +36,9 @@ export default observer(function NewCreateIssueForm() {
 
     var projectAssignees = selectedProject!.assignees;
 
-    var [assigneesToDisplay, setAssigneesToDisplay] = useState<Array<Assignee>>();
-
-    var [quillDescriptionEditText, setQuillDescriptionEditText] = useState('');
     var [selectedIssueName, setSelectedIssueName] = useState('Give this issue a new name');
     var [selectedIssueDescription, setSelectedIssueDescription] = useState('Give this issue a detailed description.');
     var [selectedIssuePriority, setSelectedIssuePriority] = useState('');
-    var [selectedIssueEstimatedDuration, setSelectedIssueEstimatedDuration] = useState('');
     var [selectedIssueStatus, setSelectedIssueStatus] = useState('');
     var [selectedIssueSprint, setSelectedIssueSprint] = useState('');
     var [selectedIssueEstimatedDays, setSelectedIssueEstimatedDays] = useState(0);
@@ -67,7 +54,8 @@ export default observer(function NewCreateIssueForm() {
     var [selectedReporter, setSelectedReporter] = useState('');
     var [selectedIssueType, setSelectedIssueType] = useState('Task');
     var [log_time_edit_state, setLogTimeEditState] = useState(false);
-    const [issueTitle, setIssueTitleState] = useState('')
+    var [description_edit_state, setDescriptionEditState] = useState(false);
+    var [issue_title_edit_state, setIssueTitleEditState] = useState(false);
 
     function toggleLogTimeEditState() {
         setLogTimeEditState(!log_time_edit_state);
@@ -85,19 +73,15 @@ export default observer(function NewCreateIssueForm() {
         hours: '',
         minutes: '',
         original_estimated_duration: '',
-        //created_at: null,
         sprint: '',
         assignees: []
     }
 
     const [issue, setIssue] = useState(initialState);
 
-
-
     function handleFormSubmit(values: any, allSprints: Sprint[]) {
         console.log("Wing wongs");            
     }
-
 
     const formatProjectAssignees = (projectAssignees: Assignee[], selected_assignees: any) => {
         
@@ -130,24 +114,33 @@ export default observer(function NewCreateIssueForm() {
             assignees_to_display!.map( (project_assignee, index) => ({
                 key: project_assignee.id,
                 value: project_assignee.id,
-                text: project_assignee.first_name.concat(' ', project_assignee.second_name),
-                content: ( 
-                            <HoverDiv onClick={() => addAssigneeToIssue(project_assignee.id)}>
-                                <AvatarIsActiveLabelBorder isActive={false} index={index} >
-                                <StyledLabelAvatar 
-
-                                    value={project_assignee.id}
-                                    
-                                    size='20' 
-                                    name={project_assignee.first_name.concat(' ', project_assignee.second_name)} 
-                                    round='20px'
-                                    />
-                                </AvatarIsActiveLabelBorder>
-                
-                                {project_assignee.first_name.concat(' ', project_assignee.second_name)}
-                            </HoverDiv>
-                )
-
+                text: project_assignee.first_name
+                    .concat(' ', project_assignee.second_name),
+                content: 
+                    ( 
+                        <HoverDiv 
+                            onClick={() => addAssigneeToIssue(project_assignee.id)}
+                            >
+                            <AvatarIsActiveLabelBorder 
+                                isActive={false} 
+                                index={index} 
+                                >
+                            <StyledLabelAvatar 
+                                value={project_assignee.id}
+                                size='20' 
+                                name={
+                                    project_assignee.first_name
+                                        .concat(' ', project_assignee.second_name)
+                                } 
+                                round='20px'
+                                />
+                            </AvatarIsActiveLabelBorder>
+                            {
+                                project_assignee.first_name
+                                    .concat(' ', project_assignee.second_name)
+                            }
+                        </HoverDiv>
+                    )
             }))
         )
     }
@@ -179,32 +172,40 @@ export default observer(function NewCreateIssueForm() {
         })
 
         return(
-            assignees_to_display!.map( (project_assignee, index) => ({
+            assignees_to_display!.map((project_assignee, index) => ({
                 key: project_assignee.id,
                 value: project_assignee.id,
-                text: project_assignee.first_name.concat(' ', project_assignee.second_name),
-                content: ( 
-                            <HoverDiv onClick={() => addReporterToIssue(project_assignee.id)}
+                text: project_assignee.first_name
+                    .concat(' ', project_assignee.second_name),
+                content: 
+                    ( 
+                        <HoverDiv 
+                            onClick={() => addReporterToIssue(project_assignee.id)}
                             >
-                                <AvatarIsActiveLabelBorder isActive={false} index={index} >
-                                <StyledLabelAvatar 
-
-                                    value={project_assignee.id}
-                                    
-                                    size='20' 
-                                    name={project_assignee.first_name.concat(' ', project_assignee.second_name)} 
-                                    round='20px'
-                                    />
-                                </AvatarIsActiveLabelBorder>
-                
-                                {project_assignee.first_name.concat(' ', project_assignee.second_name)}
-                            </HoverDiv>
-                )
+                            <AvatarIsActiveLabelBorder 
+                                isActive={false} 
+                                index={index} 
+                                >
+                            <StyledLabelAvatar 
+                                value={project_assignee.id}
+                                size='20' 
+                                name={
+                                    project_assignee.first_name
+                                        .concat(' ', project_assignee.second_name)
+                                    } 
+                                round='20px'
+                                />
+                            </AvatarIsActiveLabelBorder>
+                            {
+                                project_assignee.first_name
+                                    .concat(' ', project_assignee.second_name)
+                            }
+                        </HoverDiv>
+                    )
 
             }))
         )
     }
-
 
     const reformatSprintOptions = (allSprints: Sprint[]) => 
     selectedProject!.sprints.map(sprint => ({
@@ -218,73 +219,192 @@ export default observer(function NewCreateIssueForm() {
             )
         }))
 
-
     const issueTypeOptions = [
-        {key: '0', value: 'Story', text: 'Story', 
-                content: (<HoverDiv style={{display: 'inline-block'}} onClick={() => setSelectedIssueType('Story')}>
-                                <IssueTypeIcon color='#65BA43 !important' type='story' size={14} />
-                                <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
-                                    Story
-                                </div> 
-                          </HoverDiv> )},
-        {key: '1', value: 'Bug', text: 'Bug', 
-                content: (<HoverDiv style={{display: 'inline-block'}} onClick={() => setSelectedIssueType('Bug')}>
-                               
-                                <IssueTypeIcon color='#E44D42' type='bug' size={14} />
-                                <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
-                                    Bug
-                                
-                                </div>
-
-                            </HoverDiv> )},
-        {key: '2', value: 'Task', text: 'Task', 
-                content: (<HoverDiv style={{display: 'inline-block'}} onClick={() => setSelectedIssueType('Task')}>
-                                <IssueTypeIcon color='#4FADE6 !important' type='task' size={14} />
-                                <div  style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
-                                    Task
-                                </div>
-                         </HoverDiv> )}
+        {
+            key: '0', 
+            value: 'Story', 
+            text: 'Story', 
+            content: 
+                (
+                    <HoverDiv 
+                        style={{
+                            display: 'inline-block'
+                        }} 
+                        onClick={() => setSelectedIssueType('Story')}>
+                        <IssueTypeIcon 
+                            color='#65BA43 !important' 
+                            type='story' 
+                            size={14} />
+                        <div style={{
+                                paddingLeft: '7px', 
+                                alignContent: 'center', 
+                                display: 'inline-block'}}>
+                            Story
+                        </div> 
+                    </HoverDiv> 
+                )
+        },
+        {
+            key: '1', 
+            value: 'Bug', 
+            text: 'Bug', 
+            content: 
+                (
+                    <HoverDiv 
+                        style={{display: 'inline-block'}} 
+                        onClick={() => setSelectedIssueType('Bug')}
+                        >
+                        <IssueTypeIcon color='#E44D42' type='bug' size={14} />
+                        <div style={{
+                            paddingLeft: '7px', 
+                            alignContent: 'center', 
+                            display: 'inline-block'
+                            }}>
+                            Bug
+                        </div>
+                    </HoverDiv> 
+                )
+        },
+        {
+            key: '2', 
+            value: 'Task', 
+            text: 'Task', 
+            content: 
+                (
+                    <HoverDiv 
+                        style={{display: 'inline-block'}} 
+                        onClick={() => setSelectedIssueType('Task')}>
+                        <IssueTypeIcon color='#4FADE6 !important' type='task' size={14} />
+                        <div style={{
+                            paddingLeft: '7px', 
+                            alignContent: 'center', 
+                            display: 'inline-block'
+                            }}>
+                            Task
+                        </div>
+                    </HoverDiv> 
+                )
+        }
     ]
 
-
     const statusOptions = [
-        {key: '0', value: 'To Do', text: 'To Do', 
-        content: (  <HoverDiv onClick={() => setSelectedIssueStatus('To Do')}>
+        {
+            key: '0', 
+            value: 'To Do', 
+            text: 'To Do', 
+            content: 
+                (  
+                    <HoverDiv onClick={() => setSelectedIssueStatus('To Do')}>
                         <Label color='blue'>To Do</Label>
                     </HoverDiv> 
-                 )
+                )
         },
-        {key: '1', value: 'In Progress', text: 'In Progress',
-        content: (  <HoverDiv onClick={() => setSelectedIssueStatus('In Progress')}>
+        {
+            key: '1', 
+            value: 'In Progress', 
+            text: 'In Progress',
+            content: 
+                (  
+                    <HoverDiv onClick={() => setSelectedIssueStatus('In Progress')}>
                         <Label color='green'>In Progress</Label>
                     </HoverDiv> 
-                 )
+                )
         },
-        {key: '2', value: 'Review', text: 'Review',
-        content: (  <HoverDiv onClick={() => setSelectedIssueStatus('Review')}>
+        {
+            key: '2', 
+            value: 'Review', 
+            text: 'Review',
+            content: 
+                (  
+                    <HoverDiv onClick={() => setSelectedIssueStatus('Review')}>
                         <Label color='purple'>In Review</Label>
                     </HoverDiv> 
-                 )
+                )
         },
-        {key: '3', value: 'Done', text: 'Done',
-        content: (  <HoverDiv onClick={() => setSelectedIssueStatus('Done')}>
+        {
+            key: '3', 
+            value: 
+            'Done', 
+            text: 'Done',
+            content: 
+                (  
+                    <HoverDiv onClick={() => setSelectedIssueStatus('Done')}>
                         <Label>Done</Label>
-                    </HoverDiv> )
+                    </HoverDiv> 
+                )
         }
     ]
     
     const priorityOptions = [
-        {key: '0', value: 'Low', text: 'Low', content: (<StyledLabel onClick={() => {setSelectedIssuePriority("Low")}}> <IssuePriorityIcon priority="Low"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>Low</p></StyledLabel>) },
-        {key: '1', value: 'Medium', text: 'Medium', content: (<StyledLabel onClick={() => {setSelectedIssuePriority("Medium")}}> <IssuePriorityIcon priority="Medium"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>Medium</p></StyledLabel>) },
-        {key: '2', value: 'High', text: 'High', content: (<StyledLabel onClick={() => {setSelectedIssuePriority("High")}}> <IssuePriorityIcon priority="High"></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>High</p></StyledLabel>) },
+        {
+            key: '0', 
+            value: 'Low', 
+            text: 'Low', 
+            content: 
+                (
+                    <StyledLabel 
+                        onClick={() => {
+                            setSelectedIssuePriority("Low")
+                        }}> 
+                        <IssuePriorityIcon priority="Low" />
+                        <p style={{
+                                paddingBottom: "3px", 
+                                paddingLeft: "5px", 
+                                display: "inline-block"
+                            }}>
+                            Low
+                        </p>
+                    </StyledLabel>
+                )
+        },
+        {
+            key: '1', 
+            value: 'Medium', 
+            text: 'Medium', 
+            content: 
+                (
+                    <StyledLabel 
+                        onClick={() => {
+                            setSelectedIssuePriority("Medium")}
+                        }> 
+                        <IssuePriorityIcon priority="Medium" />
+                        <p style={{
+                            paddingBottom: "3px", 
+                            paddingLeft: "5px", 
+                            display: "inline-block"
+                            }}>
+                            Medium
+                        </p>
+                    </StyledLabel>
+                )
+        },
+        {
+            key: '2', 
+            value: 'High', 
+            text: 'High', 
+            content: 
+                (
+                    <StyledLabel 
+                        onClick={() => {
+                            setSelectedIssuePriority("High")
+                        }}> 
+                        <IssuePriorityIcon priority="High" />
+                        <p 
+                            style={{
+                                paddingBottom: "3px", 
+                                paddingLeft: "5px", 
+                                display: "inline-block"
+                            }}>
+                            High
+                        </p>
+                    </StyledLabel>
+                )
+        },
     ]
-
 
     function calculateIssueTimespan(input_days: any, input_hours: any, input_minutes: any) {
         var days, hours, minutes;
-        console.log("Input days"); console.log(input_days);
-        console.log("Input hours"); console.log(input_hours);
-        console.log("Input minutes"); console.log(input_minutes);
+
         input_days === 0 ? days = 0 : days = input_days;
         input_hours === 0 ? hours = 0 : hours = input_hours;
         input_minutes === 0 ? minutes = 0 : minutes = input_minutes;
@@ -317,17 +437,32 @@ export default observer(function NewCreateIssueForm() {
             issue_type: selectedIssueType,
             project_id: selectedProject!.id,
             assignees: [],
-            created_at: moment.tz(moment().subtract(moment.duration("11:00:00")), 'Australia/Sydney').toISOString(true),
-            updated_at: moment.tz(moment().subtract(moment.duration("11:00:00")), 'Australia/Sydney').toISOString(true),
+            created_at: moment.tz(moment()
+                .subtract(moment.duration("11:00:00")), 'Australia/Sydney')
+                .toISOString(true),
+            updated_at: moment.tz(moment()
+                .subtract(moment.duration("11:00:00")), 'Australia/Sydney')
+                .toISOString(true),
             description_text: '',
-            time_logged: calculateIssueTimespan(selectedIssueLoggedDays, selectedIssueLoggedHours, selectedIssueLoggedMinutes),
-            time_remaining: calculateIssueTimespan(selectedIssueRemainingDays, selectedIssueRemainingHours, selectedIssueRemainingMinutes),
-            original_estimated_duration: calculateIssueTimespan(selectedIssueEstimatedDays, selectedIssueEstimatedHours, selectedIssueEstimatedMinutes),
+            time_logged: calculateIssueTimespan(
+                selectedIssueLoggedDays, 
+                selectedIssueLoggedHours, 
+                selectedIssueLoggedMinutes
+            ),
+            time_remaining: calculateIssueTimespan(
+                selectedIssueRemainingDays, 
+                selectedIssueRemainingHours, 
+                selectedIssueRemainingMinutes
+            ),
+            original_estimated_duration: calculateIssueTimespan(
+                selectedIssueEstimatedDays, 
+                selectedIssueEstimatedHours, 
+                selectedIssueEstimatedMinutes
+            ),
             sprint_id: selectedIssueSprint
         }
 
         delete issue_to_create['assignees'];
-        //delete issue_to_create['created_at'];
 
         var sprint_issue = {
             sprint_id: selectedIssueSprint,
@@ -348,12 +483,14 @@ export default observer(function NewCreateIssueForm() {
         console.log("Issue to create: ");
         console.log(issue_to_create);
 
-        createIssue(issue_to_create, sprint_issue.sprint_id, sprint_issue, issue_assignees);
+        createIssue(
+            issue_to_create, 
+            sprint_issue.sprint_id, 
+            sprint_issue, 
+            issue_assignees
+        );
 
     }
-
-
-
 
     const addAssigneeToIssue = (assignee_id: string) => {
         var assignees_to_set: string[] = [];
@@ -389,12 +526,6 @@ export default observer(function NewCreateIssueForm() {
         setSelectedAssignees(assignees_to_set);
     }
 
-
-
-
-    var [description_edit_state, setDescriptionEditState] = useState(false);
-    var [issue_title_edit_state, setIssueTitleEditState] = useState(false);
-
     const toggleDescriptionEditor = (description_edit_state: boolean) => {
         setDescriptionEditState(!description_edit_state);
     }
@@ -403,13 +534,7 @@ export default observer(function NewCreateIssueForm() {
         setIssueTitleEditState(!issue_title_edit_state);
     }
 
-
-
     const handleChangeReporter = (e: any) => {
-        
-        console.log("Event ="); console.log(e);
-        console.log("Selected options =");
-        console.log(e.target.selectedOptions);
         addReporterToIssue(e.target.value);
     }
 
@@ -417,28 +542,42 @@ export default observer(function NewCreateIssueForm() {
         if(selectedIssueType == "Story"){
             return(
                 <StyledLabel style={{display: 'inline-block'}} >
-                <IssueTypeIcon color='#65BA43'type='story' size={14} />
-                <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
-                    Story
-                </div> 
+                    <IssueTypeIcon color='#65BA43'type='story' size={14} />
+                    <div style={{
+                            paddingLeft: '7px', 
+                            alignContent: 'center', 
+                            display: 'inline-block'
+                        }}>
+                        Story
+                    </div> 
                 </StyledLabel> 
             )
         }
+
         if(selectedIssueType == "Bug"){
             return(
                 <StyledLabel style={{display: 'inline-block'}}>
                     <IssueTypeIcon color='#E44D42'  type='bug' size={14} />
-                    <div style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
+                    <div style={{
+                        paddingLeft: '7px', 
+                        alignContent: 'center', 
+                        display: 'inline-block'
+                        }}>
                         Bug
                     </div> 
                 </StyledLabel>
             )
         }
+
         if(selectedIssueType == "Task"){
             return(
                 <StyledLabel style={{display: 'inline-block'}} >
                     <IssueTypeIcon color='#4FADE6' type='task' size={14} />
-                    <div  style={{paddingLeft: '7px', alignContent: 'center', display: 'inline-block'}}>
+                    <div style={{
+                        paddingLeft: '7px', 
+                        alignContent: 'center', 
+                        display: 'inline-block'
+                        }}>
                         Task
                     </div>
                 </StyledLabel> 
@@ -446,25 +585,27 @@ export default observer(function NewCreateIssueForm() {
         }
     }
 
-
-
     function parseTimeSpan(timespan: string) {
-        var days = timespan.substring(0, timespan.indexOf('.'));
+        var days = timespan
+            .substring(0, timespan.indexOf('.'));
         
         if(days === null){days = '0';}
         var days_string = '';
         if(days === '001'){ days_string = 'day'; } else { days_string = 'days'}
         
-        var hours = timespan.substring(timespan.indexOf('.') + 1, timespan.indexOf(':'));
+        var hours = timespan
+            .substring(timespan.indexOf('.') + 1, timespan.indexOf(':'));
         
         if(hours === null){ hours = '0'; }
         var hours_string = '';
         if(hours === '01'){ hours_string = 'hour' } else ( hours_string = 'hours' );
 
         
-        var timespan_minus_days_and_hours = timespan.substring(timespan.indexOf(':') + 1, timespan.length);
+        var timespan_minus_days_and_hours = timespan
+            .substring(timespan.indexOf(':') + 1, timespan.length);
         
-        var minutes = timespan_minus_days_and_hours.substring(0, timespan_minus_days_and_hours.indexOf(":"));
+        var minutes = timespan_minus_days_and_hours
+            .substring(0, timespan_minus_days_and_hours.indexOf(":"));
         
         if(minutes === null){ minutes = '0'; }
         var minutes_string = '';
@@ -472,21 +613,41 @@ export default observer(function NewCreateIssueForm() {
         var time_span = '';
 
         if(days === '0' && hours === '0'){
-            time_span = minutes.concat(' ', minutes_string);
+            time_span = minutes.concat(
+                ' ', 
+                minutes_string
+            );
         }
         else if(days === '0'){
-            time_span = hours.concat(' ', hours_string, ' ', minutes, ' ', minutes_string);
+            time_span = hours.concat(
+                ' ', 
+                hours_string, 
+                ' ', 
+                minutes, 
+                ' ', 
+                minutes_string
+            );
         }
-        else { time_span = days.concat(' ', days_string, ' ', parseInt(hours).toString(), ' ', hours_string, ' ', parseInt(minutes).toString(), ' ', minutes_string);  }
+        else { 
+            time_span = days.concat(
+                ' ', 
+                days_string, 
+                ' ', 
+                parseInt(hours).toString(), 
+                ' ', 
+                hours_string, 
+                ' ', 
+                parseInt(minutes).toString(), 
+                ' ', 
+                minutes_string
+            )  
+        }
         
         return(time_span);
     }
 
     return (
-  
         <div >
-            
-
             <Formik 
                 validationSchema={validationSchema}
                 enableReinitialize 
@@ -495,249 +656,448 @@ export default observer(function NewCreateIssueForm() {
                 {({ handleSubmit, isValid, isSubmitting, dirty }) => (
              <Form className='ui form' onSubmit={handleSubmit} autoComplete='off'>
                 <Grid>
-                <Grid.Column width={10}>
-   
-                {renderSelectedIssueType()}
-                <div style={{display: 'inline-block'}}>
-                <Dropdown 
-                    downward 
-                    multiple
-                    closeOnChange
-                    placeholder='' 
-                    value='' 
-                    label='Status' 
-                    name='status' 
-                    options={issueTypeOptions}
-                    //onChange={(e) => handleChangeAssignees(e)} 
-                    />
-                </div>
-                {!issue_title_edit_state &&
-                <InvisibleTextInput fontsize={20} onClick={() => toggleIssueTitleEditor(issue_title_edit_state)}>
-                   <h1 style={{paddingTop: "10px", paddingBottom: "10px", paddingLeft: "5px"}}> {selectedIssueName} </h1>
-                </InvisibleTextInput>
-                }
-                {issue_title_edit_state &&
-                <StyledInput 
-                    defaultValue={selectedIssueName} 
-                    autoFocus 
-                    onChange={(e: any) => setSelectedIssueName(e.target.value)}
-                    onBlur={() => {toggleIssueTitleEditor(issue_title_edit_state);}}
-                />
-                    
-                }                
-                
-                <h5>Description</h5>
-                {!description_edit_state && 
-                <InvisibleTextInput style={{display: "flex", maxHeight: "700px", minHeight: "200px"}} fontsize={14} onClick={() => toggleDescriptionEditor(description_edit_state)}>
-                    
-                    <div style={{paddingTop: "20px", marginBottom: "20px", marginLeft: "12px", marginRight: "12px"}}> {parse(selectedIssueDescription)} </div>
-                
-                </InvisibleTextInput>
-                }
-                {
-                    description_edit_state &&
-                    <>
-                    <ReactQuill style={{minHeight: '300px', maxHeight: '700px'}} theme="snow" defaultValue={selectedIssueDescription} onChange={setSelectedIssueDescription}/>
-                    
-                    <br/>
-                    <Button size="mini" content="Save" color="blue" onClick={() =>{toggleDescriptionEditor(description_edit_state)} }/>
-                    </>
-                }
-                <h5>Comments</h5>
- 
-                <div style={{display: "inline-block"}}>
-                    <StyledAvatar style={{paddingTop: "12px"}} size="30" round="16px" 
-                    src={selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)?.photo?.url}
-                    name={selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)!.first_name
-                            .concat(" ", selectedProject!.assignees.find(assignee => assignee.id_app_user === commonStore.account_id)!.second_name)}
-                    />
-                </div>
-                <div style={{display: "inline-block", paddingLeft: "15px", width: "90%"}}>
-                    <TextArea placeholder="Add a comment..."></TextArea>
-                </div>
-                </Grid.Column>
-                <Grid.Column width={6}>
-                <div style={{paddingTop: "10px"}}></div>
-                <h5>STATUS</h5>
-                <Label>{selectedIssueStatus}</Label>
-                <Dropdown 
-                    downward 
-                    multiple
-                    closeOnChange
-                    placeholder='' 
-                    value='' 
-                    label='Status' 
-                    name='status' 
-                    options={statusOptions}
-                    //onChange={(e) => handleChangeAssignees(e)} 
-                    />
-                <br/>
-                <h5>ASSIGNEES</h5>
-                {selectedAssignees.map( (user_id, index) => (
-                    
-                    <StyledLabel style={{marginBottom: "6px", marginRight: "4px"}} onClick={() => {removeAssigneeFromIssue(user_id); } }>
-                    <AvatarIsActiveLabelBorder isActive={false} index={index} >
-                        <StyledLabelAvatar 
-
-                        value={selectedProject!.assignees.find(assignee => assignee.id === user_id)!.id}
-                        //onClick={() => handleClick(selectedProject, user)
-                        size='20' 
-                        name={selectedProject!.assignees.find(assignee => assignee.id === user_id)!.first_name.concat(' ', selectedProject!.assignees.find(assignee => assignee.id === user_id)!.second_name)} 
-                        round='20px'
-                        />
-                    </AvatarIsActiveLabelBorder>
-                    
-                    {selectedProject!.assignees.find(assignee => assignee.id === user_id)!.first_name.concat(' ', selectedProject!.assignees.find(assignee => assignee.id === user_id)!.second_name)}
-                    <Icon style={{marginLeft: "10px"}} type='close' />
-                    </StyledLabel>
-                ))
-                }
-                        <div></div>
-                <Dropdown 
-                    multiple 
-                    downward 
-                    placeholder='+ Add more' 
-                    value='' 
-                    label='Assign' 
-                    name='assignees' 
-                    options={formatProjectAssignees(projectAssignees, selectedAssignees)} 
-                    />
-                    <div></div>
-                <h5>REPORTER</h5>
-
-                 {selectedReporter !== null && selectedReporter.length !== 0 &&
-                        <StyledLabel style={{marginBottom: "6px", marginRight: "4px"}} 
-                        >
-                        <AvatarIsActiveLabelBorder isActive={false} index={1} >
-                        <StyledLabelAvatar 
-
-                        value={selectedReporter}
-                        //onClick={() => handleClick(selectedProject, user)
-                        size='20' 
-                        name={selectedProject!.assignees.find(assignee => assignee.id === selectedReporter)!.first_name.concat(' ', selectedProject!.assignees.find(assignee => assignee.id === selectedReporter)!.second_name)} 
-                        round='20px'
-                        />
-                    </AvatarIsActiveLabelBorder>
-                    
-                    {selectedProject!.assignees.find(assignee => assignee.id === selectedReporter)!.first_name.concat(' ', selectedProject!.assignees.find(assignee => assignee.id === selectedReporter)!.second_name)} 
-                    <Icon style={{marginLeft: "10px"}} type='close' />
-                    </StyledLabel>
-                       
-                }
-                        <div></div>
-                <Dropdown 
-                    downward 
-                    multiple
-                    closeOnChange
-                    placeholder='Select reporter' 
-                    value='' 
-                    label='Assign' 
-                    name='reporter' 
-                    options={formatProjectReporters(selectedProject!.assignees, selectedReporter)} 
-                    />
-                    <div></div>
-                    <h5>ORIGINAL ESTIMATE</h5> 
-                    <div className='inline fields'>
-                        
-                        <label>Days</label>
-                        <Field type='number' placeholder='0d' name='days_estimate' onChange={(e: any) => setSelectedIssueEstimatedDays(e.target.value)} />
-                        <label>  </label>
-                        
-                        <label>Hours</label>
-                        <Field  type='number' placeholder='0h' name='hours_estimate' onChange={(e: any) => setSelectedIssueEstimatedHours(e.target.value)} />
-                        <label>  </label>
-                        <label>Minutes</label>
-                        <Field  type='number' placeholder='0m' name='minutes_estimate' onChange={(e: any) => setSelectedIssueEstimatedMinutes(e.target.value)}/>
-                
-                        </div>            
-                    {/*selectedIssue!.original_estimated_duration !== null &&
-                        <div style={{width: "fit-content", backdropFilter: "brightness(120%)"}}>
-                           <div style={{paddingTop: "5px", paddingBottom: "5px", paddingLeft: "5px", paddingRight: "5px"}}> {parseTimeSpan(selectedIssue!.original_estimated_duration)} </div>
-                        </div>
-                    */}
-                    <br/>
-                    <InvisibleTextInput style={{cursor: "pointer"}} fontsize={12} onClick={toggleLogTimeEditState}>
-                     <div style={{display: "inline-block"}}> <Icon style={{display: "inline"}} type="stopwatch" size="17"></Icon> <h5 style={{marginLeft: "7px", marginBottom: "5px", display: "inline"}}>LOG TIME</h5> </div>
-                     </InvisibleTextInput>
-
-                    {log_time_edit_state &&
-                        <>
-                            <div className='inline fields'>
-                        
-                            <label>Days</label>
-                            <Field type='number' placeholder='0d' name='days_logged' onChange={(e: any) => setSelectedIssueLoggedDays(e.target.value)} />
-                            <label>  </label>
-                            
-                            <label>Hours</label>
-                            <Field  type='number' placeholder='0h' name='hours_logged' onChange={(e: any) => setSelectedIssueLoggedHours(e.target.value)} />
-                            <label>  </label>
-                            <label>Minutes</label>
-                            <Field  type='number' placeholder='0m' name='minutes_logged' onChange={(e: any) => setSelectedIssueLoggedMinutes(e.target.value)} />
-                    
-                            </div>                        
-                            <h5>Time Remaining</h5>
-                            <div className='inline fields'>
-                            
-                            <label>Days</label>
-                            <Field type='number' placeholder='0d' name='days_remaining' onChange={(e: any) => setSelectedIssueRemainingDays(e.target.value)} />
-                            <label>  </label>
-                            
-                            <label>Hours</label>
-                            <Field  type='number' placeholder='0h' name='hours_remaining' onChange={(e: any) => setSelectedIssueRemainingHours(e.target.value)} />
-                            <label>  </label>
-                            <label>Minutes</label>
-                            <Field  type='number' placeholder='0m' name='minutes_remaining' onChange={(e: any) => setSelectedIssueRemainingMinutes(e.target.value)}  />
-                            </div>
-                            <Button size="mini" content="Save" color="blue" onClick={() =>{ /* TO DO: updateLoggedTime(); */ toggleLogTimeEditState()} }/>
-                            <Button size="mini" content="Cancel" onClick={() => toggleLogTimeEditState()} />
-                                
-                        </>
-                    }
-                    <div style={{marginTop: '20px'}}>
-                        <div style={{display: 'inline-block', width: '50%'}}>
-                        <h5>SPRINT</h5>
-                        <StyledLabel //color={status_colours.find(sc => sc.status === selectedIssue!.status).colour}
-                            ><p style={{paddingBottom: "3px", paddingTop:"3px"}}> {selectedProject!.sprints.find(sprint => sprint.id === selectedIssueSprint)?.name}</p></StyledLabel>
-                        <Dropdown 
+                    <Grid.Column width={10}>
+    
+                        {renderSelectedIssueType()}
+                        <div style={{display: 'inline-block'}}>
+                            <Dropdown 
                                 downward 
                                 multiple
                                 closeOnChange
                                 placeholder='' 
                                 value='' 
-                                label='Sprint' 
-                                name='sprint' 
-                                options={reformatSprintOptions(allSprints)} 
-                                //onChange={(e) => handleChangeSprint(e)} 
+                                label='Status' 
+                                name='status' 
+                                options={issueTypeOptions}
                                 />
                         </div>
-                        <div style={{display: 'inline-block', width: '50%'}}>
-                        <h5>PRIORITY</h5>
-                        <StyledLabel> <IssuePriorityIcon priority={selectedIssuePriority}></IssuePriorityIcon><p style={{paddingBottom: "3px", paddingLeft: "5px", display: "inline-block"}}>{selectedIssuePriority}</p></StyledLabel>
-                        <Dropdown 
-                                downward 
-                                multiple
-                                closeOnChange
-                                placeholder='' 
-                                value='' 
-                                label='Priority' 
-                                name='priority' 
-                                options={priorityOptions}
-                                //onChange={(e) => handleChangeSprint(e)} 
-                                />    
-                        </div>   
-                    </div>                     
-                        <br/><br/>
 
+                        {!issue_title_edit_state &&
+                            <InvisibleTextInput 
+                                fontsize={20} 
+                                onClick={() => toggleIssueTitleEditor(issue_title_edit_state)}
+                                >
+                            <h1 style={{
+                                paddingTop: "10px", 
+                                paddingBottom: "10px", 
+                                paddingLeft: "5px"
+                                }}> 
+                                {selectedIssueName}
+                            </h1>
+                            </InvisibleTextInput>
+                        }
+
+                        {issue_title_edit_state &&
+                        <StyledInput 
+                            defaultValue={selectedIssueName} 
+                            autoFocus 
+                            onChange={(e: any) => setSelectedIssueName(e.target.value)}
+                            onBlur={() => {toggleIssueTitleEditor(issue_title_edit_state);}}
+                        />
+                        }                
+                    
+                        <h5>Description</h5>
+                        {!description_edit_state && 
+                            <InvisibleTextInput 
+                                style={{
+                                    display: "flex", 
+                                    maxHeight: "700px", 
+                                    minHeight: "200px"
+                                }} 
+                                fontsize={14} 
+                                onClick={() => toggleDescriptionEditor(description_edit_state)}
+                                >
+                                
+                                <div style={{
+                                        paddingTop: "20px", 
+                                        marginBottom: "20px",
+                                        marginLeft: "12px", 
+                                        marginRight: "12px"
+                                    }}> 
+                                    {parse(selectedIssueDescription)} 
+                                </div>
+
+                            </InvisibleTextInput>
+                        }
+                        {
+                            description_edit_state &&
+                            <>
+                                <ReactQuill 
+                                    style={{
+                                        minHeight: '300px', 
+                                        maxHeight: '700px'
+                                    }} 
+                                    theme="snow" 
+                                    defaultValue={selectedIssueDescription} 
+                                    onChange={setSelectedIssueDescription}
+                                    />
+                                
+                                <br/>
+                                <Button 
+                                    size="mini" 
+                                    content="Save" 
+                                    color="blue" 
+                                    onClick={() => {toggleDescriptionEditor(description_edit_state) }}
+                                    />
+                            </>
+                        }
+
+                        <h5>Comments</h5>
+                        <div style={{display: "inline-block"}}>
+                            <StyledAvatar 
+                                style={{
+                                    paddingTop: "12px"
+                                }} 
+                                size="30" 
+                                round="16px" 
+                                src={
+                                    selectedProject!.assignees
+                                        .find(assignee => assignee.id_app_user === commonStore.account_id)
+                                        ?.photo
+                                        ?.url
+                                }
+                                name={
+                                    selectedProject!.assignees
+                                        .find(assignee => assignee.id_app_user === commonStore.account_id)!
+                                        .first_name
+                                        .concat(
+                                            " ", 
+                                            selectedProject!.assignees
+                                                .find(assignee => assignee.id_app_user === commonStore.account_id)!
+                                                .second_name)
+                                }
+                            />
+                        </div>
+                        <div 
+                            style={{
+                                display: "inline-block", 
+                                paddingLeft: "15px", 
+                                width: "90%"
+                            }}>
+                            <TextArea placeholder="Add a comment..." />
+                        </div>
+                    </Grid.Column>
+                    <Grid.Column width={6}>
+                        <div style={{paddingTop: "10px"}} />
+                        <h5>STATUS</h5>
+                        <Label>{selectedIssueStatus}</Label>
+                        <Dropdown 
+                            downward 
+                            multiple
+                            closeOnChange
+                            placeholder='' 
+                            value='' 
+                            label='Status' 
+                            name='status' 
+                            options={statusOptions} 
+                            />
+                        <br/>
+
+                        <h5>ASSIGNEES</h5>
+                        {selectedAssignees.map( (user_id, index) => (
+                    
+                            <StyledLabel 
+                                style={{
+                                    marginBottom: "6px", 
+                                    marginRight: "4px"
+                                }} 
+                                onClick={() => {removeAssigneeFromIssue(user_id); }}
+                                >
+
+                                <AvatarIsActiveLabelBorder 
+                                    isActive={false} 
+                                    index={index} 
+                                    >
+
+                                    <StyledLabelAvatar 
+                                        value={selectedProject!.assignees
+                                            .find(assignee => assignee.id === user_id)!.id
+                                        }
+                                        size='20' 
+                                        name={selectedProject!.assignees
+                                            .find(assignee => assignee.id === user_id)!.first_name
+                                                .concat(' ', selectedProject!.assignees
+                                                    .find(assignee => assignee.id === user_id)!.second_name
+                                            )
+                                        } 
+                                        round='20px'
+                                    />
+                                </AvatarIsActiveLabelBorder>
+                    
+                                {
+                                    selectedProject!.assignees
+                                        .find(assignee => assignee.id === user_id)!.first_name
+                                        .concat(' ', selectedProject!.assignees
+                                        .find(assignee => assignee.id === user_id)!.second_name
+                                        )
+                                }
+
+                                <Icon 
+                                    style={{marginLeft: "10px"}} 
+                                    type='close' 
+                                />
+                            </StyledLabel>
+                        ))}
+                        <div></div>
+                        <Dropdown 
+                            multiple 
+                            downward 
+                            placeholder='+ Add more' 
+                            value='' 
+                            label='Assign' 
+                            name='assignees' 
+                            options={
+                                formatProjectAssignees(
+                                    projectAssignees, 
+                                    selectedAssignees
+                                )
+                            } 
+                            />
+                            <div></div>
+                            <h5>REPORTER</h5>
+
+                        {selectedReporter !== null && selectedReporter.length !== 0 &&
+                                <StyledLabel 
+                                    style={{
+                                        marginBottom: "6px", 
+                                        marginRight: "4px"
+                                    }} 
+                                >
+                                <AvatarIsActiveLabelBorder 
+                                    isActive={false} 
+                                    index={1} 
+                                >
+                                <StyledLabelAvatar 
+                                    value={selectedReporter}
+                                    size='20' 
+                                    name={
+                                        selectedProject!.assignees
+                                            .find(assignee => assignee.id === selectedReporter)!.first_name
+                                            .concat(' ', selectedProject!.assignees
+                                            .find(assignee => assignee.id === selectedReporter)!.second_name
+                                        )
+                                    } 
+                                    round='20px'
+                                />
+                                </AvatarIsActiveLabelBorder>
+                            
+                            {
+                                selectedProject!.assignees
+                                    .find(assignee => assignee.id === selectedReporter)!.first_name
+                                    .concat(' ', selectedProject!.assignees
+                                    .find(assignee => assignee.id === selectedReporter)!.second_name
+                                    )
+                            } 
+
+                            <Icon 
+                                style={{marginLeft: "10px"}} 
+                                type='close' 
+                            />
+                            </StyledLabel>
+                        }
+                        <div></div>
+                        <Dropdown 
+                            downward 
+                            multiple
+                            closeOnChange
+                            placeholder='Select reporter' 
+                            value='' 
+                            label='Assign' 
+                            name='reporter' 
+                            options={
+                                formatProjectReporters(selectedProject!.assignees, selectedReporter)
+                            } 
+                            />
+                        <div></div>
                         
-                <Button style={{marginRight: '10px'}} color='blue' size='small' loading={loading} floated="right" content={'Create Issue'} onClick={() => handleCreateIssue()}></Button>
-                </Grid.Column>   
+                        <h5>ORIGINAL ESTIMATE</h5> 
+                        <div className='inline fields'>
+                        
+                        <label>Days</label>
+                        <Field 
+                            type='number' 
+                            placeholder='0d' 
+                            name='days_estimate' 
+                            onChange={(e: any) => setSelectedIssueEstimatedDays(e.target.value)} 
+                            />
+                        
+                        <label>Hours</label>
+                        <Field  
+                            type='number' 
+                            placeholder='0h' 
+                            name='hours_estimate' 
+                            onChange={(e: any) => setSelectedIssueEstimatedHours(e.target.value)} 
+                            />
+                        
+                        <label>Minutes</label>
+                        <Field  
+                            type='number' 
+                            placeholder='0m' 
+                            name='minutes_estimate' 
+                            onChange={(e: any) => setSelectedIssueEstimatedMinutes(e.target.value)}
+                            />
                 
-             </Grid>   
+                        </div>            
+                   
+                        <br/>
+
+                        <InvisibleTextInput 
+                            style={{cursor: "pointer"}} 
+                            fontsize={12} 
+                            onClick={toggleLogTimeEditState}
+                            >
+
+                            <div 
+                                style={{display: "inline-block"}}> 
+                                <Icon 
+                                    style={{display: "inline"}} 
+                                    type="stopwatch" size="17">
+                                </Icon> 
+                                <h5 style={{
+                                    marginLeft: "7px", 
+                                    marginBottom: "5px", 
+                                    display: "inline"
+                                }}>
+                                    LOG TIME
+                                </h5> 
+                            </div>
+                         </InvisibleTextInput>
+
+                        {log_time_edit_state &&
+                            <>
+                                <div className='inline fields'>
+                            
+                                    <label>Days</label>
+                                    <Field 
+                                        type='number' 
+                                        placeholder='0d' 
+                                        name='days_logged' 
+                                        onChange={(e: any) => setSelectedIssueLoggedDays(e.target.value)} 
+                                        />
+                                    
+                                    <label>Hours</label>
+                                    <Field  
+                                        type='number' 
+                                        placeholder='0h' 
+                                        name='hours_logged' 
+                                        onChange={(e: any) => setSelectedIssueLoggedHours(e.target.value)} 
+                                        />
+                                    
+                                    <label>Minutes</label>
+                                    <Field  
+                                        type='number' 
+                                        placeholder='0m' 
+                                        name='minutes_logged' 
+                                        onChange={(e: any) => setSelectedIssueLoggedMinutes(e.target.value)} 
+                                        />
+                            
+                                </div>                        
+                                <h5>Time Remaining</h5>
+                                
+                                <div className='inline fields'>
+                                
+                                    <label>Days</label>
+                                    <Field 
+                                        type='number' 
+                                        placeholder='0d' 
+                                        name='days_remaining' 
+                                        onChange={(e: any) => setSelectedIssueRemainingDays(e.target.value)} 
+                                        />
+                                    
+                                    
+                                    <label>Hours</label>
+                                    <Field  
+                                        type='number' 
+                                        placeholder='0h' 
+                                        name='hours_remaining' 
+                                        onChange={(e: any) => setSelectedIssueRemainingHours(e.target.value)} 
+                                        />
+                                    
+                                    <label>Minutes</label>
+                                    <Field  
+                                        type='number' 
+                                        placeholder='0m' 
+                                        name='minutes_remaining' 
+                                        onChange={(e: any) => setSelectedIssueRemainingMinutes(e.target.value)}  
+                                        />
+                                </div>
+
+                                <Button 
+                                    size="mini" 
+                                    content="Save" 
+                                    color="blue" 
+                                    onClick={() =>{ /* TO DO: updateLoggedTime(); */ toggleLogTimeEditState()}}
+                                    />
+                                <Button 
+                                    size="mini" 
+                                    content="Cancel" 
+                                    onClick={() => toggleLogTimeEditState()} 
+                                    />
+                                    
+                            </>
+                        }
+
+                        <div style={{marginTop: '20px'}}>
+                            <div style={{display: 'inline-block', width: '50%'}}>
+                                <h5>SPRINT</h5>
+                                <StyledLabel>
+                                    <p style={{paddingBottom: "3px", paddingTop:"3px"}}> 
+                                        {selectedProject!.sprints
+                                            .find(sprint => sprint.id === selectedIssueSprint)?.name
+                                        }
+                                    </p>
+                                </StyledLabel>
+                                <Dropdown 
+                                    downward 
+                                    multiple
+                                    closeOnChange
+                                    placeholder='' 
+                                    value='' 
+                                    label='Sprint' 
+                                    name='sprint' 
+                                    options={reformatSprintOptions(allSprints)} 
+                                    />
+                            </div>
+                            <div style={{display: 'inline-block', width: '50%'}}>
+
+                                <h5>PRIORITY</h5>
+                                <StyledLabel> 
+                                    <IssuePriorityIcon priority={selectedIssuePriority} />
+                                        <p style={{
+                                            paddingBottom: "3px", 
+                                            paddingLeft: "5px", 
+                                            display: "inline-block"
+                                        }}>
+                                            {selectedIssuePriority}
+                                        </p>
+                                </StyledLabel>
+
+                                <Dropdown 
+                                    downward 
+                                    multiple
+                                    closeOnChange
+                                    placeholder='' 
+                                    value='' 
+                                    label='Priority' 
+                                    name='priority' 
+                                    options={priorityOptions}
+                                    />    
+                            </div>   
+                        </div>                     
+                        <br/><br/>
+                        <Button 
+                            style={{marginRight: '10px'}} 
+                            color='blue' 
+                            size='small' 
+                            loading={loading} 
+                            floated="right" 
+                            content={'Create Issue'} 
+                            onClick={() => handleCreateIssue()}>
+                        </Button>
+                    </Grid.Column>     
+                </Grid>   
             </Form>
             )}
-            </Formik>
-           
-
-        </div>
-    )
-})
+        </Formik>
+    </div>
+)})

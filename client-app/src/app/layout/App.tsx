@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import { Container, Modal } from 'semantic-ui-react';
 import { css } from 'styled-components';
@@ -10,6 +10,7 @@ import LoadingComponent from './LoadingComponent';
 import NavBarTop from './NavBarTop';
 import { useStore } from '../stores/store';
 import { observer } from 'mobx-react-lite';
+import { AccountFormValues } from '../models/account';
 import ModalContainer from '../shared/modals/ModalContainer';
 import MediumModalContainer from '../shared/modals/MediumModalContainer';
 import SmallModalContainer from '../shared/modals/SmallModalContainer';
@@ -28,12 +29,14 @@ import '../../darkmode.css';
 
 
 function App() {
-const { issueStore, userStore, modalStore, commonStore, accountStore } = useStore();
-const drtheme={
-  brightness: 120,
-  contrast: 100,
-  sepia: 0,
-}
+  const { issueStore, userStore, modalStore, commonStore, accountStore } = useStore();
+  const drtheme={
+    brightness: 120,
+    contrast: 100,
+    sepia: 0,
+  }
+
+  const [loginError, setError] = useState('');
 
   const {selectedIssue, 
          editMode, 
@@ -54,33 +57,35 @@ const drtheme={
         issueStore.loadingInitial = true;
         accountStore.accountsLoading = true;
         commonStore.loadInitial();
-        //issueStore.loadProjectsInitial();
-        //accountStore.loadInvites();
-        //accountStore.loadAccounts();
-        //issueStore.loadIssues();
-        //issueStore.loadSprints();
-        //userStore.loadUsers();
       }, [])
 
 
-if (issueStore.loadingInitial || commonStore.assignee_id == null && (accountStore.accountsLoading || issueStore.loadingInitial)) return <><LoadingComponent content='Loading...'/></>
+
+if (issueStore.loadingInitial || commonStore.assignee_id === null && (accountStore.accountsLoading || issueStore.loadingInitial)) return <><LoadingComponent content='Loading...'/></>
+
 
 if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.loadingInitial)  {
   {console.log("App started")}
   return (
-  <div style={{height: '100vh',   
-  backgroundImage: `url(${backgroundImage3})`, filter: `brightness(100%)`, backgroundSize: 'cover',  
-  display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }} >
-    <div className='modal' style={{//background: `transparentize('#FFFFFF', 0.8)`, 
-                  //backdropFilter: `brightness(150%)`,
-                  backgroundColor: `transparent`, 
-                  width: '40%',
-                  height: '500px',
-                  marginTop: '280px',
-                  backdropFilter: `brightness(125%) saturate(150%) blur(10px)`}} 
-                  
-          >
-      {/*<Modal.Content style={{backgroundColor: 'transparent',  background: 'none'}} >*/}
+  <div style={{
+    height: '100vh',   
+    backgroundImage: `url(${backgroundImage3})`, 
+    filter: `brightness(100%)`, 
+    backgroundSize: 'cover',  
+    display: 'flex', 
+    flexWrap: 'wrap', 
+    justifyContent: 'center' 
+    }}>
+    <div 
+      className='modal' 
+      style={{        
+        backgroundColor: `transparent`, 
+        width: '40%',
+        height: '500px',
+        marginTop: '280px',
+        backdropFilter: `brightness(125%) saturate(150%) blur(10px)`}} 
+        >
+      
       <div className='modal-content'>
         <Route exact path='/' component={LoginForm}  />
         <Route path='/sprints' component={LoginForm} />
@@ -89,56 +94,59 @@ if(commonStore.token === null && !accountStore.accountsLoading && !issueStore.lo
         <Route path='/insights' component={LoginForm} />
         <Route path='/activate' component={ActivateAccountForm} />
       </div>
-      {/*</Modal.Content>*/}
     </div>
   </div>
   )}
-  else if(issueStore.selectedProject! !== null && !accountStore.accountsLoading && !issueStore.loadingInitial){
+  
+  else if(issueStore.selectedProject! !== undefined && !accountStore.accountsLoading && !issueStore.loadingInitial){
+    console.log("Third path");
+    console.log(issueStore.selectedProject!)
     return (
       <div>
       {
         <div>
-      <ModalContainer />
-      <SmallModalContainer />
-      <MediumModalContainer />
-      <NavBarTop />
-      <NavbarRight />
+          <ModalContainer />
+          <SmallModalContainer />
+          <MediumModalContainer />
+          <NavBarTop />
+          <NavbarRight />
 
-      <Container style={{marginTop: '7em'}}>
+          <Container style={{marginTop: '7em'}}>
 
-        <Route exact path='/' component={IssueDashboard} />
-        <Route path='/insights' component={InsightsDashboard} />
-        {/*<Route path='/activate' component={AccountActivation} />*/}
-        <Route path='/sprints' component={SprintPage} />
-        <Route path='/about' component={AboutPage} />
+            <Route exact path='/' component={IssueDashboard} />
+            <Route path='/insights' component={InsightsDashboard} />
+            {/*<Route path='/activate' component={AccountActivation} />*/}
+            <Route path='/sprints' component={SprintPage} />
+            <Route path='/about' component={AboutPage} />
 
 
-    </Container>
+          </Container>
 
     
-      </div>
+        </div>
       }
       {
         
         <ToastContainer
-        position="bottom-right"
-        theme='dark'
-        autoClose={false}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick={true}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+            position="bottom-right"
+            theme='dark'
+            autoClose={false}
+            hideProgressBar={true}
+            newestOnTop={false}
+            closeOnClick={true}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+        />
         
       }
      
       
-      </div>
+    </div>
     );
   }
+    console.log("Final path");
     return (<></>)
 }
 

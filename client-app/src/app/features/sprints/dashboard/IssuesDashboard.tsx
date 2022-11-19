@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import IssueForm from '../form/CreateIssueForm';
 import {useStore} from '../../../stores/store';
 import {observer} from 'mobx-react-lite';
 import IssueLists from '../../../layout/Lists/IssueLists';
@@ -14,55 +13,65 @@ import '../../../../darkmode.css';
 
 export default observer(function IssuesDashboard() {
 
-    const {issueStore, userStore, commonStore, accountStore} = useStore();
-    const {selectedIssue, 
-           editMode, 
-           updateIssue,
-           updateIssues, 
-           deleteIssue, 
-           selectedProject,
-           loading, 
-           selectProject,
-           allProjects,
-           allSprints,
+    const { issueStore } = useStore();
+    const {selectedProject,
            issuesByDate,
            updateIssueAndSprint
         } = issueStore;
-
-    const { user_logged_in } = userStore;
-
-    
-
 
     const isPositionChanged = (destination: any, source: any) => {
     if (!destination) return false;
     const isSameList = destination.droppableId === source.droppableId;
     const isSamePosition = destination.index === source.index;
     return !isSameList || !isSamePosition;
-    };
+    }
 
 
     const getDaysRemaining = () => {
-        var date_end = moment(selectedProject!.sprints.find(sprint => sprint.is_active)!.date_end);
-        return concat(moment(date_end).diff(moment(), 'days').toString(), " days remaining");
+        var date_end = moment(
+            selectedProject!.sprints
+                .find(sprint => sprint.is_active)!
+                .date_end);
+        return concat(
+            moment(date_end).diff(moment(), 'days').toString(), 
+            " days remaining"
+        );
     }
 
     const handleIssueDrop = ({destination, source, draggableId}: DropResult) => {
         if (!isPositionChanged(source, destination)) return;
 
-        var source_sprint_name = source!.droppableId.substring(source!.droppableId.indexOf('-') + 1, source!.droppableId.length);
-        var destination_status_name = destination!.droppableId.substring(0, destination!.droppableId.indexOf('-'));
-        var destination_sprint_name = destination!.droppableId.substring(destination!.droppableId.indexOf('-') + 1, destination!.droppableId.length);
+        var source_sprint_name = source!.droppableId
+            .substring(
+                source!.droppableId.indexOf('-') + 1, 
+                source!.droppableId.length
+            );
 
-        var source_sprint = selectedProject?.sprints.find(sprint => sprint.name === source_sprint_name);
+        var destination_status_name = destination!.droppableId
+            .substring(
+                0, destination!.droppableId.indexOf('-')
+            );
+
+        var destination_sprint_name = destination!.droppableId
+            .substring(
+                destination!.droppableId.indexOf('-') + 1, 
+                destination!.droppableId.length
+            );
+
+        var source_sprint = selectedProject?.sprints
+            .find(sprint => sprint.name === source_sprint_name);
+
         var source_sprint_id = source_sprint!.id;
         
-        var destination_sprint = selectedProject?.sprints.find(sprint => sprint.name === destination_sprint_name);
+        var destination_sprint = selectedProject?.sprints
+            .find(sprint => sprint.name === destination_sprint_name);
+
         var destination_sprint_id = destination_sprint!.id;
         
         const issue_id = draggableId;
 
-        var issueToUpdate = issuesByDate.find(issue => issue.id.toLowerCase() === issue_id.toLowerCase());
+        var issueToUpdate = issuesByDate
+            .find(issue => issue.id.toLowerCase() === issue_id.toLowerCase());
 
         var source_status_name = issueToUpdate!.status;
 
@@ -70,10 +79,21 @@ export default observer(function IssuesDashboard() {
         var number_of_inprogress = 0;
         var number_of_review = 0;
 
-        selectedProject!.sprints.filter(sprint => sprint.name === destination_sprint_name).map(sprint => {
-            number_of_todo = sprint.issues.filter(issue => issue.status == "To Do").length;
-            number_of_inprogress = sprint.issues.filter(issue => issue.status == "In Progress").length;
-            number_of_review = sprint.issues.filter(issue => issue.status == "Review").length;
+        selectedProject!.sprints
+            .filter(sprint => sprint.name === destination_sprint_name)
+            .map(sprint => {
+
+                number_of_todo = sprint.issues
+                    .filter(issue => issue.status == "To Do")
+                    .length;
+
+                number_of_inprogress = sprint.issues
+                    .filter(issue => issue.status == "In Progress")
+                    .length;
+
+                number_of_review = sprint.issues
+                    .filter(issue => issue.status == "Review")
+                    .length;
 
             if(number_of_todo > 0 && issueToUpdate!.status == "To Do"){
                 number_of_todo = number_of_todo - 1;
@@ -89,24 +109,54 @@ export default observer(function IssuesDashboard() {
         
         
         issueToUpdate!.status = destination_status_name;
+
+
         if(issueToUpdate!.status == "To Do"){
             issueToUpdate!.sort_order = destination!.index;
         }
+
         if(issueToUpdate!.status == "In Progress"){
-            issueToUpdate!.sort_order = parseInt('20'.concat((destination!.index + number_of_todo).toString()));
+            issueToUpdate!.sort_order = 
+                parseInt('20'.concat((
+                    destination!.index + 
+                    number_of_todo).toString()));
         }
+
         if(issueToUpdate!.status == "Review"){
-            issueToUpdate!.sort_order = parseInt('300'.concat((destination!.index + number_of_todo + number_of_inprogress).toString()));
+            issueToUpdate!.sort_order = 
+                parseInt('300'.concat((
+                    destination!.index + 
+                    number_of_todo + 
+                    number_of_inprogress).toString()));
         }
         if(issueToUpdate!.status == "Done"){
             if(source_status_name == "Done"){
                 if(destination!.index > source.index){
-                    issueToUpdate!.sort_order = parseInt('4000'.concat((destination!.index + number_of_todo + number_of_inprogress + number_of_review).toString())) + 1;
-                } else {
-                    issueToUpdate!.sort_order = parseInt('4000'.concat((destination!.index + number_of_todo + number_of_inprogress + number_of_review).toString()));
+                    issueToUpdate!.sort_order = 
+                        parseInt('4000'.concat((
+                            destination!.index + 
+                            number_of_todo + 
+                            number_of_inprogress + 
+                            number_of_review).toString())) + 1;
+                } 
+                
+                else {
+                    issueToUpdate!.sort_order = 
+                        parseInt('4000'.concat((
+                            destination!.index + 
+                            number_of_todo + 
+                            number_of_inprogress + 
+                            number_of_review).toString()));
                 }
-            } else {
-                issueToUpdate!.sort_order = parseInt('4000'.concat((destination!.index + number_of_todo + number_of_inprogress + number_of_review).toString())) + 1;
+            } 
+            
+            else {
+                issueToUpdate!.sort_order = 
+                    parseInt('4000'.concat((
+                        destination!.index + 
+                        number_of_todo + 
+                        number_of_inprogress + 
+                        number_of_review).toString())) + 1;
             }
             
         }
@@ -114,20 +164,25 @@ export default observer(function IssuesDashboard() {
         var issuesToUpdate: any[] = [];
 
         selectedProject!.sprints.map(sprint => {
-            // Take out of source sprint
             
+            // Take out of source sprint
             if(sprint.name === source_sprint_name){
-               sprint.issues = sprint.issues.filter(issue => issue.id.toLowerCase() !== issue_id.toLowerCase()).sort((a, b) => b.sort_order - b.sort_order)
+               sprint.issues = sprint.issues.filter(issue => 
+                    issue.id.toLowerCase() !== issue_id.toLowerCase())
+                    .sort((a, b) => b.sort_order - b.sort_order)
             }
             
             // Insert into destination sprint
             if(sprint.name === destination_sprint_name){
                 
-                //number_of_done = sprint.issues.filter(issue => issue.status == "Done").length;
-                console.log("Issue indexes before splice:")
-                sprint.issues.sort((a, b) => a.sort_order - b.sort_order).map((issue, index) => {
-                    console.log(issue.name.concat(' index = ', index.toString()));
+                /* Useful logger for debugging sorting of issues
+                sprint.issues
+                    .sort((a, b) => a.sort_order - b.sort_order)
+                    .map((issue, index) => {
+                        console.log(issue.name.concat(' index = ', index.toString()));
                 })
+                */
+
                 var splice_index = 0;
                 if(issueToUpdate!.status == "To Do"){
                     splice_index = destination!.index;
@@ -136,34 +191,36 @@ export default observer(function IssuesDashboard() {
                     splice_index = destination!.index + (number_of_todo);
                 }
                 if(issueToUpdate!.status == "Review"){
-                    splice_index = destination!.index + (number_of_todo) + (number_of_inprogress);
+                    splice_index = destination!.index + 
+                        (number_of_todo) + 
+                        (number_of_inprogress);
                 }
                 if(issueToUpdate!.status == "Done"){
-                    splice_index = destination!.index + (number_of_todo - 1) + (number_of_inprogress) + (number_of_review);
+                    splice_index = destination!.index + 
+                        (number_of_todo - 1) + 
+                        (number_of_inprogress) + 
+                        (number_of_review);
                 }
-                sprint.issues.sort((a,b) => a.sort_order - b.sort_order).splice(splice_index, 0, issueToUpdate!);
+
+                sprint.issues
+                    .sort((a,b) => a.sort_order - b.sort_order)
+                    .splice(splice_index, 0, issueToUpdate!);
                 
-                sprint.issues.sort((a,b) => a.sort_order - b.sort_order).map((issue, index) => {
+                sprint.issues
+                    .sort((a,b) => a.sort_order - b.sort_order)
+                    .map((issue, index) => {
                     
                     if(issue.status == "To Do"){
                         issue.sort_order = index;
-                        //console.log(issue.name);
-                        //console.log(issue.sort_order);
                     }
                     if(issue.status == "In Progress"){
                         issue.sort_order = parseInt('20'.concat(index.toString()));
-                        //console.log(issue.name);
-                        //console.log(issue.sort_order);
                     }
                     if(issue.status == "Review"){
                         issue.sort_order = parseInt('300'.concat(index.toString()));
-                        //console.log(issue.name);
-                        //console.log(issue.sort_order);
                     }
                     if(issue.status == "Done"){
                         issue.sort_order = parseInt('4000'.concat(index.toString()));
-                        //console.log(issue.name);
-                        //console.log(issue.sort_order);
                     }
                     
                 })
@@ -192,46 +249,67 @@ export default observer(function IssuesDashboard() {
     
       };
 
-
-
-
-
-
-        
-
     return(
         <div>
-            {
-                //loading === true && <LoadingComponent />
-            }
             <DragDropContext onDragEnd={handleIssueDrop}>
-             <Filters />
-            {selectedProject?.sprints.filter(sprint => sprint.is_active === true).map(sprint => (
-                
-                
-            <div key={sprint.id} style={{marginLeft: 40}} >
+                <Filters />
+                {selectedProject?.sprints
+                    .filter(sprint => sprint.is_active === true)
+                    .map(sprint => (
+                        <div key={sprint.id} style={{marginLeft: 40}}>
+                            <div key={sprint.id}>
 
+                                {/* Sprint name */}
+                                <div 
+                                    style={{
+                                        marginLeft: '10px', 
+                                        display: 'inline-block'}}> 
+                                        {sprint.name}
+                                </div> 
 
-                    <div key={sprint.id}>
-                    <div style={{marginLeft: '10px', display: 'inline-block'}}> {sprint.name}</div> <div style ={{fontSize: '13px', paddingLeft: '20px', display: 'inline-block', color: "grey"}}>{moment(sprint.date_start.substr(0, 10)).format("MMM Do")} - {moment(sprint.date_end.substr(0, 10)).format("MMM Do") }</div>
-                    <div style={{marginRight: '20px', display: 'inline-block', float: 'right', fontSize: '13px', color: 'grey'}}>{getDaysRemaining()}</div>
-                    <IssueLists sprint={sprint} key={sprint.id}/>
-                    </div>
-           
-            </div>
-            ))}
-            {selectedProject?.sprints.filter(sprint => sprint.is_active === true).length === 0 &&
-                
-                        <IssueListsNoActiveSprint />
-            
-            }
-            </DragDropContext>
+                                {/* Date 'from' and 'to' of sprint */}
+                                <div 
+                                    style ={{
+                                        fontSize: '13px', 
+                                        paddingLeft: '20px', 
+                                        display: 'inline-block', 
+                                        color: "grey"
+                                    }}>
+                                    {
+                                        moment(sprint.date_start.substr(0, 10)).format("MMM Do").concat(' - ')
+                                    } 
+                                    {
+                                        moment(sprint.date_end.substr(0, 10)).format("MMM Do")    
+                                    }
+                                </div>
 
-             
-                {editMode &&
-                <IssueForm />
+                                {/* Days remaining in sprint */}
+                                <div 
+                                    style={{
+                                        marginRight: '20px', 
+                                        display: 'inline-block', 
+                                        float: 'right', 
+                                        fontSize: '13px', 
+                                        color: 'grey'
+                                    }}>
+                                    {getDaysRemaining()}
+                                </div>
+                                <IssueLists 
+                                    sprint={sprint} 
+                                    key={sprint.id}
+                                />
+                            </div>
+                        </div>
+                ))}
+
+                {/* If there are no active sprints, render the 'no active sprints' board */}
+                {
+                    selectedProject?.sprints
+                        .filter(sprint => sprint.is_active === true)
+                        .length === 0 &&
+                    <IssueListsNoActiveSprint />
                 }
-              
-                </div>
+            </DragDropContext>
+        </div>
     )
 })
